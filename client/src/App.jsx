@@ -1,9 +1,10 @@
-import './App.css'
+
+import { PhaserGame } from './phaser/PhaserGame'
 
 function App() {
 
   return (
-   <div>starter code</div>
+   <PhaserGame/>
   )
 }
 

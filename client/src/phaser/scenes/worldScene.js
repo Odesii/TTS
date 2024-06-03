@@ -61,7 +61,7 @@ export class WorldScene extends Phaser.Scene {
 
         // Set the world bounds
         const bounds = baseLayer.getBounds();
-        this.physics.world.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+        // this.physics.map.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 
         // Create the player
         this.player = new Player(this);

@@ -4,9 +4,10 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
 
-import Home from './components/Home/index.jsx';
-import Login from './components/Login/index.jsx';
-import Register from './components/Register/index.jsx';
+import Home from './components/Home';
+import Login from './components/Login';
+import Register from './components/Register';
+import { PhaserGame } from './phaser/PhaserGame'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,9 @@ const router = createBrowserRouter([
       }, {
         path: '/register',
         element: <Register />
+      }, {
+        path: '/play',
+        element: <PhaserGame />
       }
     ]
   }

@@ -18,7 +18,7 @@ function Home() {
             {Auth.loggedIn() ? (
                 <>
                     <h2>Welcome back, {userData.username}</h2>
-                    <Link to='/'>
+                    <Link to='/play'>
                         Play button goes here
                     </Link>
                     <Link onClick={Auth.logout}>Logout</Link>

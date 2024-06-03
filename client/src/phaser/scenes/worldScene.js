@@ -24,7 +24,7 @@ export class WorldScene extends Phaser.Scene {
         this.load.image('OutdoorTileset', 'assets/map/OutdoorTileset.png');
 
         // Load the tilemap JSON file
-        this.load.tilemapTiledJSON('map', 'assets/map/Map.tmj');
+        this.load.tilemapTiledJSON('map', 'assets/map/Map.json');
 
         // Load character assets
         this.load.spritesheet('RogueWalk', RoguePath, { frameWidth: 32, frameHeight: 32 });
@@ -42,6 +42,7 @@ export class WorldScene extends Phaser.Scene {
         const tiles = map.addTilesetImage('Minifantasy_ForgottenPlainsTiles', 'Minifantasy_ForgottenPlainsTiles');
         const tiles1 = map.addTilesetImage('OutdoorTileset', 'OutdoorTileset');
 
+        
         // Create layers from the tilemap (ensure the layer names match those in Tiled)
         //! the 0,0 is the x and y position of the layer and needs to be changed 
         const baseLayer = map.createLayer('base', tiles);
@@ -60,7 +61,7 @@ export class WorldScene extends Phaser.Scene {
 
         // Set the world bounds
         const bounds = baseLayer.getBounds();
-        this.physics.world.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+        // this.physics.map.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 
         // Create the player
         this.player = new Player(this);
@@ -93,9 +94,9 @@ export class WorldScene extends Phaser.Scene {
         // Set up the camera
         const camera = this.cameras.main;
         camera.startFollow(this.player.sprite, true, 0.1, 0.1, 0.06, 0.06);
+        // camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels, true);
 
         this.physics.add.overlap(this.player.attackHitbox, this.npc.sprite, this.handlePlayerAttack, null, this);
-
         console.log('create');
     }
 

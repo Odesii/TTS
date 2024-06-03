@@ -36,7 +36,7 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <div>starter code</div>
+      <Outlet />
     </ApolloProvider>
   )
 }

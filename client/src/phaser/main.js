@@ -5,10 +5,10 @@ const config = {
     type: Phaser.AUTO,
     width: 240,
     height: 160,
-    parent: 'game-container', // Moved out of the scale object
+    parent: 'game-container',
     scene: [WorldScene],
     scale: {
-        mode: Phaser.Scale.FILL,
+        // mode: Phaser.Scale.FILL,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     physics: {
@@ -19,7 +19,7 @@ const config = {
         }
     },
     pixelArt: true,
-    canvasStyle: `display: block; width: 100%; height: 100%;`,
+    canvasStyle: `display: block; width: 100vw; height: 100vh;`,
     autoFocus: true,
 };
 

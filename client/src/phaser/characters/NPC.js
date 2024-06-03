@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 export class NPC {
     constructor(scene) {
         this.scene = scene; // Store the scene reference

@@ -15,23 +15,23 @@ export class WorldScene extends Phaser.Scene {
 
         this.load.image('invisible', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
 
-        const RoguePath = '../../assets/character/Rogue/RogueWalk.png';
-        const RogueIdle = '../../assets/character/Rogue/RogueJump.png';
-        const RogueAtt = '../../assets/character/Rogue/RogueAttack.png';
+        const RoguePath = 'assets/character/Rogue/RogueWalk.png';
+        const RogueIdle = 'assets/character/Rogue/RogueJump.png';
+        const RogueAtt = 'assets/character/Rogue/RogueAttack.png';
 
         // Load the tileset images
-        this.load.image('Minifantasy_ForgottenPlainsTiles', '../map/Minifantasy_ForgottenPlainsTiles.png');
-        this.load.image('OutdoorTileset', '../../assets/map/OutdoorTileset.png');
+        this.load.image('Minifantasy_ForgottenPlainsTiles', 'assets/map/Minifantasy_ForgottenPlainsTiles.png');
+        this.load.image('OutdoorTileset', 'assets/map/OutdoorTileset.png');
 
         // Load the tilemap JSON file
-        this.load.tilemapTiledJSON('map', '../../assets/map/Map.tmj');
+        this.load.tilemapTiledJSON('map', 'assets/map/Map.tmj');
 
         // Load character assets
         this.load.spritesheet('RogueWalk', RoguePath, { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('RogueIdle', RogueIdle, { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('RogueAttack', RogueAtt, { frameWidth: 32, frameHeight: 32 });
         // ENEMY
-        this.load.spritesheet('ShroomJump', '../../assets/enemy/Jump.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('ShroomJump', 'assets/enemy/Jump.png', { frameWidth: 32, frameHeight: 32 });
     }
 
     create() {
@@ -103,7 +103,7 @@ export class WorldScene extends Phaser.Scene {
         console.log('Enemy hit!');
         // Handle the logic when the player hits the enemy, e.g., apply damage
         // You can add a method to the NPC class to handle taking damage
-        // npc.takeDamage(10); // Example: deal 10 damagedw
+        // npc.takeDamage(10); // Example: deal 10 damaged
     }
 
     update(time, delta) {

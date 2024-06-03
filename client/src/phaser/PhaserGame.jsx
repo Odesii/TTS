@@ -52,7 +52,7 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
     }, [currentActiveScene, ref])
 
     return (
-        <div id="game-container"></div>
+        <div className='container' id="game-container"></div>
     );
 
 });

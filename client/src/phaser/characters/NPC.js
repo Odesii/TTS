@@ -50,7 +50,7 @@ export class NPC {
             repeat: 0
         });
 
-        this.aggroRange = 100; // Radius within which NPC detects the player
+        this.aggroRange = 110; // Radius within which NPC detects the player
         this.isAggro = false;
 
         this.sprite.anims.play('enemy_jump', true);
@@ -60,6 +60,14 @@ export class NPC {
         this.changeDirectionTimer = 0;
         this.directionChangeInterval = Phaser.Math.Between(1000, 3000); // Change direction every 1 to 3 seconds
         this.setRandomDirection();
+
+
+    
+     // Stuck detection properties
+        this.lastPosition = new Phaser.Math.Vector2(this.sprite.x, this.sprite.y);
+        this.stuckTimer = 0;
+        this.stuckThreshold = 2000; // Time in ms to consider stuck
+        this.stuckMovementThreshold = 10; // Minimum movement to not be considered stuck
         
     }
 
@@ -70,7 +78,8 @@ export class NPC {
 
     update(time, delta) {
         this.changeDirectionTimer += delta;
-
+        this.stuckTimer += delta;
+        
         // Check if the player is within the aggro range
         const distanceToPlayer = Phaser.Math.Distance.Between(
             this.sprite.x, this.sprite.y,
@@ -89,7 +98,25 @@ export class NPC {
         
 
 
+    
+        // const distMoved = Phaser.Math.Distance.Between(
+        //     this.sprite.x, this.sprite.y,
+        //     this.lastPosition.x, this.lastPosition.y
+        // );
 
+        // if (distMoved < this.stuckMovementThreshold) {
+        //     if (this.stuckTimer > this.stuckThreshold) {
+        //         // NPC is stuck, set a new random direction
+        //         console.log('NPC is stuck, setting new direction');
+        //         this.isAggro = false; // Stop chasing the player
+        //         this.setRandomDirection();
+        //         this.stuckTimer = 0;
+        //     }
+        // } else {
+        //     this.stuckTimer = 0; // Reset the timer if NPC moved
+        // }
+
+        // this.lastPosition.set(this.sprite.x, this.sprite.y); // Update the last position
 
 
         

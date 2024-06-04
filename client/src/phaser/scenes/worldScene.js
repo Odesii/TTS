@@ -34,7 +34,8 @@ export class WorldScene extends Phaser.Scene {
         this.load.spritesheet('ShroomJump', 'assets/enemy/Jump.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('ShroomDie', 'assets/enemy/Die.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('ShroomDmg', 'assets/enemy/Dmg.png', { frameWidth: 32, frameHeight: 32 });
-
+    
+        this.load.image('settings-button', 'assets/icons/flatDark30.png');
     }
 
     create() {
@@ -136,6 +137,7 @@ export class WorldScene extends Phaser.Scene {
             faceColor: new Phaser.Display.Color(40, 39, 37, 255)
         });
 
+        this.scene.launch('game-menu');
     }
     handlePlayerAttack(playerHitbox, npcSprite) {
       if (!this.player.isAttacking) return; // Ensure the player is attacking

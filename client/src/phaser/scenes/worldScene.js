@@ -32,6 +32,9 @@ export class WorldScene extends Phaser.Scene {
         this.load.spritesheet('RogueAttack', RogueAtt, { frameWidth: 32, frameHeight: 32 });
         // ENEMY
         this.load.spritesheet('ShroomJump', 'assets/enemy/Jump.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('ShroomDie', 'assets/enemy/Die.png', { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('ShroomDmg', 'assets/enemy/Dmg.png', { frameWidth: 32, frameHeight: 32 });
+
     }
 
     create() {
@@ -140,7 +143,7 @@ export class WorldScene extends Phaser.Scene {
       // Get the NPC instance from the sprite's data
       const npc = npcSprite.getData('npcInstance');
       if (npc && !npc.hitDuringAttack) {
-          npc.takeDamage(10); // Call the NPC's takeDamage method
+          npc.takeDamage(20); // Call the NPC's takeDamage method
       }
   }
     // handlePlayerAttack(playerHitbox, npc) {
@@ -156,5 +159,6 @@ export class WorldScene extends Phaser.Scene {
         if (!this.player.isAttacking) {
           this.npc.resetHitFlag();
     }
+    
   }
 }

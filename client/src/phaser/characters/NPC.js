@@ -74,24 +74,47 @@ export class NPC {
         
     }
     takeDamage(amount) {
-      if (this.hitDuringAttack) {
-          return; // Already hit during this attack, do nothing
+        if (this.hitDuringAttack) {
+            return; // Already hit during this attack, do nothing
+        }
+        this.sprite.anims.play('shroom_dmg_right', true); // Play the hit animation
+        this.hitDuringAttack = true; // Set the flag
+        this.health -= amount;
+        console.log(`NPC health: ${this.health}`);
+        if (this.health <= 0) {
+            this.die();
+        }
+        this.isHit = true; // Set the flag to indicate the sprite is hitd
+        this.sprite.body.velocity.x = 0; // Stop the sprite from moving
+        this.sprite.body.velocity.y = 0;
       }
+      
+      resetHitFlag() {
+        this.hitDuringAttack = false; // Reset the flag
+        this.isHit = false; // Reset the flag
+      }
+      
 
-      this.hitDuringAttack = true; // Set the flag
-      this.health -= amount;
-      console.log(`NPC health: ${this.health}`);
-      if (this.health <= 0) {
-          this.die();
-      }
-  }
-  resetHitFlag() {
-    this.hitDuringAttack = false; // Reset the flag
+
+die() {
+    this.isDead = true;
+    console.log('NPC died');
+    // Stop any current animations and play the die animation
+    this.sprite.anims.play('shroom_die', true);
+    // Stop the sprite from moving
+    this.sprite.body.enable = false;
+
+    // Listen for the animation complete event on the scene's anims
+    this.scene.anims.on('animationcomplete', (animation, frame, sprite) => {
+        // Check if the animation that completed is the die animation and if it is this sprite
+        if (animation.key === 'shroom_die' && sprite === this.sprite) {
+            // Pause the animation on the last frame
+            this.sprite.anims.pause(this.sprite.anims.currentAnim.frames[this.sprite.anims.currentAnim.frames.length - 1]);
+            // this.sprite.destroy(); // Destroy the sprite
+        }
+    });
 }
-  die() {
-      console.log('NPC died');
-      this.sprite.destroy();
-  }
+
 
     setRandomDirection() {
         const angle = Phaser.Math.Between(0, 360);
@@ -99,6 +122,18 @@ export class NPC {
     }
 
     update(time, delta) {
+        if(this.isDead){
+            return;
+        }
+
+        if (this.isHit) {
+            // Wait for the hit animation to complete before resuming movement
+            if (this.sprite.anims.currentAnim.isCompleted) {
+              this.resetHitFlag();
+            }
+            return;
+          }
+        // Update timers
         this.changeDirectionTimer += delta;
         this.stuckTimer += delta;
         

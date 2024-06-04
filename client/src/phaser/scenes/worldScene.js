@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { SCENE_KEYS } from "./sceneKey.js";
 import { Player } from "../characters/Player.js";
 import { NPC } from "../characters/NPC.js";
-
+import { HealthBar } from "../../UI/healthbars.js";
 export class WorldScene extends Phaser.Scene {
     constructor() {
         super({
@@ -33,6 +33,8 @@ export class WorldScene extends Phaser.Scene {
         this.load.spritesheet('ShroomJump', 'assets/enemy/Jump.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('ShroomDie', 'assets/enemy/Die.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('ShroomDmg', 'assets/enemy/Dmg.png', { frameWidth: 32, frameHeight: 32 });
+
+        this.healthbar
     }
 
     create() {
@@ -59,7 +61,7 @@ export class WorldScene extends Phaser.Scene {
         doorLayer.setCollisionFromCollisionGroup();
 
         // Create the player
-        this.player = new Player(this);
+        this.player = new Player(this,100);
         this.player.sprite.setScale(1);
 
         // Set up collision with the tilemap layers
@@ -73,7 +75,7 @@ export class WorldScene extends Phaser.Scene {
         // Group of NPCs (enemies)
         this.enemies = this.physics.add.group();
         // Spawn enemies
-        this.spawnEnemies(100, map);
+        this.spawnEnemies(1000, map);
 
         // // Create the NPC (example single NPC)
         // this.npc = new NPC(this);
@@ -131,37 +133,55 @@ export class WorldScene extends Phaser.Scene {
             collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
             faceColor: new Phaser.Display.Color(40, 39, 37, 255)
         });
-    }
 
-    spawnEnemies(count, map) {
-        for (let i = 0; i < count; i++) {
-            const x = Phaser.Math.Between(0, map.widthInPixels);
-            const y = Phaser.Math.Between(0, map.heightInPixels);
-            const enemy = new NPC(this); // Create NPC instance as enemy
-            enemy.sprite.x = x;
-            enemy.sprite.y = y;
-            enemy.sprite.body.setSize(10, 13);
-            enemy.sprite.setData('npcInstance', enemy); // Store enemy instance
-            this.enemies.add(enemy.sprite);
-            this.physics.add.collider(enemy.sprite, this.player.sprite);
-            this.physics.add.collider(enemy.sprite, this.enemies);
-            this.physics.add.collider(enemy.sprite, this.buildingLayer);
-            this.physics.add.collider(enemy.sprite, this.underLayer);
-            this.physics.add.collider(enemy.sprite, this.waterLayer);
-            this.physics.add.collider(enemy.sprite, this.castleLayer);
-            this.physics.add.collider(enemy.sprite, this.doorLayer);
-        }
-    }
+        this.healthbar= new HealthBar(this, 20,18,100)
 
-    handlePlayerAttack(playerHitbox, enemySprite) {
-        if (!this.player.isAttacking) return; // Ensure the player is attacking
-        console.log('Enemy hit!');
-        // Get the NPC instance from the sprite's data
-        const enemy = enemySprite.getData('npcInstance');
-        if (enemy && !enemy.hitDuringAttack) {
-            enemy.takeDamage(20); // Call the NPC's takeDamage method
-        }
     }
+    handlePlayerAttack(playerHitbox, npcSprite) {
+      if (!this.player.isAttacking) return; // Ensure the player is attacking
+      console.log('Enemy hit!');
+      // Get the NPC instance from the sprite's data
+      const npc = npcSprite.getData('npcInstance');
+      if (npc && !npc.hitDuringAttack) {
+          npc.takeDamage(20); // Call the NPC's takeDamage method
+        //   this.player.takeDamage(10);
+      }
+  }
+
+  handleEnemyAttack(player,enemy){
+    player.health-= enemy.damage
+    let ui = this.scene.get('UIScene')
+    ui.healthbar.updateHealth(p.health)
+    console.log(player.health)
+  }
+
+
+  
+  spawnEnemies(count, map) {
+    for (let i = 0; i < count; i++) {
+        const x = Phaser.Math.Between(0, map.widthInPixels);
+        const y = Phaser.Math.Between(0, map.heightInPixels);
+        const enemy = new NPC(this); // Create NPC instance as enemy
+        enemy.sprite.x = x;
+        enemy.sprite.y = y;
+        enemy.sprite.body.setSize(10, 13);
+        enemy.sprite.setData('npcInstance', enemy); // Store enemy instance
+        this.enemies.add(enemy.sprite);
+        this.physics.add.collider(enemy.sprite, this.player.sprite);
+        this.physics.add.collider(enemy.sprite, this.enemies);
+        this.physics.add.collider(enemy.sprite, this.buildingLayer);
+        this.physics.add.collider(enemy.sprite, this.underLayer);
+        this.physics.add.collider(enemy.sprite, this.waterLayer);
+        this.physics.add.collider(enemy.sprite, this.castleLayer);
+        this.physics.add.collider(enemy.sprite, this.doorLayer);
+    }
+}
+    // handlePlayerAttack(playerHitbox, npc) {
+    //     console.log('Enemy hit!');
+    //     npc.getData('npc').takeDamage(10);         // Handle the logic when the player hits the enemy, e.g., apply damage
+        // You can add a method to the NPC class to handle taking damage
+        // npc.takeDamage(10); // Example: deal 10 damaged
+    // }
 
     update(time, delta) {
         this.player.update(); // Call the player's update method to handle movement

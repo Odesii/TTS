@@ -1,14 +1,15 @@
 import Phaser from 'phaser';
+import { HealthBar } from '../../UI/healthbars';
 
 export class Player {
-    constructor(scene) {
+    constructor(scene,health) {
         this.scene = scene; // Store the scene reference
 
         // Create the sprite and assign it to a class property
         this.sprite = scene.physics.add.sprite(32, 32, 'RogueWalk');
         
-        
-        // Create an attack hitbox
+        this.healthBar = new HealthBar(scene, 96, 0, 40, 5);
+                // Create an attack hitbox
         this.attackHitbox = scene.physics.add.sprite(0, 0, 'invisible'); 
         this.attackHitbox.body.setSize(12, 12); // Set the size of the hitbox
         this.attackHitbox.setVisible(false); // Hide the hitbox
@@ -192,7 +193,19 @@ export class Player {
             }
         }, this);
     }
-
+    takeDamage(amount) {
+      this.healthBar.decrease(amount);
+      if (this.healthBar.currentHealth <= 0) {
+          this.die();
+      }
+  }
+  die() {
+    // Handle the player's death
+    console.log('Player died');
+    this.sprite.anims.stop();
+    this.sprite.setTint(0xff0000);
+    this.sprite.setVelocity(0, 0);
+}
     update() {
         if (this.isAttacking) {
             return;
@@ -253,5 +266,8 @@ export class Player {
         if (this.attackCooldown > 0) {
             this.attackCooldown -= this.scene.sys.game.loop.delta;
         }
+
+        const camera = this.scene.cameras.main;
+        this.healthBar.graphics.setPosition(camera.scrollX + 10, camera.scrollY + 10);
     }
 }

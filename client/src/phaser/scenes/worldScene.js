@@ -79,6 +79,7 @@ export class WorldScene extends Phaser.Scene {
         this.npc.sprite.setScale(1);
         this.npc.sprite.body.setSize(10, 13);
         this.npc.sprite.x = 100;
+        this.npc.sprite.setData('npcInstance', this.npc);//store npc instance 
         this.physics.add.collider(this.npc.sprite, buildingLayer);
         this.physics.add.collider(this.npc.sprite, underLayer);
         this.physics.add.collider(this.npc.sprite, waterLayer);
@@ -133,16 +134,27 @@ export class WorldScene extends Phaser.Scene {
         });
 
     }
-
-    handlePlayerAttack(playerHitbox, npc) {
-        console.log('Enemy hit!');
-        // Handle the logic when the player hits the enemy, e.g., apply damage
+    handlePlayerAttack(playerHitbox, npcSprite) {
+      if (!this.player.isAttacking) return; // Ensure the player is attacking
+      console.log('Enemy hit!');
+      // Get the NPC instance from the sprite's data
+      const npc = npcSprite.getData('npcInstance');
+      if (npc && !npc.hitDuringAttack) {
+          npc.takeDamage(10); // Call the NPC's takeDamage method
+      }
+  }
+    // handlePlayerAttack(playerHitbox, npc) {
+    //     console.log('Enemy hit!');
+    //     npc.getData('npc').takeDamage(10);         // Handle the logic when the player hits the enemy, e.g., apply damage
         // You can add a method to the NPC class to handle taking damage
         // npc.takeDamage(10); // Example: deal 10 damaged
-    }
+    // }
 
     update(time, delta) {
         this.player.update(); // Call the player's update method to handle movement
         this.npc.update(time, delta); // Call the NPC's update method to handle movement
+        if (!this.player.isAttacking) {
+          this.npc.resetHitFlag();
     }
+  }
 }

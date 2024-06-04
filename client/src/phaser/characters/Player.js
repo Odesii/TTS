@@ -12,6 +12,7 @@ export class Player {
         this.attackHitbox = scene.physics.add.sprite(0, 0, 'invisible'); 
         this.attackHitbox.body.setSize(12, 12); // Set the size of the hitbox
         this.attackHitbox.setVisible(false); // Hide the hitbox
+        this.attackHitbox.body.enable = false;//initially disables the hitbox
 
 
         // Create animations
@@ -127,32 +128,69 @@ export class Player {
             this.attack();
         }
     }
-
     attack() {
-        console.log('Attack triggered'); // Debug
-        this.isAttacking = true;
-        this.sprite.anims.stop();
+      if (this.isAttacking || this.attackCooldown > 0) {
+          return; // Prevent attacking if already attacking or cooldown is active
+      }
 
-        let attackAnimationKey = `attack_${this.currentDirection}`;
-        this.sprite.anims.play(attackAnimationKey, true); // Play direction-specific attack animation
+      console.log('Attack triggered');
+      this.isAttacking = true;
+      this.sprite.anims.stop();
 
-        // Position the attack hitbox based on the current direction
-        switch (this.currentDirection) {
-            case 'right':
-                this.attackHitbox.setPosition(this.sprite.x + 16, this.sprite.y);
-                break;
-            case 'left':
-                this.attackHitbox.setPosition(this.sprite.x - 16, this.sprite.y);
-                break;
-            case 'up':
-                this.attackHitbox.setPosition(this.sprite.x, this.sprite.y - 16);
-                break;
-            case 'down':
-                this.attackHitbox.setPosition(this.sprite.x, this.sprite.y + 16);
-                break;
-        }
+      let attackAnimationKey = `attack_${this.currentDirection}`;
+      this.sprite.anims.play(attackAnimationKey, true);
 
-        this.attackHitbox.setVisible(true); // Show the hitbox
+      switch (this.currentDirection) {
+          case 'right':
+              this.attackHitbox.setPosition(this.sprite.x + 16, this.sprite.y);
+              break;
+          case 'left':
+              this.attackHitbox.setPosition(this.sprite.x - 16, this.sprite.y);
+              break;
+          case 'up':
+              this.attackHitbox.setPosition(this.sprite.x, this.sprite.y - 16);
+              break;
+          case 'down':
+              this.attackHitbox.setPosition(this.sprite.x, this.sprite.y + 16);
+              break;
+      }
+
+      this.attackHitbox.setVisible(true);
+      this.attackHitbox.body.enable = true; // Enable the hitbox
+      // Hide the hitbox after a short duration
+      this.scene.time.addEvent({
+          delay: 100, // Duration in milliseconds
+          callback: () => {
+              this.attackHitbox.setVisible(false);
+              this.attackHitbox.body.enable = false;
+          },
+          callbackScope: this
+      });
+    // attack() {
+    //     console.log('Attack triggered'); // Debug
+    //     this.isAttacking = true;
+    //     this.sprite.anims.stop();
+
+    //     let attackAnimationKey = `attack_${this.currentDirection}`;
+    //     this.sprite.anims.play(attackAnimationKey, true); // Play direction-specific attack animation
+
+    //     // Position the attack hitbox based on the current direction
+    //     switch (this.currentDirection) {
+    //         case 'right':
+    //             this.attackHitbox.setPosition(this.sprite.x + 16, this.sprite.y);
+    //             break;
+    //         case 'left':
+    //             this.attackHitbox.setPosition(this.sprite.x - 16, this.sprite.y);
+    //             break;
+    //         case 'up':
+    //             this.attackHitbox.setPosition(this.sprite.x, this.sprite.y - 16);
+    //             break;
+    //         case 'down':
+    //             this.attackHitbox.setPosition(this.sprite.x, this.sprite.y + 16);
+    //             break;
+    //     }
+
+    //     this.attackHitbox.setVisible(true); // Show the hitbox
 
         // On animation complete, reset isAttacking flag and play idle animation
         this.sprite.on('animationcomplete', (animation) => {
@@ -166,7 +204,7 @@ export class Player {
     }
     update() {
         if (this.isAttacking) {
-            return;
+            return;a
         }
 
         const speed = 75;
@@ -224,5 +262,8 @@ export class Player {
             this.sprite.anims.stop();
             this.sprite.anims.play('idle', true); // Play idle animation when not moving
         }
+        if (this.attackCooldown > 0) {
+          this.attackCooldown -= this.scene.sys.game.loop.delta;
+      }
     }
 }

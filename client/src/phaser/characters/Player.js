@@ -114,120 +114,107 @@ export class Player {
         // Add pointer down listener for left mouse button
         scene.input.on('pointerdown', this.handlePointerDown, this);
 
+
+        this.isAttacking = false;
         // Flag to check if player is attacking
         this.isAttacking = false;
 
-
          // Cooldown timer for attack
         this.attackCooldown = 0;
-        this.attackCooldownTime = 1000; // Cooldown time in milliseconds (1 second)
+        this.attackCooldownTime = 100; // Cooldown time in milliseconds (1 second)
+
+        // Store mouse position
+        this.mouseX = 0;
+        this.mouseY = 0;
+        scene.input.on('pointermove', this.handlePointerMove, this);
+        scene.input.on('pointerdown', this.handlePointerDown, this);
+
+        this.currentDirection = 'down';
+    }
+
+    handlePointerMove = (pointer) => {
+        this.mouseX = pointer.worldX;
+        this.mouseY = pointer.worldY;
     }
 
     handlePointerDown = (pointer) => {
         if (pointer.leftButtonDown()) {
-            this.attack();
+            this.attack(this.mouseX, this.mouseY);
         }
     }
-    attack() {
-      if (this.isAttacking || this.attackCooldown > 0) {
-          return; // Prevent attacking if already attacking or cooldown is active
-      }
 
-      console.log('Attack triggered');
-      this.isAttacking = true;
-      this.sprite.anims.stop();
+    attack(targetX, targetY) {
+        if (this.isAttacking || this.attackCooldown > 0) {
+            return;
+        }
 
-      let attackAnimationKey = `attack_${this.currentDirection}`;
-      this.sprite.anims.play(attackAnimationKey, true);
+        this.isAttacking = true;
+        this.sprite.anims.stop();
 
-      switch (this.currentDirection) {
-          case 'right':
-              this.attackHitbox.setPosition(this.sprite.x + 16, this.sprite.y);
-              break;
-          case 'left':
-              this.attackHitbox.setPosition(this.sprite.x - 16, this.sprite.y);
-              break;
-          case 'up':
-              this.attackHitbox.setPosition(this.sprite.x, this.sprite.y - 16);
-              break;
-          case 'down':
-              this.attackHitbox.setPosition(this.sprite.x, this.sprite.y + 16);
-              break;
-      }
+        const angle = Phaser.Math.Angle.Between(this.sprite.x, this.sprite.y, targetX, targetY);
+        let attackAnimationKey;
+        let offsetX = 0;
+        let offsetY = 0;
 
-      this.attackHitbox.setVisible(true);
-      this.attackHitbox.body.enable = true; // Enable the hitbox
-      // Hide the hitbox after a short duration
-      this.scene.time.addEvent({
-          delay: 100, // Duration in milliseconds
-          callback: () => {
-              this.attackHitbox.setVisible(false);
-              this.attackHitbox.body.enable = false;
-          },
-          callbackScope: this
-      });
-    // attack() {
-    //     console.log('Attack triggered'); // Debug
-    //     this.isAttacking = true;
-    //     this.sprite.anims.stop();
+        if (angle > -Math.PI / 4 && angle <= Math.PI / 4) {
+            attackAnimationKey = 'attack_right';
+            offsetX = 16;
+        } else if (angle > Math.PI / 4 && angle <= 3 * Math.PI / 4) {
+            attackAnimationKey = 'attack_down';
+            offsetY = 16;
+        } else if (angle > 3 * Math.PI / 4 || angle <= -3 * Math.PI / 4) {
+            attackAnimationKey = 'attack_left';
+            offsetX = -16;
+        } else {
+            attackAnimationKey = 'attack_up';
+            offsetY = -16;
+        }
 
-    //     let attackAnimationKey = `attack_${this.currentDirection}`;
-    //     this.sprite.anims.play(attackAnimationKey, true); // Play direction-specific attack animation
+        this.sprite.anims.play(attackAnimationKey, true);
 
-    //     // Position the attack hitbox based on the current direction
-    //     switch (this.currentDirection) {
-    //         case 'right':
-    //             this.attackHitbox.setPosition(this.sprite.x + 16, this.sprite.y);
-    //             break;
-    //         case 'left':
-    //             this.attackHitbox.setPosition(this.sprite.x - 16, this.sprite.y);
-    //             break;
-    //         case 'up':
-    //             this.attackHitbox.setPosition(this.sprite.x, this.sprite.y - 16);
-    //             break;
-    //         case 'down':
-    //             this.attackHitbox.setPosition(this.sprite.x, this.sprite.y + 16);
-    //             break;
-    //     }
+        this.attackHitbox.setPosition(this.sprite.x + offsetX, this.sprite.y + offsetY);
+        this.attackHitbox.setVisible(true);
+        this.attackHitbox.body.enable = true;
 
-    //     this.attackHitbox.setVisible(true); // Show the hitbox
+        this.scene.time.addEvent({
+            delay: 100,
+            callback: () => {
+                this.attackHitbox.setVisible(false);
+                this.attackHitbox.body.enable = false;
+            },
+            callbackScope: this
+        });
 
-        // On animation complete, reset isAttacking flag and play idle animation
         this.sprite.on('animationcomplete', (animation) => {
             if (animation.key === attackAnimationKey) {
                 this.isAttacking = false;
-                this.sprite.anims.play('idle', true);
-                this.attackHitbox.setVisible(false); // Hide the hitbox after attack
-                this.attackCooldown = this.attackCooldownTime; // Reset cooldown timer
+                this.attackCooldown = this.attackCooldownTime;
             }
         }, this);
     }
+
     update() {
         if (this.isAttacking) {
-            return;a
+            return;
         }
 
         const speed = 75;
         let velocityX = 0;
         let velocityY = 0;
 
-        // Calculate velocities based on key input
         if (this.keys.left.isDown) velocityX = -1;
         if (this.keys.right.isDown) velocityX = 1;
         if (this.keys.up.isDown) velocityY = -1;
         if (this.keys.down.isDown) velocityY = 1;
 
-        // Normalize diagonal velocity
         if (velocityX !== 0 || velocityY !== 0) {
             const length = Math.sqrt(velocityX * velocityX + velocityY * velocityY);
             velocityX = (velocityX / length) * speed;
             velocityY = (velocityY / length) * speed;
         }
 
-        // Update velocity
         this.sprite.setVelocity(velocityX, velocityY);
 
-        // Update animation state
         if (velocityX !== 0 || velocityY !== 0) {
             let animationKey = '';
 
@@ -245,25 +232,26 @@ export class Player {
                 this.currentDirection = 'up';
             } else if (velocityX > 0 && velocityY > 0) {
                 animationKey = 'downRight';
-                this.currentDirection = 'right'; // Adjust based on your preferred facing logic
+                this.currentDirection = 'right';
             } else if (velocityX < 0 && velocityY > 0) {
                 animationKey = 'downLeft';
-                this.currentDirection = 'left'; // Adjust based on your preferred facing logic
+                this.currentDirection = 'left';
             } else if (velocityX > 0 && velocityY < 0) {
                 animationKey = 'upRight';
-                this.currentDirection = 'right'; // Adjust based on your preferred facing logic
+                this.currentDirection = 'right';
             } else if (velocityX < 0 && velocityY < 0) {
                 animationKey = 'upLeft';
-                this.currentDirection = 'left'; // Adjust based on your preferred facing logic
+                this.currentDirection = 'left';
             }
 
             this.sprite.anims.play(animationKey, true);
         } else {
             this.sprite.anims.stop();
-            this.sprite.anims.play('idle', true); // Play idle animation when not moving
+            this.sprite.anims.play('idle', true);
         }
+
         if (this.attackCooldown > 0) {
-          this.attackCooldown -= this.scene.sys.game.loop.delta;
-      }
+            this.attackCooldown -= this.scene.sys.game.loop.delta;
+        }
     }
 }

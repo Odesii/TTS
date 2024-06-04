@@ -15,7 +15,7 @@ const config = {
         default: 'arcade',
         arcade: {
             debug: true,
-            debug: false
+            // debug: false
         }
     },
     pixelArt: true,

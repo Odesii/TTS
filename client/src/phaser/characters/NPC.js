@@ -50,7 +50,7 @@ export class NPC {
             repeat: 0
         });
 
-        this.aggroRange = 110; // Radius within which NPC detects the player
+        this.aggroRange = 125; // Radius within which NPC detects the player
         this.isAggro = false;
 
         this.sprite.anims.play('enemy_jump', true);

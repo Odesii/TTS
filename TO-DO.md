@@ -25,8 +25,9 @@
 - Give it attacks
 	- HIT REG
 - Health bar || Number popup 
-- take damage animation
-- death animation
+- ✅take damage animation
+    - 🟦set it for direction and add knock back.
+- ✅death animation
 - Spawn more enemies randomly.  
 
 ### Collision
@@ -40,7 +41,7 @@
 
 
 ### Escape menu
-- show shrooms
+- show amount of shrooms
 - leave game
 - log-out
 - delete account

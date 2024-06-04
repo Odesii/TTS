@@ -84,7 +84,7 @@ export class WorldScene extends Phaser.Scene {
         this.physics.add.collider(this.npc.sprite, waterLayer);
         this.physics.add.collider(this.npc.sprite, castleLayer);
         this.physics.add.collider(this.npc.sprite, doorLayer);
-        this.npc.sprite.body.immovable = true;
+        // this.npc.sprite.body.immovable = true;
 
         // Correct collider setup between player and NPC
         this.physics.add.collider(this.npc.sprite, this.player.sprite);

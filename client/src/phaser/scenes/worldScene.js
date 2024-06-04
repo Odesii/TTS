@@ -75,7 +75,7 @@ export class WorldScene extends Phaser.Scene {
         // Group of NPCs (enemies)
         this.enemies = this.physics.add.group();
         // Spawn enemies
-        this.spawnEnemies(1000, map);
+        this.spawnEnemies(50, map);
 
         // // Create the NPC (example single NPC)
         // this.npc = new NPC(this);

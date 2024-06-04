@@ -33,6 +33,7 @@
 - ✅death animation
 - ✅Spawn more enemies randomly. 
 	- respawn and fix world collisions
+	- if % under spawn amount destroy .isDead and spawn new
 
 ### Collision
 - ✅set world bounds so player and NPC can't walk off the map 

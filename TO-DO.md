@@ -40,6 +40,7 @@
 
 
 ### Escape menu
+- show shrooms
 - leave game
 - log-out
 - delete account

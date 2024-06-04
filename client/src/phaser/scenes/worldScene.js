@@ -46,7 +46,7 @@ export class WorldScene extends Phaser.Scene {
         // Create layers from the tilemap (ensure the layer names match those in Tiled)
         //! the 0,0 is the x and y position of the layer and needs to be changed 
         const baseLayer = map.createLayer('base', tiles);
-        const waterLayer = map.createLayer('water', tiles, 0,0,  {collideType: Phaser.Tilemaps.Tilemap.POLYGON});
+        const waterLayer = map.createLayer('water', tiles);
         const roadLayer = map.createLayer('roads', tiles);
         const underLayer = map.createLayer('under_build', tiles);
         const buildingLayer = map.createLayer('buildings', tiles);

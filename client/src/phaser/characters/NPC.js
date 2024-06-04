@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
 export class NPC {
-    constructor(scene) {
+    constructor(scene, damage) {
         this.scene = scene; // Store the scene reference
 
         // Create the sprite and assign it to a class property 
         this.sprite = scene.physics.add.sprite(32, 32, 'ShroomJump');
-
+        this.damage=damage
         // Create animations
         scene.anims.create({
             key: 'enemy_jump',

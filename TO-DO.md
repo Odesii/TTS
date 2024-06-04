@@ -5,7 +5,7 @@
 - ✅scale sprites down to make world bigger
 - get camera and player to stop at world border
 - ✅Figure out what the pink is around player sprite
-	- this a debug tool `this.sprite.body.debugShow = false``
+	- this a debug tool `this.sprite.body.debugShow = false`
 
 ---
 
@@ -37,3 +37,9 @@
 - Shrooms
 	- drops from enemies
 	- random chests on map
+
+
+### Escape menu
+- leave game
+- log-out
+- delete account

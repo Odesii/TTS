@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
 export class NPC {
-    constructor(scene) {
+    constructor(scene, damage) {
         this.scene = scene; // Store the scene reference
 
         // Create the sprite and assign it to a class property 
         this.sprite = scene.physics.add.sprite(32, 32, 'ShroomJump');
-
+        this.damage=damage
         // Create animations
         scene.anims.create({
             key: 'enemy_jump',
@@ -153,28 +153,6 @@ die() {
             this.scene.physics.moveToObject(this.sprite, this.scene.player.sprite, this.movementSpeed);
         }
         
-
-
-    
-        // const distMoved = Phaser.Math.Distance.Between(
-        //     this.sprite.x, this.sprite.y,
-        //     this.lastPosition.x, this.lastPosition.y
-        // );
-
-        // if (distMoved < this.stuckMovementThreshold) {
-        //     if (this.stuckTimer > this.stuckThreshold) {
-        //         // NPC is stuck, set a new random direction
-        //         console.log('NPC is stuck, setting new direction');
-        //         this.isAggro = false; // Stop chasing the player
-        //         this.setRandomDirection();
-        //         this.stuckTimer = 0;
-        //     }
-        // } else {
-        //     this.stuckTimer = 0; // Reset the timer if NPC moved
-        // }
-
-        // this.lastPosition.set(this.sprite.x, this.sprite.y); // Update the last position
-
 
         
         if (this.changeDirectionTimer > this.directionChangeInterval) {

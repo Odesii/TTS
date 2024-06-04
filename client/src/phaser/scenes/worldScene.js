@@ -37,16 +37,16 @@ export class WorldScene extends Phaser.Scene {
     create() {
         // Create the tilemap
         const map = this.make.tilemap({ key: 'map' });
-
         // Add the tilesets to the map (ensure the names match those used in Tiled)
         const tiles = map.addTilesetImage('Minifantasy_ForgottenPlainsTiles', 'Minifantasy_ForgottenPlainsTiles');
         const tiles1 = map.addTilesetImage('OutdoorTileset', 'OutdoorTileset');
+        console.log('Tilesets:', map.tilesets);
 
         
         // Create layers from the tilemap (ensure the layer names match those in Tiled)
         //! the 0,0 is the x and y position of the layer and needs to be changed 
         const baseLayer = map.createLayer('base', tiles);
-        const waterLayer = map.createLayer('water', tiles);
+        const waterLayer = map.createLayer('water', tiles, 0,0,  {collideType: Phaser.Tilemaps.Tilemap.POLYGON});
         const roadLayer = map.createLayer('roads', tiles);
         const underLayer = map.createLayer('under_build', tiles);
         const buildingLayer = map.createLayer('buildings', tiles);
@@ -55,13 +55,11 @@ export class WorldScene extends Phaser.Scene {
 
         buildingLayer.setCollisionFromCollisionGroup();
         underLayer.setCollisionFromCollisionGroup();
-        waterLayer.setCollisionFromCollisionGroup();
+        waterLayer.setCollisionFromCollisionGroup({collides: true});
         castleLayer.setCollisionFromCollisionGroup();
         doorLayer.setCollisionFromCollisionGroup();
 
-        // Set the world bounds
-        const bounds = baseLayer.getBounds();
-        // this.physics.map.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+
 
         // Create the player
         this.player = new Player(this);
@@ -91,13 +89,49 @@ export class WorldScene extends Phaser.Scene {
         // Correct collider setup between player and NPC
         this.physics.add.collider(this.npc.sprite, this.player.sprite);
 
+    // Set the world bounds to match the map size
+    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.player.sprite.setCollideWorldBounds(true);
+    this.npc.sprite.setCollideWorldBounds(true);
+
         // Set up the camera
         const camera = this.cameras.main;
         camera.startFollow(this.player.sprite, true, 0.1, 0.1, 0.06, 0.06);
-        // camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels, true);
+        camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels, true);
+
 
         this.physics.add.overlap(this.player.attackHitbox, this.npc.sprite, this.handlePlayerAttack, null, this);
+        
         console.log('create');
+
+        // Add debug graphics to visualize the collision boxes
+        const debugGraphics = this.add.graphics().setAlpha(0.75);
+        buildingLayer.renderDebug(debugGraphics, {
+            tileColor: null, // Color of non-colliding tiles
+            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+            faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
+        });
+        underLayer.renderDebug(debugGraphics, {
+            tileColor: null,
+            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
+            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
+        });
+        waterLayer.renderDebug(debugGraphics, {
+            tileColor: null,
+            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
+            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
+        });
+        castleLayer.renderDebug(debugGraphics, {
+            tileColor: null,
+            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
+            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
+        });
+        doorLayer.renderDebug(debugGraphics, {
+            tileColor: null,
+            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
+            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
+        });
+
     }
 
     handlePlayerAttack(playerHitbox, npc) {

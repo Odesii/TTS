@@ -68,8 +68,30 @@ export class NPC {
         this.stuckTimer = 0;
         this.stuckThreshold = 2000; // Time in ms to consider stuck
         this.stuckMovementThreshold = 10; // Minimum movement to not be considered stuck
+
+        this.health = 100; // Initialize health
+        this.hitDuringAttack = false;// Flag to check if hit during the current attack
         
     }
+    takeDamage(amount) {
+      if (this.hitDuringAttack) {
+          return; // Already hit during this attack, do nothing
+      }
+
+      this.hitDuringAttack = true; // Set the flag
+      this.health -= amount;
+      console.log(`NPC health: ${this.health}`);
+      if (this.health <= 0) {
+          this.die();
+      }
+  }
+  resetHitFlag() {
+    this.hitDuringAttack = false; // Reset the flag
+}
+  die() {
+      console.log('NPC died');
+      this.sprite.destroy();
+  }
 
     setRandomDirection() {
         const angle = Phaser.Math.Between(0, 360);
@@ -124,6 +146,7 @@ export class NPC {
             this.changeDirectionTimer = 0;
             this.directionChangeInterval = Phaser.Math.Between(1000, 3000); // Reset interval
             this.setRandomDirection();
+            
         }
 
         // Determine direction and play appropriate animation
@@ -132,5 +155,7 @@ export class NPC {
         } else if (this.sprite.body.velocity.x < 0) {
             this.sprite.anims.play('enemy_jump_left', true); // Moving left
         }
+
+
     }
 }

@@ -1,8 +1,10 @@
+import ProfileMain from '../Profile/ProfileMain';
+
 function Page({current}) {
     // Return the element of the current page for rendering
     function render() {
         if (current.page === "Profile") {
-            return <div>profile</div>;
+            return <ProfileMain />;
         }
 
         else if (current.page === "Email") {

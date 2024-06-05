@@ -3,6 +3,7 @@ import { SCENE_KEYS } from "./sceneKey.js";
 import { Player } from "../characters/Player.js";
 import { NPC } from "../characters/NPC.js";
 import { HealthBar } from "../../UI/healthbars.js";
+
 export class WorldScene extends Phaser.Scene {
     constructor() {
         super({
@@ -19,7 +20,7 @@ export class WorldScene extends Phaser.Scene {
 
         // Load the tileset images
         this.load.image('Minifantasy_ForgottenPlainsTiles', 'assets/map/Minifantasy_ForgottenPlainsTiles.png');
-        this.load.image('OutdoorTileset', 'assets/map/OutdoorTileset.png');
+        this.load.image('castle', 'assets/map/OutdoorTileset.png');
 
         // Load the tilemap JSON file
         this.load.tilemapTiledJSON('map', 'assets/map/Map.json');
@@ -33,8 +34,7 @@ export class WorldScene extends Phaser.Scene {
         this.load.spritesheet('ShroomJump', 'assets/enemy/Jump.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('ShroomDie', 'assets/enemy/Die.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('ShroomDmg', 'assets/enemy/Dmg.png', { frameWidth: 32, frameHeight: 32 });
-
-        this.healthbar
+        this.load.spritesheet('ShroomAttack', 'assets/enemy/Spores_Attack.png', { frameWidth: 32, frameHeight: 32 });
     }
 
     create() {
@@ -42,11 +42,8 @@ export class WorldScene extends Phaser.Scene {
         this.map = this.make.tilemap({ key: 'map' });
         // Add the tilesets to the map (ensure the names match those used in Tiled)
         const tiles = this.map.addTilesetImage('Minifantasy_ForgottenPlainsTiles', 'Minifantasy_ForgottenPlainsTiles');
-        const tiles1 = this.map.addTilesetImage('OutdoorTileset', 'OutdoorTileset');
-        console.log('Tilesets:', this.map.tilesets);
+        const tiles1 = this.map.addTilesetImage('castle', 'castle');
 
-
-        
         // Create layers from the tilemap (ensure the layer names match those in Tiled)
         this.baseLayer = this.map.createLayer('base', tiles);
         this.waterLayer = this.map.createLayer('water', tiles);
@@ -68,31 +65,36 @@ export class WorldScene extends Phaser.Scene {
         this.matter.world.convertTilemapLayer(this.castleLayer);
         this.matter.world.convertTilemapLayer(this.doorLayer);
 
-        
-
-
         // Create the player
-        this.player = new Player(this,100);
+        this.player = new Player(this, 100);
         this.player.sprite.setScale(1);
 
         // Set up collision handling
+        // Listen for start of collisions in the Matter.js world
         this.matter.world.on('collisionstart', (event) => {
+            // Iterate through all collision pairs
             event.pairs.forEach((pair) => {
                 const { bodyA, bodyB } = pair;
-                if (bodyA.gameObject === this.player.sprite || bodyB.gameObject === this.player.sprite) {
-                    const otherBody = bodyA.gameObject === this.player.sprite ? bodyB : bodyA;
-                    this.handlePlayerCollision(otherBody.gameObject);
+                
+                // Check if either body in the pair is the player's attack hitbox
+                if (bodyA === this.player.attackHitbox || bodyB === this.player.attackHitbox) {
+                    // Identify the other body involved in the collision
+                    const otherBody = bodyA === this.player.attackHitbox ? bodyB : bodyA;
+
+                    // Check if the other body is an enemy
+                    if (otherBody.gameObject && otherBody.gameObject instanceof NPC) {
+                        console.log('Collided with Enemy:', otherBody.gameObject);
+                        // Handle the attack logic for the collision
+                        this.handlePlayerAttack(this.player, otherBody.gameObject);
+                    }
                 }
             });
         });
 
-        this.player.sprite.setCircle(2.5, { restitution: 1, friction: 0, frictionAir: 0, frictionStatic: 0 });
-
         // Group of NPCs (enemies)
         this.enemies = [];
         // Spawn enemies
-        this.spawnEnemies(0);
-
+        this.spawnEnemies(1);
 
         // Set the world bounds to match the map size
         this.matter.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -102,117 +104,90 @@ export class WorldScene extends Phaser.Scene {
         camera.startFollow(this.player.sprite, true, 0.1, 0.1, 0.06, 0.06);
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels, true);
 
-        // Handle player attack
-        // this.physics.add.overlap(this.player.attackHitbox, this.enemies, this.handlePlayerAttack, null, this);
-
-
-        console.log('create');
-
-
-        this.healthbar= new HealthBar(this, 20,18,100)
-
+        this.healthbar = new HealthBar(this, 20, 18, 100);
     }
 
 
-
-    handlePlayerCollision(otherGameObject) {
-        if (otherGameObject) {
-            // Handle collision logic with other game objects
-            if (otherGameObject instanceof NPC) {
-                this.handleEnemyAttack(this.player, otherGameObject);
-            }
+    handlePlayerAttack(npc) {
+        if (this.player.isAttacking) {
+            console.log('Enemy hit!');
+            npc.takeDamage(20); // Call the NPC's takeDamage method with appropriate damage value
         }
     }
-    
-    handlePlayerAttack(playerHitbox, npcSprite) {
-      if (!this.player.isAttacking) return; // Ensure the player is attacking
-      console.log('Enemy hit!');
-      // Get the NPC instance from the sprite's data
-      const npc = npcSprite.getData('npcInstance');
-      if (npc && !npc.hitDuringAttack) {
-          npc.takeDamage(20); // Call the NPC's takeDamage method
-        //   this.player.takeDamage(10);
-      }
-  }
 
-  handleEnemyAttack(player,enemy){
-    player.health-= enemy.damage
-    let ui = this.scene.get('UIScene')
-    ui.healthbar.updateHealth(player.health)
-    console.log(player.health)
-  }
+    handleEnemyAttack(player, enemy) {
+        player.health -= enemy.damage;
+        let ui = this.scene.get('UIScene');
+        ui.healthbar.updateHealth(player.health);
+        console.log(player.health);
+    }
 
-
-  
-  spawnEnemies(count, map) {
-    for (let i = 0; i < count; i++) {
-        const x = Phaser.Math.Between(0, this.map.widthInPixels);
-        const y = Phaser.Math.Between(0, this.map.heightInPixels);
-        const enemy = new NPC(this); // Create NPC instance as enemy
-        enemy.sprite.x = x;
-        enemy.sprite.y = y;
-        enemy.sprite.setCircle(8.2);
-        enemy.sprite.setData('npcInstance', enemy); // Store enemy instance
-            // Store the NPC instance in the sprite's data
-            enemy.sprite.setData('npcInstance', enemy);
+    spawnEnemies(count) {
+        for (let i = 0; i < count; i++) {
+            const x = Phaser.Math.Between(0, this.map.widthInPixels);
+            const y = Phaser.Math.Between(0, this.map.heightInPixels);
+            const enemy = new NPC(this); // Create NPC instance as enemy
+            enemy.sprite.x = x;
+            enemy.sprite.y = y;
+            
+            enemy.sprite.setData('npcInstance', enemy); // Store enemy instance
 
             // Add the Matter.js body to the world
             this.matter.world.add(enemy.sprite.body);
 
             // Add the enemy to the enemies array
             this.enemies.push(enemy.sprite);
-
-    }
-}
-
-respawnEnemies() {
-    const spawnThreshold = 50;
-    let currentCount = this.enemies.length;
-
-    // Remove dead enemies
-    this.enemies = this.enemies.filter((enemy) => {
-        const npcInstance = enemy.getData('npcInstance');
-        if (npcInstance && npcInstance.isDead) {
-            currentCount--;
-            this.time.delayedCall(5000, () => { enemy.destroy(); });
-            return false; // Remove from the array
         }
-        return true; // Keep in the array
-    });
-
-    // Respawn enemies if the count is less than the threshold
-    if (currentCount < spawnThreshold) {
-        console.log('Enemy respawned!', currentCount);
-        this.spawnEnemies(spawnThreshold - currentCount);
     }
-}
 
+    respawnEnemies() {
+        const spawnThreshold = 1;
+        let currentCount = this.enemies.length;
 
-update(time, delta) {
-    this.player.update(); // Call the player's update method to handle movement
-
-    // Keep the player within the world bounds
-    this.keepWithinBounds(this.player.sprite);
-
-    this.enemies.forEach((enemy) => {
-        enemy.getData('npcInstance').update(time, delta);
-    });
-
-    if (!this.player.isAttacking) {
-        this.enemies.forEach((enemy) => {
-            enemy.getData('npcInstance').resetHitFlag();
+        // Remove dead enemies
+        this.enemies = this.enemies.filter((enemy) => {
+            const npcInstance = enemy.getData('npcInstance');
+            if (npcInstance && npcInstance.isDead) {
+                currentCount--;
+                this.time.delayedCall(5000, () => { enemy.destroy(); });
+                return false; // Remove from the array
+            }
+            return true; // Keep in the array
         });
+
+        // Respawn enemies if the count is less than the threshold
+        if (currentCount < spawnThreshold) {
+            console.log('Enemy respawned!', currentCount);
+            this.spawnEnemies(spawnThreshold - currentCount);
+        }
     }
-
-    this.respawnEnemies();
-}
-
-keepWithinBounds(sprite) {
-    const { x, y } = sprite;
-    const { widthInPixels, heightInPixels } = this.map;
-    if (x < 0) sprite.setPosition(0, y);
-    if (x > widthInPixels) sprite.setPosition(widthInPixels, y);
-    if (y < 0) sprite.setPosition(x, 0);
-    if (y > heightInPixels) sprite.setPosition(x, heightInPixels);
-}
+    
+        keepWithinBounds(sprite) {
+            const { x, y } = sprite;
+            const { widthInPixels, heightInPixels } = this.map;
+            if (x < 0) sprite.setPosition(0, y);
+            if (x > widthInPixels) sprite.setPosition(widthInPixels, y);
+            if (y < 0) sprite.setPosition(x, 0);
+            if (y > heightInPixels) sprite.setPosition(x, heightInPixels);
+        }
+    
+    
+    update(time, delta) {
+        this.player.update(); // Call the player's update method to handle movement
+    
+        // Keep the player within the world bounds
+        this.keepWithinBounds(this.player.sprite);
+    
+        this.enemies.forEach((enemy) => {
+            enemy.getData('npcInstance').update(time, delta);
+        });
+    
+        if (!this.player.isAttacking) {
+            this.enemies.forEach((enemy) => {
+                enemy.getData('npcInstance').resetHitFlag();
+            });
+        }
+    
+        this.respawnEnemies();
+    }
 }

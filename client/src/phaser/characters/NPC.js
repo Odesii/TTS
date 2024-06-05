@@ -6,13 +6,50 @@ export class NPC {
 
         // Create the sprite and assign it to a class property
         this.sprite = scene.matter.add.sprite(32, 32, 'ShroomJump', null, { 
-            frictionAir: 2, // Add air friction to slow down the sprite
-            mass: 1, // Adjust mass to control movement speed
+            frictionAir: 0.1, // Increase air friction to slow down the sprite
+            mass: 5, // Increase mass to reduce being pushed
+            // inertia: Infinity, // Prevent rotation by setting inertia to infinity
+            collisionFilter: {
+                category: 0x0002, 
+                mask: 0x0001 | 0x0004 
+            }
         });
+        this.sprite.gameObject = this;
         this.sprite.setFixedRotation(); // Prevent rotation
         this.damage = damage;
 
+
+        this.sprite.setBody({
+            type: 'circle',
+            width: 8,
+            height: 12
+        });
         // Create animations
+        this.createAnimations(scene);
+
+        this.aggroRange = 125; // Radius within which NPC detects the player
+        this.isAggro = false;
+
+        this.sprite.anims.play('enemy_jump', true);
+
+        // Set up random movement properties
+        this.movementSpeed = 0.2; // Reduce the speed further
+        this.changeDirectionTimer = 0;
+        this.directionChangeInterval = Phaser.Math.Between(1000, 3000); // Change direction every 1 to 3 seconds
+        this.setRandomDirection();
+
+        // Stuck detection properties
+        this.lastPosition = new Phaser.Math.Vector2(this.sprite.x, this.sprite.y);
+        this.stuckTimer = 0;
+        this.stuckThreshold = 2000; // Time in ms to consider stuck
+        this.stuckMovementThreshold = 10; // Minimum movement to not be considered stuck
+
+        this.health = 100; // Initialize health
+        this.hitDuringAttack = false; // Flag to check if hit during the current attack
+        this.isDead = false; // Flag to check if the NPC is dead
+    }
+
+    createAnimations(scene) {
         scene.anims.create({
             key: 'enemy_jump',
             frames: scene.anims.generateFrameNumbers('ShroomJump', { start: 0, end: 5 }),
@@ -39,7 +76,7 @@ export class NPC {
         });
         scene.anims.create({
             key: 'shroom_die',
-            frames: scene.anims.generateFrameNumbers('ShroomDie', { start: 0, end: 20 }),
+            frames: scene.anims.generateFrameNumbers('ShroomDie', { start: 0, end: 19 }),
             frameRate: 12,
             repeat: 0
         });
@@ -49,26 +86,6 @@ export class NPC {
             frameRate: 12,
             repeat: 0
         });
-        scene.anims.create({
-            key: 'enemy_jump',
-            frames: scene.anims.generateFrameNumbers('', { start: 17, end: 33 }),
-            frameRate: 12,
-            repeat: 0
-        });
-
-        this.aggroRange = 125; // Radius within which NPC detects the player
-        this.isAggro = false;
-
-        this.sprite.anims.play('enemy_jump', true);
-
-        // Set up random movement properties
-        this.movementSpeed = .2; // Adjust the speed as needed
-        this.changeDirectionTimer = 0;
-        this.directionChangeInterval = Phaser.Math.Between(1000, 3000); // Change direction every 1 to 3 seconds
-        this.setRandomDirection();
-
-        this.health = 100; // Initialize health
-        this.hitDuringAttack = false; // Flag to check if hit during the current attack
     }
 
     takeDamage(amount) {
@@ -164,6 +181,13 @@ export class NPC {
                 this.setRandomDirection();
             }
         }
+
+        // Cap the velocity to prevent moving too fast
+        const maxSpeed = .5;
+        this.sprite.setVelocity(
+            Phaser.Math.Clamp(this.sprite.body.velocity.x, -maxSpeed, maxSpeed),
+            Phaser.Math.Clamp(this.sprite.body.velocity.y, -maxSpeed, maxSpeed)
+        );
 
         // Ensure the sprite does not rotate
         this.sprite.setAngle(0);

@@ -110,7 +110,6 @@ die() {
         if (animation.key === 'shroom_die' && sprite === this.sprite) {
             // Pause the animation on the last frame
             this.sprite.anims.pause(this.sprite.anims.currentAnim.frames[this.sprite.anims.currentAnim.frames.length - 1]);
-            // this.sprite.destroy(); // Destroy the sprite
         }
     });
 }

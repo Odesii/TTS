@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { WorldScene } from './scenes/worldScene.js';
 import { MenuScene } from './scenes/menuScene.js';
-// import { Plugin as NineSlicePlugin } from 'phaser3-nineslice';
+import { Plugin as NineSlicePlugin } from 'phaser3-nineslice';
 
 const config = {
     type: Phaser.AUTO,
@@ -13,9 +13,9 @@ const config = {
         // mode: Phaser.Scale.FILL,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
-    // plugins: {
-    //     global: [NineSlicePlugin.DefaultCfg]
-    // },
+    plugins: {
+        global: [NineSlicePlugin.DefaultCfg]
+    },
     physics: {
         default: 'arcade',
         arcade: {

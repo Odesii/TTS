@@ -23,7 +23,7 @@ export class Player {
         this.sprite.setFixedRotation(); // Prevent rotation
         // Create an attack hitbox
         this.attackHitbox = scene.matter.add.rectangle(0, 0, 20, 20, {
-            isSensor: true, // Make the hitbox a sensor
+            isSensor: true, // Make the hitbox a sensor NO physical collision just there for activation
             isStatic: true, // Make the hitbox static
             collisionFilter: {
             category: 0x0004, // Example category for attack hitbox

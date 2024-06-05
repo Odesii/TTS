@@ -12,7 +12,6 @@ export class WorldScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('invisible', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
 
         const RoguePath = 'assets/character/Rogue/RogueWalk.png';
         const RogueIdle = 'assets/character/Rogue/RogueJump.png';
@@ -94,7 +93,7 @@ export class WorldScene extends Phaser.Scene {
         // Group of NPCs (enemies)
         this.enemies = [];
         // Spawn enemies
-        this.spawnEnemies(1);
+        this.spawnEnemies(100);
 
         // Set the world bounds to match the map size
         this.matter.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);

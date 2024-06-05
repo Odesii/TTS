@@ -16,7 +16,36 @@ export default class GameMenu {
         // const panel = scene.add.nineslice(0, 0, 150, 50, 'ui-panel', 24)
         //     .setOrigin(1, 0);
 
+        const exitButton = scene.add.image(-panel.width + 10, 5, 'exit-button')
+            .setOrigin(-1, 1);
+        
+        exitButton.setScale(0.25);
+
+        const text = scene.add.text(
+            exitButton.x + exitButton.width - 141,
+            exitButton.y - 9,
+            'Exit Game', {
+                color: 'black',
+                fontSize: 8
+            }
+        )
+
         this.container.add(panel);
+        this.container.add(exitButton);
+        this.container.add(text);
+
+        exitButton.setInteractive()
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
+                exitButton.setTint(0xe0e0e0);
+            })
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
+                exitButton.setTint(0xffffff);
+            })
+            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
+                exitButton.setTint(0xffffff);
+
+                this.exitGame();
+            })
     }
 
     show() {
@@ -55,5 +84,9 @@ export default class GameMenu {
 
     get isOpen() {
         return this._opened;
+    }
+
+    exitGame() {
+        window.location.replace('/');
     }
 }

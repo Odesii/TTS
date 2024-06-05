@@ -1,15 +1,20 @@
 import Phaser from 'phaser';
 import { WorldScene } from './scenes/worldScene.js';
+import { MenuScene } from './scenes/menuScene.js';
+import { Plugin as NineSlicePlugin } from 'phaser3-nineslice';
 
 const config = {
     type: Phaser.AUTO,
     width: 240,
     height: 160,
     parent: 'game-container',
-    scene: [WorldScene],
+    scene: [WorldScene, MenuScene],
     scale: {
         // mode: Phaser.Scale.FILL,
         autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+    plugins: {
+        global: [NineSlicePlugin.DefaultCfg]
     },
     physics: {
         default: 'arcade',

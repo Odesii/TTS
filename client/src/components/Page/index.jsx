@@ -1,4 +1,7 @@
 import ProfileMain from '../Profile/ProfileMain';
+import ChangeEmail from '../Profile/ChangeEmail';
+import ChangePassword from '../Profile/ChangePassword';
+import DeleteAccount from '../Profile/DeleteAccount';
 
 function Page({current}) {
     // Return the element of the current page for rendering
@@ -8,15 +11,15 @@ function Page({current}) {
         }
 
         else if (current.page === "Email") {
-            return <div>email</div>;
+            return <ChangeEmail />;
         }
 
         else if (current.page === "Password") {
-            return <div>password</div>;
+            return <ChangePassword />;
         }
 
         else if (current.page === "Delete") {
-            return <div>delete</div>;
+            return <DeleteAccount />;
         }
     }
 

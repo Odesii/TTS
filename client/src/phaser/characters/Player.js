@@ -11,8 +11,10 @@ export class Player {
             frictionAir: 0.05, // Adjusted air friction for smoother movementd
             mass: 5, // Adjust mass to control movement speed
             isStatic: true, // Make the player immovable
-            category: 0x0001,
-            mask: 0x0002 | 0x0004
+            collisionFilter: {
+            group: 0,
+            category: 2,
+            mask: 0},
         });
         
         this.sprite.setBody({
@@ -26,11 +28,12 @@ export class Player {
             isSensor: true, // Make the hitbox a sensor NO physical collision just there for activation
             isStatic: true, // Make the hitbox static
             collisionFilter: {
-            category: 0x0004, // Example category for attack hitbox
-            mask: 0x0002 // Example mask to collide with enemies only
+                group: 1,
+                category: 2, // Example category for attack hitbox
+                mask: 0 // Example mask to collide with enemies only
             }
         });
-        this.scene.matter.world.add(this.attackHitbox);
+        
 
         // Create animations
         this.createAnimations(scene);

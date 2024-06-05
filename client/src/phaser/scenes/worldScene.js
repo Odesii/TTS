@@ -12,7 +12,7 @@ export class WorldScene extends Phaser.Scene {
     }
 
     preload() {
-
+        this.load.image('invisible', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
         const RoguePath = 'assets/character/Rogue/RogueWalk.png';
         const RogueIdle = 'assets/character/Rogue/RogueJump.png';
         const RogueAtt = 'assets/character/Rogue/RogueAttack.png';
@@ -68,32 +68,12 @@ export class WorldScene extends Phaser.Scene {
         this.player = new Player(this, 100);
         this.player.sprite.setScale(1);
 
-        // Set up collision handling
-        // Listen for start of collisions in the Matter.js world
-        this.matter.world.on('collisionstart', (event) => {
-            // Iterate through all collision pairs
-            event.pairs.forEach((pair) => {
-                const { bodyA, bodyB } = pair;
-                
-                // Check if either body in the pair is the player's attack hitbox
-                if (bodyA === this.player.attackHitbox || bodyB === this.player.attackHitbox) {
-                    // Identify the other body involved in the collision
-                    const otherBody = bodyA === this.player.attackHitbox ? bodyB : bodyA;
 
-                    // Check if the other body is an enemy
-                    if (otherBody.gameObject && otherBody.gameObject instanceof NPC) {
-                        console.log('Collided with Enemy:', otherBody.gameObject);
-                        // Handle the attack logic for the collision
-                        this.handlePlayerAttack(this.player, otherBody.gameObject);
-                    }
-                }
-            });
-        });
 
         // Group of NPCs (enemies)
         this.enemies = [];
         // Spawn enemies
-        this.spawnEnemies(100);
+        this.spawnEnemies(0);
 
         // Set the world bounds to match the map size
         this.matter.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -105,6 +85,7 @@ export class WorldScene extends Phaser.Scene {
 
         this.healthbar = new HealthBar(this, 20, 18, 100);
     }
+
 
 
     handlePlayerAttack(npc) {
@@ -133,7 +114,7 @@ export class WorldScene extends Phaser.Scene {
 
             // Add the Matter.js body to the world
             this.matter.world.add(enemy.sprite.body);
-
+            enemy.sprite.body.setCollision
             // Add the enemy to the enemies array
             this.enemies.push(enemy.sprite);
         }
@@ -172,11 +153,15 @@ export class WorldScene extends Phaser.Scene {
     
     
     update(time, delta) {
+
+        // console.log(this.player.sprite);
+        // console.log(Object.getPrototypeOf(this.player.attackHitbox.onCollideWith));
         this.player.update(); // Call the player's update method to handle movement
-    
+        // console.log(this.player);
+        // console.log(this.player.attackHitbox );
         // Keep the player within the world bounds
         this.keepWithinBounds(this.player.sprite);
-    
+        
         this.enemies.forEach((enemy) => {
             enemy.getData('npcInstance').update(time, delta);
         });
@@ -186,7 +171,10 @@ export class WorldScene extends Phaser.Scene {
                 enemy.getData('npcInstance').resetHitFlag();
             });
         }
-    
+        
+        this.player.attackHitbox.setOnCollideWith(this.enemies, this.handlePlayerAttack);
+
         this.respawnEnemies();
+
     }
 }

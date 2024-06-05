@@ -5,13 +5,13 @@ export class NPC {
         this.scene = scene; // Store the scene reference
 
         // Create the sprite and assign it to a class property
-        this.sprite = scene.matter.add.sprite(32, 32, 'ShroomJump', null, { 
+        this.sprite = scene.matter.add.sprite(32, 32, 'ShroomJump', 'Jump.png', { 
             frictionAir: 0.1, // Increase air friction to slow down the sprite
             mass: 5, // Increase mass to reduce being pushed
             // inertia: Infinity, // Prevent rotation by setting inertia to infinity
             collisionFilter: {
-                category: 0x0002, 
-                mask: 0x0001 | 0x0004 
+                group: 2,
+                category: 1, 
             }
         });
         this.sprite.gameObject = this;

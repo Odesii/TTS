@@ -62,11 +62,11 @@ export class WorldScene extends Phaser.Scene {
         this.castleLayer.setCollisionFromCollisionGroup();
         this.doorLayer.setCollisionFromCollisionGroup();
 
-
-        //
-        this.shapeGraphics = this.add.graphics();
-        this.drawCollisionShapes(this.shapeGraphics);
-
+        this.matter.world.convertTilemapLayer(this.buildingLayer);
+        this.matter.world.convertTilemapLayer(this.waterLayer);
+        this.matter.world.convertTilemapLayer(this.underLayer);
+        this.matter.world.convertTilemapLayer(this.castleLayer);
+        this.matter.world.convertTilemapLayer(this.doorLayer);
 
         
 
@@ -75,36 +75,27 @@ export class WorldScene extends Phaser.Scene {
         this.player = new Player(this,100);
         this.player.sprite.setScale(1);
 
-        // Set up collision with the tilemap layers
-        this.physics.add.collider(this.player.sprite, this.buildingLayer);
-        this.physics.add.collider(this.player.sprite, this.underLayer);
-        this.physics.add.collider(this.player.sprite, this.waterLayer);
-        this.physics.add.collider(this.player.sprite, this.castleLayer);
-        this.physics.add.collider(this.player.sprite, this.doorLayer);
-        this.player.sprite.body.setSize(6 * 0.5, 8 * 0.5);
+        // Set up collision handling
+        this.matter.world.on('collisionstart', (event) => {
+            event.pairs.forEach((pair) => {
+                const { bodyA, bodyB } = pair;
+                if (bodyA.gameObject === this.player.sprite || bodyB.gameObject === this.player.sprite) {
+                    const otherBody = bodyA.gameObject === this.player.sprite ? bodyB : bodyA;
+                    this.handlePlayerCollision(otherBody.gameObject);
+                }
+            });
+        });
+
+        this.player.sprite.setCircle(2.5, { restitution: 1, friction: 0, frictionAir: 0, frictionStatic: 0 });
 
         // Group of NPCs (enemies)
-        this.enemies = this.physics.add.group();
+        this.enemies = [];
         // Spawn enemies
-        this.spawnEnemies(50,this.map);
+        this.spawnEnemies(0);
 
-        // // Create the NPC (example single NPC)
-        // this.npc = new NPC(this);
-        // this.npc.sprite.setScale(1);
-        // this.npc.sprite.body.setSize(10, 13);
-        // // this.npc.sprite.x = 100;
-        // this.npc.sprite.setData('npcInstance', this.npc);
-        // this.physics.add.collider(this.npc.sprite, buildingLayer);
-        // this.physics.add.collider(this.npc.sprite, underLayer);
-        // this.physics.add.collider(this.npc.sprite, waterLayer);
-        // this.physics.add.collider(this.npc.sprite, castleLayer);
-        // this.physics.add.collider(this.npc.sprite, doorLayer);
-        // this.physics.add.collider(this.npc.sprite, this.player.sprite);
 
         // Set the world bounds to match the map size
-        this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.player.sprite.setCollideWorldBounds(true);
-        // this.npc.sprite.setCollideWorldBounds(true);
+        this.matter.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // Set up the camera
         const camera = this.cameras.main;
@@ -112,42 +103,27 @@ export class WorldScene extends Phaser.Scene {
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels, true);
 
         // Handle player attack
-        this.physics.add.overlap(this.player.attackHitbox, this.enemies, this.handlePlayerAttack, null, this);
+        // this.physics.add.overlap(this.player.attackHitbox, this.enemies, this.handlePlayerAttack, null, this);
 
 
         console.log('create');
 
-        // // Add debug graphics to visualize the collision boxes
-        const debugGraphics = this.add.graphics().setAlpha(0.75);
-        this.buildingLayer.renderDebug(debugGraphics, {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
-        });
-        this.underLayer.renderDebug(debugGraphics, {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
-        });
-        this.waterLayer.renderDebug(debugGraphics, {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
-        });
-        this.castleLayer.renderDebug(debugGraphics, {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
-        });
-        this.doorLayer.renderDebug(debugGraphics, {
-            tileColor: null,
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255),
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255)
-        });
 
         this.healthbar= new HealthBar(this, 20,18,100)
 
     }
+
+
+
+    handlePlayerCollision(otherGameObject) {
+        if (otherGameObject) {
+            // Handle collision logic with other game objects
+            if (otherGameObject instanceof NPC) {
+                this.handleEnemyAttack(this.player, otherGameObject);
+            }
+        }
+    }
+    
     handlePlayerAttack(playerHitbox, npcSprite) {
       if (!this.player.isAttacking) return; // Ensure the player is attacking
       console.log('Enemy hit!');
@@ -175,36 +151,36 @@ export class WorldScene extends Phaser.Scene {
         const enemy = new NPC(this); // Create NPC instance as enemy
         enemy.sprite.x = x;
         enemy.sprite.y = y;
-        enemy.sprite.body.setSize(10, 13);
+        enemy.sprite.setCircle(8.2);
         enemy.sprite.setData('npcInstance', enemy); // Store enemy instance
-        this.enemies.add(enemy.sprite);
-        this.physics.add.collider(enemy.sprite, this.player.sprite);
-        this.physics.add.collider(enemy.sprite, this.enemies);
-        this.physics.add.collider(enemy.sprite, this.buildingLayer);
-        this.physics.add.collider(enemy.sprite, this.underLayer);
-        this.physics.add.collider(enemy.sprite, this.waterLayer);
-        this.physics.add.collider(enemy.sprite, this.castleLayer);
-        this.physics.add.collider(enemy.sprite, this.doorLayer);
+            // Store the NPC instance in the sprite's data
+            enemy.sprite.setData('npcInstance', enemy);
+
+            // Add the Matter.js body to the world
+            this.matter.world.add(enemy.sprite.body);
+
+            // Add the enemy to the enemies array
+            this.enemies.push(enemy.sprite);
 
     }
 }
 
-respawnEnemies() {  
+respawnEnemies() {
     const spawnThreshold = 50;
-    let currentCount = this.enemies.countActive(true);
+    let currentCount = this.enemies.length;
 
     // Remove dead enemies
-
-    this.enemies.getChildren().forEach((enemy) => {
-        if (enemy) {
-            const npcInstance = enemy.getData('npcInstance');
-            if (npcInstance && npcInstance.isDead) {
-                currentCount--;
-                this.time.delayedCall(5000, () => { enemy.destroy(); })
-            }
+    this.enemies = this.enemies.filter((enemy) => {
+        const npcInstance = enemy.getData('npcInstance');
+        if (npcInstance && npcInstance.isDead) {
+            currentCount--;
+            this.time.delayedCall(5000, () => { enemy.destroy(); });
+            return false; // Remove from the array
         }
+        return true; // Keep in the array
     });
- // Respawn enemies if the count is less than the threshold
+
+    // Respawn enemies if the count is less than the threshold
     if (currentCount < spawnThreshold) {
         console.log('Enemy respawned!', currentCount);
         this.spawnEnemies(spawnThreshold - currentCount);
@@ -212,80 +188,31 @@ respawnEnemies() {
 }
 
 
-drawCollisionShapes (graphics)
-{
-    graphics.clear();
+update(time, delta) {
+    this.player.update(); // Call the player's update method to handle movement
 
-    // Loop over each tile and visualize its collision shape (if it has one)
-    this.buildingLayer.forEachTile(tile =>
-    {
-        const tileWorldX = tile.getLeft();
-        const tileWorldY = tile.getTop();
-        const collisionGroup = tile.getCollisionGroup();
+    // Keep the player within the world bounds
+    this.keepWithinBounds(this.player.sprite);
 
-        // console.log(collisionGroup);
-
-        if (!collisionGroup || collisionGroup.objects.length === 0) { return; }
-
-        // The group will have an array of objects - these are the individual collision shapes
-        const objects = collisionGroup.objects;
-
-        for (let i = 0; i < objects.length; i++)
-        {
-            const object = objects[i];
-            const objectX = tileWorldX + object.x;
-            const objectY = tileWorldY + object.y;
-
-            // When objects are parsed by Phaser, they will be guaranteed to have one of the
-            // following properties if they are a rectangle/ellipse/polygon/polyline.
-            if (object.rectangle)
-            {
-                graphics.strokeRect(objectX, objectY, object.width, object.height);
-            }
-            else if (object.ellipse)
-            {
-                // Ellipses in Tiled have a top-left origin, while ellipses in Phaser have a center
-                // origin
-                graphics.strokeEllipse(
-                    objectX + object.width / 2, objectY + object.height / 2,
-                    object.width, object.height
-                );
-            }
-            else if (object.polygon || object.polyline)
-            {
-                const originalPoints = object.polygon ? object.polygon : object.polyline;
-                const points = [];
-                for (let j = 0; j < originalPoints.length; j++)
-                {
-                    const point = originalPoints[j];
-                    points.push({
-                        x: objectX + point.x,
-                        y: objectY + point.y
-                    });
-                }
-                graphics.strokePoints(points);
-            }
-        }
+    this.enemies.forEach((enemy) => {
+        enemy.getData('npcInstance').update(time, delta);
     });
+
+    if (!this.player.isAttacking) {
+        this.enemies.forEach((enemy) => {
+            enemy.getData('npcInstance').resetHitFlag();
+        });
+    }
+
+    this.respawnEnemies();
 }
 
-
-    update(time, delta) {
-        this.player.update(); // Call the player's update method to handle movement
-        // this.npc.update(time, delta); // Call the NPC's update method to handle movement
-
-        this.enemies.children.iterate((enemy) => {
-            enemy.getData('npcInstance').update(time, delta);
-        });
-
-        if (!this.player.isAttacking) {
-            // this.npc.resetHitFlag();
-            this.enemies.children.iterate((enemy) => {
-                enemy.getData('npcInstance').resetHitFlag();
-            });
-        }
-
-        this.respawnEnemies();
-
-    }
+keepWithinBounds(sprite) {
+    const { x, y } = sprite;
+    const { widthInPixels, heightInPixels } = this.map;
+    if (x < 0) sprite.setPosition(0, y);
+    if (x > widthInPixels) sprite.setPosition(widthInPixels, y);
+    if (y < 0) sprite.setPosition(x, 0);
+    if (y > heightInPixels) sprite.setPosition(x, heightInPixels);
+}
 }

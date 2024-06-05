@@ -6,14 +6,18 @@ export class Player {
         this.scene = scene; // Store the scene reference
 
         // Create the sprite and assign it to a class property
-        this.sprite = scene.physics.add.sprite(32, 32, 'RogueWalk');
-        
+        this.sprite = scene.matter.add.sprite(32, 32, 'RogueWalk',{
+            frictionAir: 2, // Add air friction to slow down the sprite
+            mass: 5, // Adjust mass to control movement speed
+        });
+        this.sprite.setFixedRotation(); // Prevent rotation
         this.healthBar = new HealthBar(scene, 96, 0, 40, 5);
                 // Create an attack hitbox
-        this.attackHitbox = scene.physics.add.sprite(0, 0, 'invisible'); 
-        this.attackHitbox.body.setSize(12, 12); // Set the size of the hitbox
+                // TODO: set hetbox to spawn on player sprite
+        this.attackHitbox = scene.matter.add.sprite(0, 0, 'invisible'); 
+        this.attackHitbox.setCircle(12); // Set the size of the hitbox
         this.attackHitbox.setVisible(false); // Hide the hitbox
-        this.attackHitbox.body.enable = false;//initially disables the hitbox
+        
 
 
         // Create animations
@@ -175,7 +179,6 @@ export class Player {
 
         this.attackHitbox.setPosition(this.sprite.x + offsetX, this.sprite.y + offsetY);
         this.attackHitbox.setVisible(true);
-        this.attackHitbox.body.enable = true;
 
         this.scene.time.addEvent({
             delay: 100,
@@ -211,7 +214,7 @@ export class Player {
             return;
         }
 
-        const speed = 75;
+        const speed = .8;
         let velocityX = 0;
         let velocityY = 0;
 
@@ -262,6 +265,11 @@ export class Player {
             this.sprite.anims.stop();
             this.sprite.anims.play('idle', true);
         }
+
+         // Ensure the sprite does not rotate
+        this.sprite.setAngle(0);
+        this.sprite.setAngularVelocity(0);
+
 
         if (this.attackCooldown > 0) {
             this.attackCooldown -= this.scene.sys.game.loop.delta;

@@ -36,6 +36,8 @@ export class WorldScene extends Phaser.Scene {
     
         this.healthbar
         this.load.image('settings-button', 'assets/icons/flatDark30.png');
+        this.load.image('ui-panel', 'assets/textures/tile_0048.png');
+        this.load.image('exit-button', 'assets/icons/red_button00.png')
     }
 
     create() {

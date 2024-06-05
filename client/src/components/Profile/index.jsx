@@ -19,7 +19,8 @@ function Profile() {
         <section className="layout">
             {Auth.loggedIn() ? (
                 <>
-                    <h2>Welcome back, {userData.username}</h2>
+                    <h2>Welcome to your profile, {userData.username}</h2>
+                    <h3>Shrooms: <span className='shrooms'></span> </h3>
                 </>
             ) : (
                 <>

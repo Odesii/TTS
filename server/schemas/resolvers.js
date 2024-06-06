@@ -1,6 +1,7 @@
 const { User } = require('../models');
 // import sign token function from auth
 const { signToken, AuthenticationError } = require('../utils/auth');
+const bcrypt = require('bcrypt');
 
 const resolvers = {
   Query:{
@@ -38,27 +39,23 @@ const resolvers = {
       return { token, user };
     },
     changeEmail: async (parent, { email }, context) => {
-      console.log("i'm in here")
       if(context.user) {
-        console.log("a user exists");
-        console.log(context.user._id);
-        console.log(email);
         const user = await User.findOneAndUpdate(
           { _id: context.user._id },
           { email: email },
           { new: true }
         );
 
-        console.log(user);
         return user;
       }
 
       throw AuthenticationError;
     },
     changePassword: async (parent, { password }, context) => {
+      const saltRounds = 10;
       const user = await User.findOneAndUpdate(
         { _id: context.user._id },
-        { password: password },
+        { password: await bcrypt.hash(password, saltRounds) },
         { new: true }
       );
 

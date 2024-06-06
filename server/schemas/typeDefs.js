@@ -23,7 +23,7 @@ const typeDefs =`
   type Query {
     myProfile: User
   }
-  
+
   type Mutation {
     createUser(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
@@ -31,7 +31,8 @@ const typeDefs =`
     changePassword(password: String!): User
     deleteAccount(_id: ID!): User
     updateShrooms(shrooms: Int!): User
-    updateInventory(name: String!, effect: String!, image: String!): User
+    addToInventory(inventory: ID!): User
+    removeFromInventory(inventory: ID!): User
   }
 `;
 

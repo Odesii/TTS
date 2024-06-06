@@ -66,24 +66,33 @@ const resolvers = {
 
       return user;
     },
-    // updateShrooms: async (parent, { shrooms }, context) => {
-    //   const user = await User.findOneAndUpdate(
-    //     { _id: context.user._id },
-    //     { shrooms: shrooms },
-    //     { new: true }
-    //   );
+    updateShrooms: async (parent, { shrooms }, context) => {
+      const user = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        { shrooms: shrooms },
+        { new: true }
+      );
 
-    //   return user;
-    // },
-    // updateInventory: async (parent, { items }, context) => {
-    //   const user = await User.findOneAndUpdate(
-    //     { _id: context.user._id },
-    //     { shrooms: shrooms },
-    //     { new: true }
-    //   );
+      return user;
+    },
+    addToInventory: async (parent, { item }, context) => {
+      const user = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        { $push: { inventory: item } },
+        { new: true }
+      );
 
-    //   return user;
-    // },
+      return user;
+    },
+    removeFromInventory: async (parent, { item }, context) => {
+      const user = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        { $pull: { inventory: item } },
+        { new: true }
+      );
+
+      return user;
+    },
   }
 }
 

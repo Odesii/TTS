@@ -22,6 +22,7 @@ export class Player {
         this.attackHitbox = scene.matter.add.rectangle(32, 32, 20, 20,{
             label: 'Hitbox',
 
+
             isSensor: true, // Make the hitbox a sensor NO physical collision just there for activation
         });
 

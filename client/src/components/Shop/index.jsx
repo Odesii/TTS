@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_ITEMS } from '../../utils/queries';
 import Auth from '../../utils/auth';
@@ -7,11 +8,12 @@ function Shop() {
     const { loading, data } = useQuery(GET_ITEMS);
     const itemData = data?.stockShop || {};
 
-    function handlePurchase(event) {
+    function handleEvent(event) {
         event.preventDefault();
-        console.log("buying");
-        const { id } = event.target;
-        console.log(id);
+    }
+    
+    async function handlePurchase(itemId) {
+        console.log(itemId);
     }
 
     function redirect() {
@@ -27,18 +29,21 @@ function Shop() {
             {Auth.loggedIn() ? (
                 <>
                     <h2>POTION SHOP</h2>
+                    <Link to='/'>
+                        Go home
+                    </Link>
                     <section className="form-box">
                         {/* Call the form handler when the submit button is clicked */}
-                        <div>
+                        <form onSubmit={handleEvent}>
                             {itemData.map((item) => (
-                                <div key={item._id} onSubmit={handlePurchase}>
+                                <div key={item._id}>
                                     <p>Item Name: {item.name}</p>
                                     <img src={item.image} />
                                     <p>Effect: {item.effect}</p>
-                                    <button id="submit">Purchase</button>
+                                    <button id="submit" onClick={() => handlePurchase(item._id)}>Purchase</button>
                                 </div>
                             ))}
-                        </div>
+                        </form>
                     </section>
                 </>
             ) : (

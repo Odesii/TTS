@@ -26,18 +26,10 @@ export class NPC {
 
         this.sprite.anims.play('enemy_jump', true);
 
-        // Set up random movement properties
-        this.movementSpeed = 0.2; // Reduce the speed further
-        this.changeDirectionTimer = 0;
-        this.directionChangeInterval = Phaser.Math.Between(1000, 3000); // Change direction every 1 to 3 seconds
-        this.setRandomDirection();
+        // Set up movement properties
+        this.movementSpeed = 0.2; // Movement speed
 
-        // Stuck detection properties
-        this.lastPosition = new Phaser.Math.Vector2(this.sprite.x, this.sprite.y);
-        this.stuckTimer = 0;
-        this.stuckThreshold = 2000; // Time in ms to consider stuck
-        this.stuckMovementThreshold = 10; // Minimum movement to not be considered stuck
-
+        // Initialize other properties
         this.health = 100; // Initialize health
         this.hitDuringAttack = false; // Flag to check if hit during the current attack
         this.isDead = false; // Flag to check if the NPC is dead
@@ -89,7 +81,7 @@ export class NPC {
         this.sprite.anims.play('shroom_dmg_right', true); // Play the hit animation
         this.hitDuringAttack = true; // Set the flag
         this.health -= amount;
-        console.log(`NPC health: ${this.health}`);
+        // console.log(`NPC health: ${this.health}`);
         if (this.health <= 0) {
             this.die();
         }
@@ -104,11 +96,10 @@ export class NPC {
 
     die() {
         this.isDead = true;
+        this.sprite.body.isSensor = true;
         console.log('NPC died');
         // Stop any current animations and play the die animation
         this.sprite.anims.play('shroom_die', true);
-        // Disable the physics body
-        // this.sprite.setStatic(true);
 
         // Listen for the animation complete event on the scene's anims
         this.scene.anims.on('animationcomplete', (animation, frame, sprite) => {
@@ -119,15 +110,6 @@ export class NPC {
                 
             }
         });
-    }
-
-    setRandomDirection() {
-        const angle = Phaser.Math.Between(0, 360);
-        const velocity = Phaser.Physics.Matter.Matter.Vector.create(
-            Math.cos(angle) * this.movementSpeed,
-            Math.sin(angle) * this.movementSpeed
-        );
-        this.sprite.setVelocity(velocity.x, velocity.y);
     }
 
     update(time, delta) {
@@ -142,10 +124,6 @@ export class NPC {
             }
             return;
         }
-
-        // Update timers
-        this.changeDirectionTimer += delta;
-        this.stuckTimer += delta;
 
         // Check if the player is within the aggro range
         const distanceToPlayer = Phaser.Math.Distance.Between(
@@ -170,19 +148,8 @@ export class NPC {
             const velocity = Phaser.Physics.Matter.Matter.Vector.mult(direction, this.movementSpeed);
             this.sprite.setVelocity(velocity.x, velocity.y);
         } else {
-            if (this.changeDirectionTimer > this.directionChangeInterval) {
-                this.changeDirectionTimer = 0;
-                this.directionChangeInterval = Phaser.Math.Between(1000, 3000); // Reset interval
-                this.setRandomDirection();
-            }
+            this.sprite.setVelocity(0, 0); // Stop movement if not aggroed
         }
-
-        // Cap the velocity to prevent moving too fast
-        const maxSpeed = .5;
-        this.sprite.setVelocity(
-            Phaser.Math.Clamp(this.sprite.body.velocity.x, -maxSpeed, maxSpeed),
-            Phaser.Math.Clamp(this.sprite.body.velocity.y, -maxSpeed, maxSpeed)
-        );
 
         // Ensure the sprite does not rotate
         this.sprite.setAngle(0);

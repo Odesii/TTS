@@ -21,7 +21,6 @@ const config = {
         matter: {
             gravity: { y: 0 },
             debug: true,
-            // debug: false
         }
     },
     pixelArt: true,

@@ -104,6 +104,7 @@ export class NPC {
 
     die() {
         this.isDead = true;
+        this.sprite.body.isSensor = true;
         console.log('NPC died');
         // Stop any current animations and play the die animation
         this.sprite.anims.play('shroom_die', true);

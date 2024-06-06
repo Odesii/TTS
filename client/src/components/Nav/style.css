@@ -1,0 +1,84 @@
+/* Tag selector for the nav bar */
+nav ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    list-style: none;
+}
+
+/* Hover effect for each of the nav bar items
+   Credits to this site: https://css-tricks.com/css-link-hover-effects/ */
+nav ul span {
+    font-size: 15px;
+    color: #eaafb7;
+    margin: 7.5px;
+    background-image: linear-gradient(to right, #cb010d, #cb010d 50%, #eaafb7 50%);
+    background-size: 200% 100%;
+    background-position: -100%;
+    display: inline-block;
+    padding: 5px 0;
+    position: relative;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.5s ease-in-out;
+}
+  
+nav ul span:before {
+    content: '';
+    background: #cb010d;
+    display: block;
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    transition: all 0.5s ease-in-out;
+}
+  
+nav ul span:hover {
+    background-position: 0;
+    cursor: pointer;
+}
+  
+nav ul span:hover::before {
+    width: 100%;
+}
+
+/* Duplicated hover effect that reverses the colors to indicated which page it is on */
+nav ul > li.active span {
+    font-size: 15px;
+    color: #cb010d;
+    margin: 7.5px;
+    background-image: linear-gradient(to left, #cb010d, #cb010d 50%, #eaafb7 50%);
+    background-size: 200% 100%;
+    background-position: -100%;
+    display: inline-block;
+    padding: 5px 0;
+    position: relative;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: all 0.5s ease-in-out;
+}
+  
+nav ul > li.active span:before {
+    content: '';
+    background: #eaafb7;
+    display: block;
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    transition: all 0.5s ease-in-out;
+}
+  
+nav ul > li.active span:hover {
+    background-position: 0;
+    cursor: pointer;
+}
+  
+nav ul > li.active span:hover::before {
+    width: 100%;
+}

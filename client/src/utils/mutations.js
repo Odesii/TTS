@@ -23,3 +23,30 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+export const CHANGE_EMAIL = gql`
+  mutation changeEmail($email: String!) {
+    changeEmail(email: $email) {
+      _id
+      username
+    }
+  }
+`;
+
+export const CHANGE_PASSWORD = gql`
+  mutation changePassword($password: String!) {
+    changePassword(password: $password) {
+      _id
+      username
+    }
+  }
+`;
+
+export const DELETE_ACCOUNT = gql`
+  mutation deleteAccount($_id: ID!) {
+    deleteAccount(_id: $_id) {
+      _id
+      username
+    }
+  }
+`;

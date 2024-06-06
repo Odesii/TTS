@@ -23,3 +23,14 @@ export const CREATE_USER = gql`
     }
   }
 `;
+
+export const CHANGE_EMAIL = gql`
+  mutation changeEmail($email: String!) {
+    changeEmail(email: $email) {
+      _id
+      username
+      email
+    }
+  }
+`;
+

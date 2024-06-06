@@ -5,7 +5,7 @@ export class NPC {
         this.scene = scene; // Store the scene reference
 
         // Create the sprite and assign it to a class property
-        this.sprite = scene.matter.add.sprite(32, 32, 'ShroomJump', 'Jump.png', { 
+        this.sprite = scene.matter.add.sprite(32, 32, 'ShroomJump', null, { 
             label: 'enemy',
             frictionAir: 0.1, // Increase air friction to slow down the sprite
             mass: 5, // Increase mass to reduce being pushed
@@ -23,6 +23,7 @@ export class NPC {
 
         this.aggroRange = 125; // Radius within which NPC detects the player
         this.isAggro = false;
+        this.attackRange = 20; // Radius within which NPC attacks the player
 
         this.sprite.anims.play('enemy_jump', true);
 
@@ -33,6 +34,9 @@ export class NPC {
         this.health = 100; // Initialize health
         this.hitDuringAttack = false; // Flag to check if hit during the current attack
         this.isDead = false; // Flag to check if the NPC is dead
+
+        this.attackCooldown = false; // Flag for attack cooldown
+        this.cooldownTime = 1000; // Cooldown time in milliseconds
     }
 
     createAnimations(scene) {
@@ -112,6 +116,42 @@ export class NPC {
         });
     }
 
+    attack() {
+        if (this.attackCooldown) {
+            return; // If the attack is on cooldown, do nothing
+        }
+
+        // Perform attack logic here
+        this.sprite.anims.play('shroom_attack_right', true);
+        
+        // Listen for the animation complete event to deal damage and trigger effects
+        this.scene.anims.once('animationcomplete', (animation, frame, sprite) => {
+            console.log('Shroom attacks!');
+            if (animation.key === 'shroom_attack_right' && sprite === this.sprite) {
+                // Deal AoE damage to the player if within range
+                const distanceToPlayer = Phaser.Math.Distance.Between(
+                    this.sprite.x, this.sprite.y,
+                    this.scene.player.sprite.x, this.scene.player.sprite.y
+                );
+
+                if (distanceToPlayer <= this.attackRange) {
+                    this.scene.player.takeDamage(this.damage);
+                }
+
+                // Set attackCooldown to true and start a timer to reset it
+                this.attackCooldown = true;
+                this.scene.time.addEvent({
+                    delay: this.cooldownTime,
+                    callback: () => {
+                        this.attackCooldown = false;
+                    },
+                    callbackScope: this
+                });
+            }
+        });
+    }
+
+
     update(time, delta) {
         if (this.isDead) {
             return;
@@ -160,6 +200,11 @@ export class NPC {
             this.sprite.anims.play('enemy_jump', true); // Moving right
         } else if (this.sprite.body.velocity.x < 0) {
             this.sprite.anims.play('enemy_jump_left', true); // Moving left
+        }
+
+        // Check if the player is within attack range and initiate attack
+        if (distanceToPlayer < this.attackRange && this.attackCooldown === false) {
+            this.attack();
         }
     }
 }

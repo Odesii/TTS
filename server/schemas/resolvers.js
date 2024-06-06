@@ -84,7 +84,9 @@ const resolvers = {
 
       return user;
     },
-    addToInventory: async (parent, { item }, context) => {
+    addToInventory: async (parent, { itemId }, context) => {
+      const item = await Item.findById(itemId);
+      
       const user = await User.findOneAndUpdate(
         { _id: context.user._id },
         { $push: { inventory: item } },
@@ -93,7 +95,9 @@ const resolvers = {
 
       return user;
     },
-    removeFromInventory: async (parent, { item }, context) => {
+    removeFromInventory: async (parent, { itemId }, context) => {
+      const item = await Item.findById(itemId);
+
       const user = await User.findOneAndUpdate(
         { _id: context.user._id },
         { $pull: { inventory: item } },

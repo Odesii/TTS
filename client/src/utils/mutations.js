@@ -50,3 +50,31 @@ export const DELETE_ACCOUNT = gql`
     }
   }
 `;
+
+export const UPDATE_SHROOMS = gql`
+  mutation updateShrooms($shrooms: Int!) {
+    updateShrooms(shrooms: $shrooms) {
+      shrooms
+    }
+  }
+`;
+
+export const ADD_TO_INVENTORY = gql`
+  mutation addToInventory($itemId: ID!) {
+    addToInventory(itemId: $itemId) {
+      inventory {
+        _id
+      }
+    }
+  }
+`;
+
+export const REMOVE_FROM_INVENTORY = gql`
+  mutation removeFromInventory($itemId: ID!) {
+    removeFromInventory(itemId: $itemId) {
+      inventory {
+        _id
+      }
+    }
+  }
+`;

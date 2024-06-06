@@ -32,8 +32,8 @@ const typeDefs =`
     changePassword(password: String!): User
     deleteAccount(_id: ID!): User
     updateShrooms(shrooms: Int!): User
-    addToInventory(inventory: ID!): User
-    removeFromInventory(inventory: ID!): User
+    addToInventory(itemId: ID!): User
+    removeFromInventory(itemId: ID!): User
   }
 `;
 

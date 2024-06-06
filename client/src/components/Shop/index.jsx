@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ITEMS } from '../../utils/queries';
+import { ADD_TO_INVENTORY } from '../../utils/mutations';
 import Auth from '../../utils/auth';
 import './style.css';
 
 function Shop() {
     const { loading, data } = useQuery(GET_ITEMS);
     const itemData = data?.stockShop || {};
+
+    const [addToInventory] = useMutation(ADD_TO_INVENTORY);
 
     const [success, setSuccess] = useState("");
     const [potionBought, setPotionBought] = useState("");
@@ -18,7 +21,17 @@ function Shop() {
     }
     
     async function handlePurchase(itemId, itemName) {
-        console.log(itemId);
+        try {
+            const { data } = await addToInventory({
+                variables: { itemId: itemId }
+            });
+
+            if (!data) {
+                throw new Error('something went wrong!');
+            }
+        } catch (e) {
+            console.error(e);
+        }
         setPotionBought(itemName);
         setSuccess(null);
     }

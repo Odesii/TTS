@@ -57,6 +57,8 @@ export class Player {
         scene.input.on('pointerdown', this.handlePointerDown, this);
 
         this.currentDirection = 'down';
+
+        this.isDead = false;
     }
 
     createAnimations(scene) {
@@ -100,6 +102,12 @@ export class Player {
         scene.anims.create({
             key: 'attack_up',
             frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
+            frameRate: 12,
+            repeat: 0
+        });
+        scene.anims.create({
+            key: 'die',
+            frames: scene.anims.generateFrameNumbers('RogueDie', { start: 0, end: 25 }),
             frameRate: 12,
             repeat: 0
         });
@@ -182,19 +190,35 @@ export class Player {
     }
 
     
-    // async updateMushroomsOnServer(amount) {
-    //   const playerID= context.User._id
-    //   }
       
-      die() {
-          console.log('Player died');
-          this.sprite.anims.stop();
+     die() {
+          this.isDead = true;
+          // Stop the player from moving and interacting
           this.sprite.setVelocity(0, 0);
-          this.sprite.anims.play('die', true);
-      }
+          this.sprite.setStatic(true);
+
+        // Play the die animation
+        this.sprite.anims.play('die', true);
+          console.log('Player died');
+
+        // Wait for the death animation to complete before stopping the sprite
+        this.sprite.once('animationcomplete', (animation) => {
+            if (animation.key === 'die') {
+                // Set the sprite to inactive and invisible after the animation completes
+                this.sprite.setActive(false);
+                this.sprite.setVisible(false);
+
+                window.location.replace('/');
+            }
+        }, this);
+    }
 
     update() {
         if (this.isAttacking) {
+            return;
+        }
+
+        if (this.isDead) {
             return;
         }
     

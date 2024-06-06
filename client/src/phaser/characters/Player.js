@@ -2,8 +2,9 @@ import Phaser from 'phaser';
 import { HealthBar } from '../../UI/healthbars';
 
 export class Player {
-    constructor(scene, health) {
+    constructor(scene) {
         this.scene = scene; // Store the scene reference
+        this.mushrooms = 0; // Initialize mushroom count
 
         this.healthBar = new HealthBar(scene, 96, 0, 40, 5);
         // Create the sprite and assign it to a class property
@@ -17,7 +18,6 @@ export class Player {
             },
         });
         this.sprite.setFixedRotation(); // Prevent rotation
-
         // Create an attack hitbox
         this.attackHitbox = scene.matter.add.rectangle(32, 32, 20, 20,{
             label: 'Hitbox',
@@ -57,6 +57,8 @@ export class Player {
         scene.input.on('pointerdown', this.handlePointerDown, this);
 
         this.currentDirection = 'down';
+
+        this.isDead = false;
     }
 
     createAnimations(scene) {
@@ -100,6 +102,12 @@ export class Player {
         scene.anims.create({
             key: 'attack_up',
             frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
+            frameRate: 12,
+            repeat: 0
+        });
+        scene.anims.create({
+            key: 'die',
+            frames: scene.anims.generateFrameNumbers('RogueDie', { start: 0, end: 25 }),
             frameRate: 12,
             repeat: 0
         });
@@ -173,16 +181,44 @@ export class Player {
             this.die();
         }
     }
+    collectMushrooms(amount) {
+      this.mushrooms += amount;
+      console.log(`Collected ${amount} mushrooms. Total: ${this.mushrooms}`);
+  
+      // Send the update to the server
+      // this.updateMushroomsOnServer(amount);
+    }
 
-    die() {
-        console.log('Player died');
-        this.sprite.anims.stop();
-        this.sprite.setVelocity(0, 0);
+    
+      
+     die() {
+          this.isDead = true;
+          // Stop the player from moving and interacting
+          this.sprite.setVelocity(0, 0);
+          this.sprite.setStatic(true);
+
+        // Play the die animation
         this.sprite.anims.play('die', true);
+          console.log('Player died');
+
+        // Wait for the death animation to complete before stopping the sprite
+        this.sprite.once('animationcomplete', (animation) => {
+            if (animation.key === 'die') {
+                // Set the sprite to inactive and invisible after the animation completes
+                this.sprite.setActive(false);
+                this.sprite.setVisible(false);
+
+                window.location.replace('/');
+            }
+        }, this);
     }
 
     update() {
         if (this.isAttacking) {
+            return;
+        }
+
+        if (this.isDead) {
             return;
         }
     

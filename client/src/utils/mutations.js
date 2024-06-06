@@ -41,3 +41,12 @@ export const CHANGE_PASSWORD = gql`
     }
   }
 `;
+
+export const DELETE_ACCOUNT = gql`
+  mutation deleteAccount($_id: ID!) {
+    deleteAccount(_id: $_id) {
+      _id
+      username
+    }
+  }
+`;

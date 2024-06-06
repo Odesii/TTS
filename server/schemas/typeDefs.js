@@ -20,7 +20,7 @@ const typeDefs =`
     login(email: String!, password: String!): Auth
     changeEmail(email: String!): User
     changePassword(password: String!): User
-    
+    deleteAccount(_id: ID!): User
   }
 `;
 

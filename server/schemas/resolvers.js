@@ -61,11 +61,11 @@ const resolvers = {
 
       return user;
     },
-    // deleteAccount: async (parent, context) => {
-    //   const user = await User.findOneAndDelete({ _id: context.user._id });
+    deleteAccount: async (parent, { _id }, context) => {
+      const user = await User.findOneAndDelete({ _id: context.user._id });
 
-    //   return user;
-    // }
+      return user;
+    }
   }
 }
 

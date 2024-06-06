@@ -89,7 +89,7 @@ export class NPC {
         this.sprite.anims.play('shroom_dmg_right', true); // Play the hit animation
         this.hitDuringAttack = true; // Set the flag
         this.health -= amount;
-        console.log(`NPC health: ${this.health}`);
+        // console.log(`NPC health: ${this.health}`);
         if (this.health <= 0) {
             this.die();
         }

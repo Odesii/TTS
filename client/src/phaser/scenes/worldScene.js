@@ -12,7 +12,6 @@ export class WorldScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('invisible', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
         const RoguePath = 'assets/character/Rogue/RogueWalk.png';
         const RogueIdle = 'assets/character/Rogue/RogueJump.png';
         const RogueAtt = 'assets/character/Rogue/RogueAttack.png';
@@ -33,7 +32,7 @@ export class WorldScene extends Phaser.Scene {
         this.load.spritesheet('ShroomJump', 'assets/enemy/Jump.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('ShroomDie', 'assets/enemy/Die.png', { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('ShroomDmg', 'assets/enemy/Dmg.png', { frameWidth: 32, frameHeight: 32 });
-            this.load.spritesheet('ShroomAttack', 'assets/enemy/Spores_Attack.png', { frameWidth: 32, frameHeight: 32 });
+            this.load.spritesheet('ShroomAttack', 'assets/enemy/Spores_Attack.png', { frameWidth: 32, frameHeight: 32 });21
         this.load.image('settings-button', 'assets/icons/flatDark30.png');
         this.load.image('ui-panel', 'assets/textures/tile_0048.png');
         this.load.image('exit-button', 'assets/icons/red_button00.png')
@@ -75,7 +74,7 @@ export class WorldScene extends Phaser.Scene {
 
         
         // Spawn enemies
-        this.spawnEnemies(10);
+        this.spawnEnemies(50);
 
         // Set the world bounds to match the map size
         this.matter.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -88,13 +87,13 @@ export class WorldScene extends Phaser.Scene {
         console.log(this.enemies[0].getData('npcInstance'));
         
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
-            if(bodyA.label === 'Hitbox' && bodyB.label === 'enemy') {
-                // console.log('AAHAHAHAH', bodyB.parent);
-                // console.log('B', bodyB.gameObject.getData('npcInstance'));
-            this.handlePlayerAttack(bodyB.gameObject);}
-            // if(bodyA.label === 'player' && bodyB.label === 'enemy') {}
+            if (bodyA.label === 'Hitbox' && bodyB.label === 'enemy') {
+                this.handlePlayerAttack(bodyB.gameObject);
+            } else if (bodyB.label === 'Hitbox' && bodyA.label === 'enemy') {
+                this.handlePlayerAttack(bodyA.gameObject);
+            }
         });
-        
+
         // this.player.sprite.setOnCollideWith(this.enemies, ()=>console.log('hit'));
         this.scene.launch('game-menu');
         this.healthbar = new HealthBar(this, 20, 18, 100);
@@ -103,14 +102,15 @@ export class WorldScene extends Phaser.Scene {
 
 
     handlePlayerAttack(npcSprite) {
-        if (!this.player.isAttacking) return; // Ensure the player is attacking
+        if (!this.player.isAttacking || !npcSprite) return; // Ensure the player is attacking
         // console.log('Enemy hit!');
-        console.log('ENEMY HIT');
+        // console.log('ENEMY HIT');
         if(npcSprite === null) return;
         // Get the NPC instance from the sprite's data
         const npc = npcSprite.getData('npcInstance');
         if (npc && !npc.hitDuringAttack) {
             npc.takeDamage(20); // Call the NPC's takeDamage method
+            npc.hitDuringAttack = true;
         }
     }
 

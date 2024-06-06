@@ -17,8 +17,9 @@ const config = {
         global: [NineSlicePlugin.DefaultCfg]
     },
     physics: {
-        default: 'arcade',
-        arcade: {
+        default: 'matter',
+        matter: {
+            gravity: { y: 0 },
             debug: true,
             // debug: false
         }

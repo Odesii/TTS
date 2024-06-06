@@ -94,9 +94,8 @@ export class WorldScene extends Phaser.Scene {
             this.handlePlayerAttack(bodyB.gameObject);}
             // if(bodyA.label === 'player' && bodyB.label === 'enemy') {}
         });
-
+        
         // this.player.sprite.setOnCollideWith(this.enemies, ()=>console.log('hit'));
-        // console.log('PLAYER',this.player.sprite)
         this.scene.launch('game-menu');
         this.healthbar = new HealthBar(this, 20, 18, 100);
     }

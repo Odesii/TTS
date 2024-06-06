@@ -93,19 +93,11 @@ export class WorldScene extends Phaser.Scene {
         });
     
 
-        // // Set up collision event check for player and enemy hitboxes to trigger attack
-        // this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
-        //     if (bodyA.label === 'Hitbox' && bodyB.label === 'enemy') {
-        //         this.handlePlayerAttack(bodyB.gameObject);
-        //     } else if (bodyB.label === 'Hitbox' && bodyA.label === 'enemy') {
-        //         this.handlePlayerAttack(bodyA.gameObject);
-        //     }
-        // });
-
         // this.player.sprite.setOnCollideWith(this.enemies, ()=>console.log('hit'));
         this.scene.launch('game-menu');
         this.healthbar = new HealthBar(this, 20, 18, 100);
     }
+    // Set up collision event check for player and enemy hitboxes to trigger attack
 
     checkCollisions() {
         this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {

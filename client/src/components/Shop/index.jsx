@@ -13,11 +13,10 @@ function Shop() {
     const [addToInventory] = useMutation(ADD_TO_INVENTORY);
 
     const [success, setSuccess] = useState("");
-    const [potionBought, setPotionBought] = useState("");
 
     function handleEvent(event) {
         event.preventDefault();
-        setSuccess(`${potionBought} purchased!`);
+        setSuccess(null);
     }
     
     async function handlePurchase(itemId, itemName) {
@@ -32,8 +31,8 @@ function Shop() {
         } catch (e) {
             console.error(e);
         }
-        setPotionBought(itemName);
-        setSuccess(null);
+
+        setSuccess(`${itemName} purchased!`);
     }
 
     function redirect() {

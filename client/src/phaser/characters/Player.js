@@ -7,33 +7,25 @@ export class Player {
 
         this.healthBar = new HealthBar(scene, 96, 0, 40, 5);
         // Create the sprite and assign it to a class property
-        this.sprite = scene.matter.add.sprite(32, 32, 'RogueWalk', {
+        this.sprite = scene.matter.add.sprite(32, 32, 'RogueWalk', 'Rougewalk.png', {
+            label: 'player',
             frictionAir: 0.05, // Adjusted air friction for smoother movementd
             mass: 5, // Adjust mass to control movement speed
-            isStatic: true, // Make the player immovable
-            collisionFilter: {
-            group: 0,
-            category: 2,
-            mask: 0},
+            shape: {
+                type: 'circle',
+                radius: 2.5,
+            },
         });
-        
-        this.sprite.setBody({
-            type: 'circle',
-            radius: 2.5
-        })
-        
         this.sprite.setFixedRotation(); // Prevent rotation
+
         // Create an attack hitbox
-        this.attackHitbox = scene.matter.add.rectangle(0, 0, 20, 20, {
+        this.attackHitbox = scene.matter.add.rectangle(32, 32, 20, 20,{
+            label: 'Hitbox',
+
             isSensor: true, // Make the hitbox a sensor NO physical collision just there for activation
-            isStatic: true, // Make the hitbox static
-            collisionFilter: {
-                group: 1,
-                category: 2, // Example category for attack hitbox
-                mask: 0 // Example mask to collide with enemies only
-            }
         });
-        
+
+
 
         // Create animations
         this.createAnimations(scene);
@@ -164,7 +156,6 @@ export class Player {
             delay: 100,
             callback: () => {
                 this.attackHitbox.render.visible = false;//hides attack hitbox
-                this.attackHitbox.isSensor = false;
             },
             callbackScope: this
         });

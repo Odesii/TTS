@@ -6,24 +6,18 @@ export class NPC {
 
         // Create the sprite and assign it to a class property
         this.sprite = scene.matter.add.sprite(32, 32, 'ShroomJump', 'Jump.png', { 
+            label: 'enemy',
             frictionAir: 0.1, // Increase air friction to slow down the sprite
             mass: 5, // Increase mass to reduce being pushed
-            // inertia: Infinity, // Prevent rotation by setting inertia to infinity
-            collisionFilter: {
-                group: 2,
-                category: 1, 
-            }
+            shape: {
+            type: 'circle', 
+            radius: 8,
+        }
         });
         this.sprite.gameObject = this;
         this.sprite.setFixedRotation(); // Prevent rotation
         this.damage = damage;
 
-
-        this.sprite.setBody({
-            type: 'circle',
-            width: 8,
-            height: 12
-        });
         // Create animations
         this.createAnimations(scene);
 
@@ -114,7 +108,7 @@ export class NPC {
         // Stop any current animations and play the die animation
         this.sprite.anims.play('shroom_die', true);
         // Disable the physics body
-        this.sprite.setStatic(true);
+        // this.sprite.setStatic(true);
 
         // Listen for the animation complete event on the scene's anims
         this.scene.anims.on('animationcomplete', (animation, frame, sprite) => {
@@ -122,6 +116,7 @@ export class NPC {
             if (animation.key === 'shroom_die' && sprite === this.sprite) {
                 // Pause the animation on the last frame
                 this.sprite.anims.pause(this.sprite.anims.currentAnim.frames[this.sprite.anims.currentAnim.frames.length - 1]);
+                
             }
         });
     }

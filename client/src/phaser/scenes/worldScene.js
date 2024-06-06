@@ -54,7 +54,7 @@ export class WorldScene extends Phaser.Scene {
 
         this.buildingLayer.setCollisionFromCollisionGroup();
         this.underLayer.setCollisionFromCollisionGroup();
-        this.waterLayer.setCollisionFromCollisionGroup({ collides: true });
+        this.waterLayer.setCollisionFromCollisionGroup();
         this.castleLayer.setCollisionFromCollisionGroup();
         this.doorLayer.setCollisionFromCollisionGroup();
 
@@ -66,14 +66,13 @@ export class WorldScene extends Phaser.Scene {
 
         // Create the player
         this.player = new Player(this, 100);
-        this.player.sprite.setScale(1);
-
-
 
         // Group of NPCs (enemies)
         this.enemies = [];
+
+        
         // Spawn enemies
-        this.spawnEnemies(0);
+        this.spawnEnemies(10);
 
         // Set the world bounds to match the map size
         this.matter.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -83,15 +82,33 @@ export class WorldScene extends Phaser.Scene {
         camera.startFollow(this.player.sprite, true, 0.1, 0.1, 0.06, 0.06);
         camera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels, true);
 
+        console.log(this.enemies[0].getData('npcInstance'));
+        
+        this.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
+            if(bodyA.label === 'Hitbox' && bodyB.label === 'enemy') {
+                // console.log('AAHAHAHAH', bodyB.parent);
+                // console.log('B', bodyB.gameObject.getData('npcInstance'));
+            this.handlePlayerAttack(bodyB.gameObject);}
+            // if(bodyA.label === 'player' && bodyB.label === 'enemy') {}
+        });
+
+        // this.player.sprite.setOnCollideWith(this.enemies, ()=>console.log('hit'));
+        // console.log('PLAYER',this.player.sprite)
+
         this.healthbar = new HealthBar(this, 20, 18, 100);
     }
 
 
 
-    handlePlayerAttack(npc) {
-        if (this.player.isAttacking) {
-            console.log('Enemy hit!');
-            npc.takeDamage(20); // Call the NPC's takeDamage method with appropriate damage value
+    handlePlayerAttack(npcSprite) {
+        if (!this.player.isAttacking) return; // Ensure the player is attacking
+        // console.log('Enemy hit!');
+        console.log('ENEMY HIT');
+        if(npcSprite === null) return;
+        // Get the NPC instance from the sprite's data
+        const npc = npcSprite.getData('npcInstance');
+        if (npc && !npc.hitDuringAttack) {
+            npc.takeDamage(20); // Call the NPC's takeDamage method
         }
     }
 
@@ -114,7 +131,6 @@ export class WorldScene extends Phaser.Scene {
 
             // Add the Matter.js body to the world
             this.matter.world.add(enemy.sprite.body);
-            enemy.sprite.body.setCollision
             // Add the enemy to the enemies array
             this.enemies.push(enemy.sprite);
         }
@@ -123,13 +139,13 @@ export class WorldScene extends Phaser.Scene {
     respawnEnemies() {
         const spawnThreshold = 1;
         let currentCount = this.enemies.length;
-
         // Remove dead enemies
         this.enemies = this.enemies.filter((enemy) => {
             const npcInstance = enemy.getData('npcInstance');
             if (npcInstance && npcInstance.isDead) {
                 currentCount--;
-                this.time.delayedCall(5000, () => { enemy.destroy(); });
+                // console.log('Enemy removed!', currentCount);
+                this.time.delayedCall(3000, () => {enemy.body.destroy(); enemy.destroy();});
                 return false; // Remove from the array
             }
             return true; // Keep in the array
@@ -154,25 +170,20 @@ export class WorldScene extends Phaser.Scene {
     
     update(time, delta) {
 
-        // console.log(this.player.sprite);
-        // console.log(Object.getPrototypeOf(this.player.attackHitbox.onCollideWith));
+
         this.player.update(); // Call the player's update method to handle movement
-        // console.log(this.player);
-        // console.log(this.player.attackHitbox );
-        // Keep the player within the world bounds
+
         this.keepWithinBounds(this.player.sprite);
         
         this.enemies.forEach((enemy) => {
             enemy.getData('npcInstance').update(time, delta);
         });
-    
+        
         if (!this.player.isAttacking) {
             this.enemies.forEach((enemy) => {
                 enemy.getData('npcInstance').resetHitFlag();
             });
         }
-        
-        this.player.attackHitbox.setOnCollideWith(this.enemies, this.handlePlayerAttack);
 
         this.respawnEnemies();
 

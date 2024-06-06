@@ -32,17 +32,13 @@ function ChangeEmail() {
             setSuccess("Email successfully updated!");
 
             try {
-                console.log("before await");
                 const { data } = await changeEmail({
                     variables: { ...formState },
                 });
-                console.log("after await");
-                console.log(data);
-                console.log(formState);
           
-                // if (!data.ok) {
-                //     throw new Error('something went wrong!');
-                // }
+                if (!data.ok) {
+                    throw new Error('something went wrong!');
+                }
             } catch (e) {
                 console.error(e);
             }

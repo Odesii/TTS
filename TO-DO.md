@@ -15,6 +15,7 @@
 - ✅set hit registration on attack
 - ✅give player HP
 - ✅health bar
+  - STYLE it
 - take damage animation
 - projectiles
 - ✅give player death state

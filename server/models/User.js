@@ -18,6 +18,22 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    shrooms: {
+      type: Number,
+      default: 0
+    },
+    inventory: [
+      {
+        _id: {
+          type: Schema.Types.ObjectId,
+          ref: 'Item'
+        },
+        quantity: {
+          type: Number,
+          default: 0
+        }
+      }
+    ]
   },
   // set this to use virtual below
   {

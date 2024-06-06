@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import { GET_USER } from '../../utils/queries';
 import Auth from '../../utils/auth';
-import './style.css'
+import './style.css';
 
 function Home() {
     const { loading, data } = useQuery(GET_USER);
@@ -20,6 +20,9 @@ function Home() {
                     <h2>Welcome back, {userData.username}</h2>
                     <Link to='/play'>
                         Play button goes here
+                    </Link>
+                    <Link to='/profile'>
+                        Profile
                     </Link>
                     <Link onClick={Auth.logout}>Logout</Link>
                 </>

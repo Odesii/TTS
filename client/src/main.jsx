@@ -7,6 +7,7 @@ import './index.css'
 import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
+import Profile from './components/Profile';
 import { PhaserGame } from './phaser/PhaserGame'
 
 const router = createBrowserRouter([
@@ -24,6 +25,9 @@ const router = createBrowserRouter([
       }, {
         path: '/register',
         element: <Register />
+      }, {
+        path: '/profile',
+        element: <Profile />
       }, {
         path: '/play',
         element: <PhaserGame />

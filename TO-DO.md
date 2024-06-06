@@ -40,6 +40,7 @@
 - ✅and set so camera can't go past the bounds
 
 ### LOOT
+-!CHests !work!!!! !need to edit tile sheet for !anims
 - Shrooms
 	- drops from enemies
 	- random chests on map

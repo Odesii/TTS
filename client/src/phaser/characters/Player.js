@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { HealthBar } from '../../UI/healthbars';
 
 export class Player {
-    constructor(scene, health) {
+    constructor(scene) {
         this.scene = scene; // Store the scene reference
 
         this.healthBar = new HealthBar(scene, 96, 0, 40, 5);

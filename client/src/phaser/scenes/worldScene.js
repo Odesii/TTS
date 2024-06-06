@@ -3,6 +3,7 @@ import { SCENE_KEYS } from "./sceneKey.js";
 import { Player } from "../characters/Player.js";
 import { NPC } from "../characters/NPC.js";
 import { HealthBar } from "../../UI/healthbars.js";
+import { Chest } from '../loot/Chest.js';
 
 export class WorldScene extends Phaser.Scene {
     constructor() {
@@ -16,9 +17,13 @@ export class WorldScene extends Phaser.Scene {
         const RogueIdle = 'assets/character/Rogue/RogueJump.png';
         const RogueAtt = 'assets/character/Rogue/RogueAttack.png';
 
+        const chest='assets/chest.png';
         // Load the tileset images
         this.load.image('Minifantasy_ForgottenPlainsTiles', 'assets/map/Minifantasy_ForgottenPlainsTiles.png');
         this.load.image('castle', 'assets/map/OutdoorTileset.png');
+
+        this.load.spritesheet('chest', chest, { frameWidth: 20, frameHeight: 14 });
+        // this.load.image('chest', 'assets/chest.png');
 
         // Load the tilemap JSON file
         this.load.tilemapTiledJSON('map', 'assets/map/Map.json');
@@ -72,13 +77,23 @@ export class WorldScene extends Phaser.Scene {
         // Group of NPCs (enemies)
         this.enemies = [];
 
-        
+            // Define chest animations
+    this.anims.create({
+      key: 'chest_open',
+      frames: this.anims.generateFrameNumbers('chest', { start: 0, end: 4 }), // Adjust frame range as necessary
+      frameRate: 5,
+      repeat: 0
+  });
+        //spawn chesticles
+        this.spawnChests(10)
         // Spawn enemies
         this.spawnEnemies(50);
 
         // Set the world bounds to match the map size
         this.matter.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
+
+      
         // Set up the camera
         const camera = this.cameras.main;
         camera.startFollow(this.player.sprite, true, 0.1, 0.1, 0.06, 0.06);
@@ -146,7 +161,13 @@ export class WorldScene extends Phaser.Scene {
             this.enemies.push(enemy.sprite);
         }
     }
-
+    spawnChests(count) {
+      for (let i = 0; i < count; i++) {
+          const x = Phaser.Math.Between(0, this.map.widthInPixels);
+          const y = Phaser.Math.Between(0, this.map.heightInPixels);
+          const chestSpawn = new Chest(this, x, y);
+      }
+    }
     respawnEnemies() {
         const spawnThreshold = 1;
         let currentCount = this.enemies.length;
@@ -194,4 +215,5 @@ export class WorldScene extends Phaser.Scene {
         this.respawnEnemies();
 
     }
+    
 }

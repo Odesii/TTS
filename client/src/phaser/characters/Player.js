@@ -2,8 +2,9 @@ import Phaser from 'phaser';
 import { HealthBar } from '../../UI/healthbars';
 
 export class Player {
-    constructor(scene, health) {
+    constructor(scene) {
         this.scene = scene; // Store the scene reference
+        this.mushrooms = 0; // Initialize mushroom count
 
         this.healthBar = new HealthBar(scene, 96, 0, 40, 5);
         // Create the sprite and assign it to a class property
@@ -17,7 +18,6 @@ export class Player {
             },
         });
         this.sprite.setFixedRotation(); // Prevent rotation
-
         // Create an attack hitbox
         this.attackHitbox = scene.matter.add.rectangle(32, 32, 20, 20,{
             label: 'Hitbox',
@@ -181,16 +181,25 @@ export class Player {
             this.die();
         }
     }
+    collectMushrooms(amount) {
+      this.mushrooms += amount;
+      console.log(`Collected ${amount} mushrooms. Total: ${this.mushrooms}`);
+  
+      // Send the update to the server
+      // this.updateMushroomsOnServer(amount);
+    }
 
-    die() {
-        this.isDead = true;
-        // Stop the player from moving and interacting
-        this.sprite.setVelocity(0, 0);
-        this.sprite.setStatic(true);
+    
+      
+     die() {
+          this.isDead = true;
+          // Stop the player from moving and interacting
+          this.sprite.setVelocity(0, 0);
+          this.sprite.setStatic(true);
 
         // Play the die animation
         this.sprite.anims.play('die', true);
-        console.log('Player died');
+          console.log('Player died');
 
         // Wait for the death animation to complete before stopping the sprite
         this.sprite.once('animationcomplete', (animation) => {
@@ -200,8 +209,6 @@ export class Player {
                 this.sprite.setVisible(false);
 
                 window.location.replace('/');
-                //  trigger a game over screen
-                // this.scene.scene.start(''); 
             }
         }, this);
     }

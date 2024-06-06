@@ -1,12 +1,10 @@
 ✅🟦🟥
-- Fix player jitter/ find better movement 
-- 🟦get collisions with world working
-	- 🟥 they aren't correct via tilled and still ne world boundary 
+-✅ Fix player jitter/ find better movement 
+- ✅get collisions with world working
+	- ✅ they aren't correct via tilled and still ne world boundary 
 - ✅scale sprites down to make world bigger
-- get camera and player to stop at world border
-- ✅Figure out what the pink is around player sprite
-	- this a debug tool `this.sprite.body.debugShow = false``
-
+- ✅get camera and player to stop at world border
+- 
 ---
 
 
@@ -19,17 +17,20 @@
 - ✅health bar
 - take damage animation
 - projectiles
+- ✅give player death state
+- adjust attack
+  - get it to use shroom style of distance detection to help make it more consistent
 
 ### Enemy
 - 🟦 make an base Enemy class to extend with different types
 - ✅ random movement
 - ✅agro on player when in a range 
 - ✅give HP
-- Give it attacks
-	- HIT REG
+- ✅Give it attacks
+	- ✅HIT REG
 - Number popup 
 - ✅take damage animation
-	- 🟦set it for direction and add knock back.
+	- ✅set it for direction and add knock back.
 - ✅death animation
 - ✅Spawn more enemies randomly. 
 	- ✅fix world collisions *still spawn in walls but move out*
@@ -40,17 +41,22 @@
 - ✅and set so camera can't go past the bounds
 
 ### LOOT
+-!CHests !work!!!! !need to edit tile sheet for anims
 - Shrooms
 	- drops from enemies
-	- random chests on map
-		- random shroom value
+	- ✅random chests on map
+		- ✅random shroom value
 		- display above player head "5x'Shr0om Icon'"
 
 ### Escape menu
-- show amount of shrooms
-- leave game
-- log-out
-- delete account
+- take you to /profile
+  - add play button tp profile 
+  - should have shop redirect
+  - log out
+-  show amount of shrooms
+- ✅ leave game
+- ✅ log-out
+- ✅ delete account
 
 ### Inventory
 - potions for temp buffs
@@ -66,6 +72,8 @@
 	- potions || other items
 - maybe change Class
 
+## SOCKET IO
+- get players on same screen 
 
 
 

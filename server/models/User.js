@@ -1,6 +1,8 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
 
+const itemSchema = require('./Item');
+
 const userSchema = new Schema(
   {
     username: {
@@ -24,14 +26,8 @@ const userSchema = new Schema(
     },
     inventory: [
       {
-        _id: {
-          type: Schema.Types.ObjectId,
-          ref: 'Item'
-        },
-        quantity: {
-          type: Number,
-          default: 0
-        }
+        type: Schema.Types.ObjectId,
+        ref: 'Item'
       }
     ]
   },
@@ -55,6 +51,18 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.isCorrectPassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
+
+userSchema.virtual('healthPotions').get(function () {
+  return this.inventory.filter((item) => item.name === 'health').length;
+});
+
+userSchema.virtual('attackPotions').get(function () {
+  return this.inventory.filter((item) => item.name === 'attack').length;
+});
+
+userSchema.virtual('defensePotions').get(function () {
+  return this.inventory.filter((item) => item.name === 'defense').length;
+});
 
 const User = model('User', userSchema);
 

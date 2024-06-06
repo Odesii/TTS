@@ -7,7 +7,7 @@ const resolvers = {
   Query:{
     myProfile: async (parent, _, context) => {
       if(context.user) {
-        const user = await User.findById({ _id: context.user._id });
+        const user = await User.findById({ _id: context.user._id }).populate('inventory');
         console.log('this is user', user);
         return user;
       } else {
@@ -65,7 +65,25 @@ const resolvers = {
       const user = await User.findOneAndDelete({ _id: context.user._id });
 
       return user;
-    }
+    },
+    // updateShrooms: async (parent, { shrooms }, context) => {
+    //   const user = await User.findOneAndUpdate(
+    //     { _id: context.user._id },
+    //     { shrooms: shrooms },
+    //     { new: true }
+    //   );
+
+    //   return user;
+    // },
+    // updateInventory: async (parent, { items }, context) => {
+    //   const user = await User.findOneAndUpdate(
+    //     { _id: context.user._id },
+    //     { shrooms: shrooms },
+    //     { new: true }
+    //   );
+
+    //   return user;
+    // },
   }
 }
 

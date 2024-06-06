@@ -27,6 +27,7 @@ export class WorldScene extends Phaser.Scene {
         this.load.spritesheet('RogueWalk', RoguePath, { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('RogueIdle', RogueIdle, { frameWidth: 32, frameHeight: 32 });
         this.load.spritesheet('RogueAttack', RogueAtt, { frameWidth: 32, frameHeight: 32 });
+        this.load.spritesheet('RogueDie', 'assets/character/Rogue/RogueDie.png', { frameWidth: 32, frameHeight: 32 });
 
         // ENEMY
         this.load.spritesheet('ShroomJump', 'assets/enemy/Jump.png', { frameWidth: 32, frameHeight: 32 });
@@ -36,7 +37,7 @@ export class WorldScene extends Phaser.Scene {
             
         this.load.image('settings-button', 'assets/icons/flatDark30.png');
         this.load.image('ui-panel', 'assets/textures/tile_0048.png');
-        this.load.image('exit-button', 'assets/icons/red_button00.png')
+        this.load.image('exit-button', 'assets/icons/red_button00.png');
     }
 
     create() {

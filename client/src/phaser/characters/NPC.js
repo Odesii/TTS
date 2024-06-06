@@ -109,14 +109,16 @@ export class NPC {
         if (this.attackCooldown) {
             return;
         }
-        // this.sprite.anims.stop();
         this.sprite.setVelocity(0, 0);
-        this.sprite.anims.play('shroom_attack', true);
+    
         // Show and tint the attack range
         this.attackRangeGraphics.clear();
         this.attackRangeGraphics.fillCircle(this.sprite.x, this.sprite.y, this.attackRange);
         this.attackRangeGraphics.setVisible(true);
-
+    
+        // Reset player hit flag at the start of the attack
+        this.playerHit = false;
+    
         this.scene.time.addEvent({
             delay: this.attackDelay, // specify the delay time in milliseconds
             callback: () => {
@@ -124,14 +126,17 @@ export class NPC {
                     this.sprite.x, this.sprite.y,
                     this.scene.player.sprite.x, this.scene.player.sprite.y
                 );
-        
-                if (distanceToPlayer <= this.attackRange) {
+    
+                // Check if the player is within attack range and hasn't been hit yet
+                if (distanceToPlayer <= this.attackRange && !this.playerHit) {
                     this.scene.player.takeDamage(this.damage);
+                    // Set the flag to true to prevent multiple hits
+                    this.playerHit = true;
                 }
-
+    
                 // Hide the attack range after the attack
                 this.attackRangeGraphics.setVisible(false);
-        
+    
                 this.attackCooldown = true;
                 this.scene.time.addEvent({
                     delay: this.cooldownTime,
@@ -147,6 +152,11 @@ export class NPC {
 
     update(time, delta) {
         if (this.isDead) {
+            return;
+        }
+
+        if(this.scene.player.isDead) {
+            this.sprite.setVelocity(0, 0);
             return;
         }
 

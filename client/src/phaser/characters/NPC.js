@@ -2,41 +2,38 @@ import Phaser from 'phaser';
 
 export class NPC {
     constructor(scene, damage) {
-        this.scene = scene; // Store the scene reference
+        this.scene = scene;
 
-        // Create the sprite and assign it to a class property
         this.sprite = scene.matter.add.sprite(32, 32, 'ShroomJump', null, { 
             label: 'enemy',
-            frictionAir: 0.1, // Increase air friction to slow down the sprite
-            mass: 5, // Increase mass to reduce being pushed
-            shape: {
-            type: 'circle', 
-            radius: 8,
-        }
+            frictionAir: 0.1,
+            mass: 5,
+            shape: { type: 'circle', radius: 8 }
         });
         this.sprite.gameObject = this;
-        this.sprite.setFixedRotation(); // Prevent rotation
-        this.damage = damage;
+        this.sprite.setFixedRotation();
+        this.damage = 5;
 
-        // Create animations
         this.createAnimations(scene);
 
-        this.aggroRange = 125; // Radius within which NPC detects the player
+        this.aggroRange = 125;
         this.isAggro = false;
-        this.attackRange = 20; // Radius within which NPC attacks the player
+        this.attackRange = 12;
 
         this.sprite.anims.play('enemy_jump', true);
 
-        // Set up movement properties
-        this.movementSpeed = 0.2; // Movement speed
+        this.movementSpeed = 0.2;
 
-        // Initialize other properties
-        this.health = 100; // Initialize health
-        this.hitDuringAttack = false; // Flag to check if hit during the current attack
-        this.isDead = false; // Flag to check if the NPC is dead
+        this.health = 100;
+        this.hitDuringAttack = false;
+        this.isDead = false;
 
-        this.attackCooldown = false; // Flag for attack cooldown
-        this.cooldownTime = 1000; // Cooldown time in milliseconds
+        this.attackCooldown = false;
+        this.cooldownTime = 1000;
+        this.attackDelay = 1000;
+
+        this.attackRangeGraphics = scene.add.graphics({ fillStyle: { color: 0xff0000, alpha: 0.5 } });
+        this.attackRangeGraphics.setVisible(false);
     }
 
     createAnimations(scene) {
@@ -71,7 +68,7 @@ export class NPC {
             repeat: 0
         });
         scene.anims.create({
-            key: 'shroom_attack_right',
+            key: 'shroom_attack',
             frames: scene.anims.generateFrameNumbers('ShroomAttack', { start: 0, end: 16 }),
             frameRate: 12,
             repeat: 0
@@ -80,65 +77,61 @@ export class NPC {
 
     takeDamage(amount) {
         if (this.hitDuringAttack) {
-            return; // Already hit during this attack, do nothing
+            return;
         }
-        this.sprite.anims.play('shroom_dmg_right', true); // Play the hit animation
-        this.hitDuringAttack = true; // Set the flag
+        this.sprite.anims.play('shroom_dmg_right', true);
+        this.hitDuringAttack = true;
         this.health -= amount;
-        // console.log(`NPC health: ${this.health}`);
         if (this.health <= 0) {
             this.die();
         }
-        this.isHit = true; // Set the flag to indicate the sprite is hit
-        this.sprite.setVelocity(0, 0); // Stop the sprite from moving
+        this.isHit = true;
+        this.sprite.setVelocity(0, 0);
     }
 
     resetHitFlag() {
-        this.hitDuringAttack = false; // Reset the flag
-        this.isHit = false; // Reset the flag
+        this.hitDuringAttack = false;
+        this.isHit = false;
     }
 
     die() {
         this.isDead = true;
         this.sprite.body.isSensor = true;
-        console.log('NPC died');
-        // Stop any current animations and play the die animation
         this.sprite.anims.play('shroom_die', true);
-
-        // Listen for the animation complete event on the scene's anims
-        this.scene.anims.on('animationcomplete', (animation, frame, sprite) => {
-            // Check if the animation that completed is the die animation and if it is this sprite
-            if (animation.key === 'shroom_die' && sprite === this.sprite) {
-                // Pause the animation on the last frame
+        this.sprite.once('animationcomplete', () => {
+            if (this.sprite.anims.currentAnim.key === 'shroom_die') {
                 this.sprite.anims.pause(this.sprite.anims.currentAnim.frames[this.sprite.anims.currentAnim.frames.length - 1]);
-                
             }
         });
     }
 
     attack() {
         if (this.attackCooldown) {
-            return; // If the attack is on cooldown, do nothing
+            return;
         }
+        // this.sprite.anims.stop();
+        this.sprite.setVelocity(0, 0);
+        this.sprite.anims.play('shroom_attack', true);
+        // Show and tint the attack range
+        this.attackRangeGraphics.clear();
+        this.attackRangeGraphics.fillCircle(this.sprite.x, this.sprite.y, this.attackRange);
+        this.attackRangeGraphics.setVisible(true);
 
-        // Perform attack logic here
-        this.sprite.anims.play('shroom_attack_right', true);
-        
-        // Listen for the animation complete event to deal damage and trigger effects
-        this.scene.anims.once('animationcomplete', (animation, frame, sprite) => {
-            console.log('Shroom attacks!');
-            if (animation.key === 'shroom_attack_right' && sprite === this.sprite) {
-                // Deal AoE damage to the player if within range
+        this.scene.time.addEvent({
+            delay: this.attackDelay, // specify the delay time in milliseconds
+            callback: () => {
                 const distanceToPlayer = Phaser.Math.Distance.Between(
                     this.sprite.x, this.sprite.y,
                     this.scene.player.sprite.x, this.scene.player.sprite.y
                 );
-
+        
                 if (distanceToPlayer <= this.attackRange) {
                     this.scene.player.takeDamage(this.damage);
                 }
 
-                // Set attackCooldown to true and start a timer to reset it
+                // Hide the attack range after the attack
+                this.attackRangeGraphics.setVisible(false);
+        
                 this.attackCooldown = true;
                 this.scene.time.addEvent({
                     delay: this.cooldownTime,
@@ -147,10 +140,10 @@ export class NPC {
                     },
                     callbackScope: this
                 });
-            }
+            },
+            callbackScope: this
         });
     }
-
 
     update(time, delta) {
         if (this.isDead) {
@@ -158,14 +151,12 @@ export class NPC {
         }
 
         if (this.isHit) {
-            // Wait for the hit animation to complete before resuming movement
             if (this.sprite.anims.currentAnim.isCompleted) {
                 this.resetHitFlag();
             }
             return;
         }
 
-        // Check if the player is within the aggro range
         const distanceToPlayer = Phaser.Math.Distance.Between(
             this.sprite.x, this.sprite.y,
             this.scene.player.sprite.x, this.scene.player.sprite.y
@@ -178,7 +169,6 @@ export class NPC {
         }
 
         if (this.isAggro) {
-            // Move towards the player
             const direction = Phaser.Physics.Matter.Matter.Vector.normalise(
                 Phaser.Physics.Matter.Matter.Vector.sub(
                     this.scene.player.sprite.body.position,
@@ -188,21 +178,23 @@ export class NPC {
             const velocity = Phaser.Physics.Matter.Matter.Vector.mult(direction, this.movementSpeed);
             this.sprite.setVelocity(velocity.x, velocity.y);
         } else {
-            this.sprite.setVelocity(0, 0); // Stop movement if not aggroed
+            this.sprite.setVelocity(0, 0);
         }
 
-        // Ensure the sprite does not rotate
         this.sprite.setAngle(0);
         this.sprite.setAngularVelocity(0);
 
-        // Determine direction and play appropriate animation
         if (this.sprite.body.velocity.x > 0) {
-            this.sprite.anims.play('enemy_jump', true); // Moving right
+            if (this.sprite.anims.currentAnim.key !== 'enemy_jump') {
+                this.sprite.anims.play('enemy_jump', true);
+            }
         } else if (this.sprite.body.velocity.x < 0) {
-            this.sprite.anims.play('enemy_jump_left', true); // Moving left
+            if (this.sprite.anims.currentAnim.key !== 'enemy_jump_left') {
+                this.sprite.anims.play('enemy_jump_left', true);
+            }
         }
 
-        // Check if the player is within attack range and initiate attack
+
         if (distanceToPlayer < this.attackRange && this.attackCooldown === false) {
             this.attack();
         }

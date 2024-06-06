@@ -4,6 +4,7 @@ import { HealthBar } from '../../UI/healthbars';
 export class Player {
     constructor(scene) {
         this.scene = scene; // Store the scene reference
+        this.mushrooms = 0; // Initialize mushroom count
 
         this.healthBar = new HealthBar(scene, 96, 0, 40, 5);
         // Create the sprite and assign it to a class property
@@ -17,7 +18,6 @@ export class Player {
             },
         });
         this.sprite.setFixedRotation(); // Prevent rotation
-
         // Create an attack hitbox
         this.attackHitbox = scene.matter.add.rectangle(32, 32, 20, 20,{
             label: 'Hitbox',
@@ -173,13 +173,25 @@ export class Player {
             this.die();
         }
     }
-
-    die() {
-        console.log('Player died');
-        this.sprite.anims.stop();
-        this.sprite.setVelocity(0, 0);
-        this.sprite.anims.play('die', true);
+    collectMushrooms(amount) {
+      this.mushrooms += amount;
+      console.log(`Collected ${amount} mushrooms. Total: ${this.mushrooms}`);
+  
+      // Send the update to the server
+      // this.updateMushroomsOnServer(amount);
     }
+
+    
+    // async updateMushroomsOnServer(amount) {
+    //   const playerID= context.User._id
+    //   }
+      
+      die() {
+          console.log('Player died');
+          this.sprite.anims.stop();
+          this.sprite.setVelocity(0, 0);
+          this.sprite.anims.play('die', true);
+      }
 
     update() {
         if (this.isAttacking) {

@@ -16,5 +16,7 @@ export class Chest {
     // Define what happens when the chest is opened
     console.log('Chest opened!');
     this.sprite.play('chest_open');
+    const mushroomCount=Phaser.Math.Between(1,5);
+    this.scene.player.collectMushrooms(mushroomCount);
 }
 }

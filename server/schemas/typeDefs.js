@@ -22,6 +22,7 @@ const typeDefs =`
 
   type Query {
     myProfile: User
+    stockShop: [Item]
   }
 
   type Mutation {

@@ -9,3 +9,14 @@ export const GET_USER = gql`
     }
   }
 `;
+
+export const GET_ITEMS = gql`
+  {
+    stockShop {
+      _id
+      name
+      effect
+      image
+    }
+  }
+`;

@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Item } = require('../models');
 // import sign token function from auth
 const { signToken, AuthenticationError } = require('../utils/auth');
 const bcrypt = require('bcrypt');
@@ -10,6 +10,15 @@ const resolvers = {
         const user = await User.findById({ _id: context.user._id }).populate('inventory');
         console.log('this is user', user);
         return user;
+      } else {
+        throw AuthenticationError;
+      }
+    },
+    stockShop: async (parent, _, context) => {
+      if(context.user) {
+        const items = await Item.find();
+
+        return items;
       } else {
         throw AuthenticationError;
       }

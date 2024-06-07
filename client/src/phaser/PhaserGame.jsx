@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import StartGame from './main';
 import { EventBus } from './EventBus';
+import Auth from '../utils/auth';
 
 export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }, ref)
 {
@@ -51,8 +52,21 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
         
     }, [currentActiveScene, ref])
 
+    function redirect() {
+        window.location.replace('/login');
+    }
+
     return (
-        <div className='container' id="game-container"></div>
+        <>
+            {Auth.loggedIn() ? (
+                <div className='container' id="game-container"></div>
+            ) : (
+                <>
+                    <h2>You must be logged in to view this page.</h2>
+                    {redirect()}
+                </>
+            )}
+        </>
     );
 
 });

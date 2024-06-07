@@ -8,6 +8,7 @@ import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
 import Profile from './components/Profile';
+import Shop from './components/Shop';
 import { PhaserGame } from './phaser/PhaserGame'
 
 const router = createBrowserRouter([
@@ -28,6 +29,9 @@ const router = createBrowserRouter([
       }, {
         path: '/profile',
         element: <Profile />
+      }, {
+        path: '/shop',
+        element: <Shop />
       }, {
         path: '/play',
         element: <PhaserGame />

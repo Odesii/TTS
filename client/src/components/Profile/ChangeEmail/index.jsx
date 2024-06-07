@@ -36,7 +36,7 @@ function ChangeEmail() {
                     variables: { ...formState },
                 });
           
-                if (!data.ok) {
+                if (!data) {
                     throw new Error('something went wrong!');
                 }
             } catch (e) {

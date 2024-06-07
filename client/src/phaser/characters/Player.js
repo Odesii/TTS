@@ -49,7 +49,8 @@ export class Player {
         this.isAttacking = false;
         this.attackCooldown = 0;
         this.attackCooldownTime = 100; // Cooldown time in milliseconds
-
+        this.attackRange = 20;
+        this.damage = 20;
         // Store mouse position
         this.mouseX = 0;
         this.mouseY = 0;
@@ -165,8 +166,28 @@ export class Player {
             y: this.sprite.y + offsetY
         });
         this.attackHitbox.render.visible = true;//DEBUG to display box on attack
+
+
+        this.scene.enemies.forEach(enemy => { 
+            
+            const distanceToEnemy = Phaser.Math.Distance.Between(
+                this.attackHitbox.position.x, this.attackHitbox.position.y,
+                enemy.x, enemy.y
+            );
+            const npc = enemy.getData('npcInstance');
+            console.log('PLAYER-LOOKING-HIT',distanceToEnemy<=this.attackRange);
+            // Check if the player is within attack range and hasn't been hit yet
+            if (distanceToEnemy <= this.attackRange) {
+                npc.takeDamage(this.damage);
+                // Set the flag to true to prevent multiple hits
+            }
+            
+        });
+
+
     
         this.scene.time.addEvent({
+
             delay: 100,
             callback: () => {
                 this.attackHitbox.render.visible = false;//hides attack hitbox

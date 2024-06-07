@@ -60,8 +60,8 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
         <>
             {Auth.loggedIn() ? (
                 <>
-                <div className='container' id="game-container"></div>
-                <div>{JSON.stringify(Auth.getProfile())}</div>
+                    <div className='container' id="game-container"></div>
+                    <div>{JSON.stringify(Auth.getProfile())}</div>
                 </>
             ) : (
                 <>

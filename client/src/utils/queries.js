@@ -24,3 +24,17 @@ export const GET_ITEMS = gql`
     }
   }
 `;
+
+export const GET_PLAYER = gql`
+  query getPlayer($playerId: ID!) {
+    getPlayer(playerId: $playerId) {
+      _id
+      username
+      email
+      shrooms
+      inventory {
+        _id
+      }
+    }
+  }
+`;

@@ -23,6 +23,7 @@ const typeDefs =`
   type Query {
     myProfile: User
     stockShop: [Item]
+    getPlayer(playerId: ID!): User
   }
 
   type Mutation {

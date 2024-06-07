@@ -1,15 +1,26 @@
 import Phaser from "phaser";
-// import { testHook } from './testHook';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { GET_PLAYER, GET_ITEMS } from '../../utils/queries'
+import  Auth  from '../../utils/auth';
+
+const client = new ApolloClient({
+    link: new HttpLink({ uri: 'http://localhost:3000/graphql' }), // Your GraphQL endpoint
+    cache: new InMemoryCache(),
+});
+
+console.log(Auth.getProfile())
 
 export class InventoryScene extends Phaser.Scene {
     container;
 
     constructor() {
         super('inventory-menu');
+
+        this.id = Auth.getProfile().data._id;
     }
 
     preload() {
-        
+        this.player = this.loadUser();
     }
 
     create() {
@@ -100,8 +111,20 @@ export class InventoryScene extends Phaser.Scene {
             })
     }
 
-    loadUser() {
-        console.log(this.userData);
+    async loadUser() {
+        console.log(client.query);
+        try {
+            console.log(Auth.getProfile());
+            let result = await client.query({
+                query: GET_PLAYER,
+                variables: { 
+                    playerId: this.id
+                },
+            });
+            console.log('user:', result);
+        } catch (error) {
+            console.error('Unexpected error occurred:', error);
+        }
     }
 
     loadHealthPotions() {

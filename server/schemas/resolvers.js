@@ -6,6 +6,8 @@ const bcrypt = require('bcrypt');
 const resolvers = {
   Query:{
     myProfile: async (parent, _, context) => {
+      console.log("context:", context);
+      console.log("context user:", context.user)
       if(context.user) {
         const user = await User.findById({ _id: context.user._id }).populate('inventory');
         console.log('this is user', user);
@@ -22,7 +24,12 @@ const resolvers = {
       } else {
         throw AuthenticationError;
       }
-    }
+    },
+    getPlayer: async (parent, { playerId }, context) => {
+      const user = await User.findById({ _id: playerId }).populate('inventory');
+      console.log('this is user', user);
+      return user;
+    },
   },
   Mutation:{
     createUser: async (parent, { username, email, password }) => {

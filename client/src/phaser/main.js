@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { WorldScene } from './scenes/worldScene.js';
 import { MenuScene } from './scenes/menuScene.js';
 import { Plugin as NineSlicePlugin } from 'phaser3-nineslice';
+import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
+
 
 const config = {
     type: Phaser.AUTO,
@@ -14,7 +16,14 @@ const config = {
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     plugins: {
-        global: [NineSlicePlugin.DefaultCfg]
+        global: [NineSlicePlugin.DefaultCfg],
+        scene: [
+            {
+                plugin: PhaserMatterCollisionPlugin,
+                key: 'matterCollision',
+                mapping: 'matterCollision'
+            }
+        ]
     },
     physics: {
         default: 'matter',
@@ -22,11 +31,9 @@ const config = {
             enableSleep: true,
             gravity: { y: 0 },
             debug: true,
-            // sleepThreshold: 60, // Amount of time in milliseconds before a body is considered for sleep
-            // sleepCounter: 1, // How long (in simulation steps) a body must be inactive before it can go to sleep
-            // sleepEvents: true, // Emit sleep and wake events
-
-            
+            sleepThreshold: 60, // Amount of time in milliseconds before a body is considered for sleep
+            sleepCounter: 1, // How long (in simulation steps) a body must be inactive before it can go to sleep
+            sleepEvents: true, // Emit sleep and wake events
         }
     },
     pixelArt: true,

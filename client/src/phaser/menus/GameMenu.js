@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import socket from '../../utils/socket.js';
 
 export default class GameMenu {
     scene;
@@ -87,6 +88,8 @@ export default class GameMenu {
     }
 
     exitGame() {
+
+        socket.disconnect();
         window.location.replace('/profile');
     }
 }

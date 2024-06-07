@@ -1,5 +1,13 @@
 import Phaser from 'phaser';
 import { HealthBar } from '../../UI/healthbars';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { UPDATE_SHROOMS } from '../../utils/mutations'
+
+
+const client = new ApolloClient({
+    link: new HttpLink({ uri: 'http://localhost:3001/graphql' }), // Your GraphQL endpoint
+    cache: new InMemoryCache(),
+  });
 
 export class Player {
     constructor(scene) {
@@ -10,8 +18,6 @@ export class Player {
         // Create the sprite and assign it to a class property
         this.sprite = scene.matter.add.sprite(32, 32, 'RogueWalk', 'Rougewalk.png', {
             label: 'player',
-            frictionAir: 0.05, // Adjusted air friction for smoother movementd
-            mass: 5, // Adjust mass to control movement speed
             shape: {
                 type: 'circle',
                 radius: 2.5,
@@ -61,7 +67,27 @@ export class Player {
 
         this.isDead = false;
         this.isTakingDamage = false;
+
+        this.graphQLClient = client;
     }
+
+
+
+    async updateMushroomsOnServer(amount) {
+        try {
+            const result = await this.graphQLClient.mutate({
+                mutation: UPDATE_SHROOMS,
+                variables: {
+                    shrooms: this.mushrooms,
+                },
+            });
+            console.log('Mushroom count updated:', result.data.updateShrooms.shrooms);
+        } catch (error) {
+                console.error('Unexpected error occurred:', error);
+            }
+        }
+    
+
 
     createAnimations(scene) {
         const anims = [
@@ -132,13 +158,13 @@ export class Player {
         }
     }
 
-    attack(targetX, targetY) {
-        if (this.isAttacking || this.attackCooldown > 0) {
+attack(targetX, targetY) {
+        if (this.isAttacking || this.attackCooldown > 0 || this.isDead || this.isTakingDamage) {
             return;
         }
     
         this.isAttacking = true;
-        this.sprite.anims.stop();
+        // this.sprite.anims.stop();
     
         const angle = Phaser.Math.Angle.Between(this.sprite.x, this.sprite.y, targetX, targetY);
         let attackAnimationKey;
@@ -175,11 +201,9 @@ export class Player {
                 enemy.x, enemy.y
             );
             const npc = enemy.getData('npcInstance');
-            console.log('PLAYER-LOOKING-HIT',distanceToEnemy<=this.attackRange);
             // Check if the player is within attack range and hasn't been hit yet
             if (distanceToEnemy <= this.attackRange) {
                 npc.takeDamage(this.damage);
-                // Set the flag to true to prevent multiple hits
             }
             
         });
@@ -204,7 +228,7 @@ export class Player {
     }
 
     takeDamage(amount) {
-        if (this.isTakingDamage || this.isDead) {
+        if (this.isTakingDamage || this.isDead || this.isAttacking) {
             return;
         }
 
@@ -224,7 +248,6 @@ export class Player {
     }
     collectMushrooms(amount) {
         this.mushrooms += amount;
-        console.log(`Collected ${amount} mushrooms. Total: ${this.mushrooms}`);
       
         // Define text style
         const textStyle = {
@@ -285,6 +308,7 @@ export class Player {
     }
 
     update() {
+        // if (this.isAttacking || this.isDead || this.isTakingDamage) {
         if (this.isAttacking || this.isDead || this.isTakingDamage) {
             return;
         }

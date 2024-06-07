@@ -6,6 +6,10 @@ export const GET_USER = gql`
       _id
       username
       email
+      shrooms
+      inventory {
+        _id
+      }
     }
   }
 `;
@@ -17,6 +21,20 @@ export const GET_ITEMS = gql`
       name
       effect
       image
+    }
+  }
+`;
+
+export const GET_PLAYER = gql`
+  query getPlayer($playerId: ID!) {
+    getPlayer(playerId: $playerId) {
+      _id
+      username
+      email
+      shrooms
+      inventory {
+        _id
+      }
     }
   }
 `;

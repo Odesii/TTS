@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { User, Item } = require('../models');
 // import sign token function from auth
 const { signToken, AuthenticationError } = require('../utils/auth');
@@ -6,6 +7,8 @@ const bcrypt = require('bcrypt');
 const resolvers = {
   Query:{
     myProfile: async (parent, _, context) => {
+      console.log("context:", context);
+      console.log("context user:", context.user)
       if(context.user) {
         const user = await User.findById({ _id: context.user._id }).populate('inventory');
         console.log('this is user', user);
@@ -15,14 +18,15 @@ const resolvers = {
       }
     },
     stockShop: async (parent, _, context) => {
-      if(context.user) {
-        const items = await Item.find();
+      const items = await Item.find();
 
-        return items;
-      } else {
-        throw AuthenticationError;
-      }
-    }
+      return items;
+    },
+    getPlayer: async (parent, { playerId }, context) => {
+      const user = await User.findById({ _id: playerId }).populate('inventory');
+      console.log('this is user', user);
+      return user;
+    },
   },
   Mutation:{
     createUser: async (parent, { username, email, password }) => {
@@ -100,12 +104,24 @@ const resolvers = {
 
       return user;
     },
-    removeFromInventory: async (parent, { itemId }, context) => {
-      const item = await Item.findById(itemId);
+    removeFromInventory: async (parent, { itemId, playerId }, context) => {
+      // const item = await Item.findById(itemId);
+      // console.log(item);
+      let index = 0;
 
-      const user = await User.findOneAndUpdate(
-        { _id: context.user._id },
-        { $pull: { inventory: item } },
+      const user = await User.findOne({ _id: playerId });
+
+      for (let i = 0; i < user.inventory.length; i++) {
+        if (user.inventory[i]._id.toString() === itemId) {
+          index = i;
+        }
+      }
+
+      const inventoryData = user.inventory.filter((item, i) => i !== index);
+
+      const userData = await User.findOneAndUpdate(
+        { _id: playerId },
+        { inventory: inventoryData },
         { new: true }
       );
 

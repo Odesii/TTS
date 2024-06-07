@@ -53,15 +53,15 @@ userSchema.methods.isCorrectPassword = async function (password) {
 };
 
 userSchema.virtual('healthPotions').get(function () {
-  return this.inventory.filter((item) => item.name === 'health').length;
+  return this.inventory.filter((item) => item.effect === 'health').length;
 });
 
 userSchema.virtual('attackPotions').get(function () {
-  return this.inventory.filter((item) => item.name === 'attack').length;
+  return this.inventory.filter((item) => item.effect === 'attack').length;
 });
 
 userSchema.virtual('defensePotions').get(function () {
-  return this.inventory.filter((item) => item.name === 'defense').length;
+  return this.inventory.filter((item) => item.effect === 'defense').length;
 });
 
 const User = model('User', userSchema);

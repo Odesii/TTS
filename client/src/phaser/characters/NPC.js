@@ -13,7 +13,8 @@ export class NPC {
         });
         this.sprite.gameObject = this;
         this.sprite.setFixedRotation();
-        this.damage = 5;
+        // this.damage = 5;
+        this.damage = Phaser.Math.Between(2,15);
 
         this.createAnimations(scene);
 

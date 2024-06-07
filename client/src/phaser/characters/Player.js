@@ -130,13 +130,13 @@ export class Player {
         }
     }
 
-    attack(targetX, targetY) {
-        if (this.isAttacking || this.attackCooldown > 0) {
+attack(targetX, targetY) {
+        if (this.isAttacking || this.attackCooldown > 0 || this.isDead || this.isTakingDamage) {
             return;
         }
     
         this.isAttacking = true;
-        this.sprite.anims.stop();
+        // this.sprite.anims.stop();
     
         const angle = Phaser.Math.Angle.Between(this.sprite.x, this.sprite.y, targetX, targetY);
         let attackAnimationKey;
@@ -176,7 +176,6 @@ export class Player {
             // Check if the player is within attack range and hasn't been hit yet
             if (distanceToEnemy <= this.attackRange) {
                 npc.takeDamage(this.damage);
-                // Set the flag to true to prevent multiple hits
             }
             
         });
@@ -201,7 +200,7 @@ export class Player {
     }
 
     takeDamage(amount) {
-        if (this.isTakingDamage || this.isDead) {
+        if (this.isTakingDamage || this.isDead || this.isAttacking) {
             return;
         }
 
@@ -281,6 +280,7 @@ export class Player {
     }
 
     update() {
+        // if (this.isAttacking || this.isDead || this.isTakingDamage) {
         if (this.isAttacking || this.isDead || this.isTakingDamage) {
             return;
         }

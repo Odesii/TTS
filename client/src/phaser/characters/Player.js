@@ -2,17 +2,18 @@ import Phaser from 'phaser';
 import { HealthBar } from '../../UI/healthbars';
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { UPDATE_SHROOMS } from '../../utils/mutations'
+import  Auth  from '../../utils/auth';
 
 
 const client = new ApolloClient({
-    link: new HttpLink({ uri: 'http://localhost:3001/graphql' }), // Your GraphQL endpoint
+    link: new HttpLink({ uri: 'http://localhost:3000/graphql' }), // Your GraphQL endpoint
     cache: new InMemoryCache(),
   });
 
+  console.log(Auth.getProfile())
 export class Player {
     constructor(scene) {
         this.scene = scene; // Store the scene reference
-        this.mushrooms = 0; // Initialize mushroom count
 
         this.healthBar = new HealthBar(scene, 96, 0, 40, 5);
         // Create the sprite and assign it to a class property
@@ -68,20 +69,23 @@ export class Player {
         this.isDead = false;
         this.isTakingDamage = false;
 
-        this.graphQLClient = client;
+        this.id = Auth.getProfile().data._id;
+
     }
 
 
 
     async updateMushroomsOnServer(amount) {
+        console.log(client.mutate)
         try {
-            const result = await this.graphQLClient.mutate({
+            let result = await client.mutate({
                 mutation: UPDATE_SHROOMS,
-                variables: {
-                    shrooms: this.mushrooms,
+                variables: { 
+                    shrooms: amount, 
+                    playerID: this.id
                 },
             });
-            console.log('Mushroom count updated:', result.data.updateShrooms.shrooms);
+            console.log('Mushroom count updated:', result);
         } catch (error) {
                 console.error('Unexpected error occurred:', error);
             }
@@ -247,8 +251,6 @@ attack(targetX, targetY) {
         this.healthBar.decrease(amount);
     }
     collectMushrooms(amount) {
-        this.mushrooms += amount;
-      
         // Define text style
         const textStyle = {
           font: "5px Arial",
@@ -279,7 +281,7 @@ attack(targetX, targetY) {
         });
       
         // Send the update to the server
-        // this.updateMushroomsOnServer(amount);
+        this.updateMushroomsOnServer(amount);
       }
       
 

@@ -17,9 +17,13 @@ export class InventoryScene extends Phaser.Scene {
         this.id = Auth.getProfile().data._id;
     }
 
-    preload() {
-        this.player = this.loadUser();
-        this.items = this.loadItems();
+    async preload() {
+        this.playerInventory = await this.loadUser();
+        this.items = await this.loadItems();
+
+        this.healthPotionQuantity = await this.loadHealthPotions();
+        this.attackPotionQuantity = await this.loadAttackPotions();
+        this.defensePotionQuantity = await this.loadDefensePotions();
     }
 
     create() {
@@ -119,6 +123,8 @@ export class InventoryScene extends Phaser.Scene {
                 },
             });
             console.log('user:', result);
+            console.log('user inventory: ', result.data.getPlayer.inventory);
+            return result.data.getPlayer.inventory;
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
@@ -127,25 +133,73 @@ export class InventoryScene extends Phaser.Scene {
     async loadItems() {
         try {
             let result = await client.query({
-                query: GET_ITEMS,
-                variables: {}
+                query: GET_ITEMS
             });
             console.log('items:', result);
+            return result.data.stockShop;
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
     }
 
     loadHealthPotions() {
+        let index = 0;
+        let quantity = 0;
 
+        for (let i = 0; i < this.items.length; i++) {
+            if (this.items[i].effect === "health") {
+                index = i;
+            }
+        }
+
+        for (let j = 0; j < this.playerInventory.length; j++) {
+            if (this.items[index]._id === this.playerInventory[j]._id) {
+                quantity = quantity + 1;
+            }
+        }
+        
+        console.log("health quantity: ", quantity);
+        return quantity;
     }
 
     loadAttackPotions() {
+        let index = 0;
+        let quantity = 0;
 
+        for (let i = 0; i < this.items.length; i++) {
+            if (this.items[i].effect === "attack") {
+                index = i;
+            }
+        }
+
+        for (let j = 0; j < this.playerInventory.length; j++) {
+            if (this.items[index]._id === this.playerInventory[j]._id) {
+                quantity = quantity + 1;
+            }
+        }
+        
+        console.log("attack quantity: ", quantity);
+        return quantity;
     }
 
     loadDefensePotions() {
+        let index = 0;
+        let quantity = 0;
 
+        for (let i = 0; i < this.items.length; i++) {
+            if (this.items[i].effect === "defense") {
+                index = i;
+            }
+        }
+
+        for (let j = 0; j < this.playerInventory.length; j++) {
+            if (this.items[index]._id === this.playerInventory[j]._id) {
+                quantity = quantity + 1;
+            }
+        }
+        
+        console.log("defense quantity: ", quantity);
+        return quantity;
     }
 }
 

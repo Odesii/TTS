@@ -36,7 +36,6 @@ const resolvers = {
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
-      console.log('userconsolelog', user);
       if (!user) {
         throw AuthenticationError;
       }
@@ -48,7 +47,6 @@ const resolvers = {
       }
   
       const token = signToken(user);
-      console.log('this is token', token);
       return { token, user };
     },
     changeEmail: async (parent, { email }, context) => {
@@ -84,7 +82,6 @@ const resolvers = {
         { _id: playerID }
       );
       const CurrentShrooms = Player.shrooms; 
-      console.log('this is player', Player);
         const user = await User.findOneAndUpdate(
           { _id: playerID },
           { shrooms: shrooms + CurrentShrooms},

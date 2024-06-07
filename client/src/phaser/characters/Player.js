@@ -76,7 +76,6 @@ export class Player {
 
 
     async updateMushroomsOnServer(amount) {
-        console.log(client.mutate)
         try {
             let result = await client.mutate({
                 mutation: UPDATE_SHROOMS,
@@ -85,7 +84,6 @@ export class Player {
                     playerID: this.id
                 },
             });
-            console.log('Mushroom count updated:', result);
         } catch (error) {
                 console.error('Unexpected error occurred:', error);
             }
@@ -266,7 +264,7 @@ attack(targetX, targetY) {
         
         // Set the origin to the center of the text
         text.setOrigin(0.5, 1);
-        text.setResolution(2);
+        text.setResolution(200);
         text.setScale(1.5);
         // Create a tween to animate the text
         this.scene.tweens.add({
@@ -310,12 +308,11 @@ attack(targetX, targetY) {
     }
 
     update() {
-        // if (this.isAttacking || this.isDead || this.isTakingDamage) {
         if (this.isAttacking || this.isDead || this.isTakingDamage) {
             return;
         }
     
-        const speed = 0.8;
+        const speed = 0.5;
         let velocityX = 0;
         let velocityY = 0;
     

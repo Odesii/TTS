@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { Mushroom } from '../loot/Mushroom';
 
 export class NPC {
     constructor(scene, damage) {
@@ -101,6 +102,7 @@ export class NPC {
         this.sprite.once('animationcomplete', () => {
             if (this.sprite.anims.currentAnim.key === 'shroom_die') {
                 this.sprite.anims.pause(this.sprite.anims.currentAnim.frames[this.sprite.anims.currentAnim.frames.length - 1]);
+                new Mushroom(this.scene, this.sprite.x, this.sprite.y);
             }
         });
     }

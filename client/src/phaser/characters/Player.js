@@ -76,7 +76,6 @@ export class Player {
 
 
     async updateMushroomsOnServer(amount) {
-        console.log(client.mutate)
         try {
             let result = await client.mutate({
                 mutation: UPDATE_SHROOMS,

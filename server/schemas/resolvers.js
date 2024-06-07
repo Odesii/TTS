@@ -80,7 +80,6 @@ const resolvers = {
         { _id: playerID }
       );
       const CurrentShrooms = Player.shrooms; 
-      console.log('this is player', Player);
         const user = await User.findOneAndUpdate(
           { _id: playerID },
           { shrooms: shrooms + CurrentShrooms},

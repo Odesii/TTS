@@ -223,12 +223,40 @@ export class Player {
         this.healthBar.decrease(amount);
     }
     collectMushrooms(amount) {
-      this.mushrooms += amount;
-      console.log(`Collected ${amount} mushrooms. Total: ${this.mushrooms}`);
-  
-      // Send the update to the server
-      // this.updateMushroomsOnServer(amount);
-    }
+        this.mushrooms += amount;
+        console.log(`Collected ${amount} mushrooms. Total: ${this.mushrooms}`);
+      
+        // Define text style
+        const textStyle = {
+          font: "16px Arial",
+          fill: "#ffffff",
+          stroke: "#000000",
+          strokeThickness: 4,
+          align: 'center'
+        };
+      
+        // Create the text object
+        const text = this.scene.add.text(this.sprite.x, this.sprite.y - 20, `+${amount} Shrooms`, textStyle);
+        
+        // Set the origin to the center of the text
+        text.setOrigin(0.5, 1);
+      
+        // Create a tween to animate the text
+        this.scene.tweens.add({
+          targets: text,
+          y: text.y - 30, // Move the text up by 30 pixels
+          alpha: 0,       // Fade out the text
+          duration: 1000, // Duration of the tween in milliseconds
+          ease: 'Power1',
+          onComplete: () => {
+            text.destroy(); // Destroy the text object after the tween completes
+          }
+        });
+      
+        // Send the update to the server
+        // this.updateMushroomsOnServer(amount);
+      }
+      
 
     
       
@@ -249,7 +277,7 @@ export class Player {
                 this.sprite.setActive(false);
                 this.sprite.setVisible(false);
 
-                window.location.replace('/');
+                window.location.replace('/profile');
             }
         }, this);
     }

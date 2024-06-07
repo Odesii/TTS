@@ -87,6 +87,6 @@ export default class GameMenu {
     }
 
     exitGame() {
-        window.location.replace('/');
+        window.location.replace('/profile');
     }
 }

@@ -16,7 +16,7 @@
 - ✅give player HP
 - ✅health bar
   - STYLE it
-- take damage animation
+- ✅ take damage animation
 - projectiles
 - ✅give player death state
 - adjust attack
@@ -42,7 +42,9 @@
 - ✅and set so camera can't go past the bounds
 
 ### LOOT
--!CHests !work!!!! !need to edit tile sheet for anims
+- !CHests !work!!!! !need to edit tile sheet for anims
+- adjust range on pick up
+- make it only interactive once 
 - Shrooms
 	- drops from enemies
 	- ✅random chests on map

@@ -59,6 +59,7 @@ export class Player {
         this.currentDirection = 'down';
 
         this.isDead = false;
+        this.isTakingDamage = false;
     }
 
     createAnimations(scene) {
@@ -108,6 +109,12 @@ export class Player {
         scene.anims.create({
             key: 'die',
             frames: scene.anims.generateFrameNumbers('RogueDie', { start: 0, end: 25 }),
+            frameRate: 12,
+            repeat: 0
+        });
+        scene.anims.create({
+            key: 'dmg',
+            frames: scene.anims.generateFrameNumbers('RogueDmg', { start: 0, end: 3 }),
             frameRate: 12,
             repeat: 0
         });
@@ -176,10 +183,23 @@ export class Player {
     }
 
     takeDamage(amount) {
-        this.healthBar.decrease(amount);
-        if (this.healthBar.currentHealth <= 0) {
-            this.die();
+        if (this.isTakingDamage || this.isDead) {
+            return;
         }
+
+        this.isTakingDamage = true;
+        this.sprite.anims.play('dmg', true);
+
+        this.sprite.once('animationcomplete', (animation) => {
+            if (animation.key === 'dmg') {
+                this.isTakingDamage = false;
+                if (this.healthBar.currentHealth <= 0) {
+                    this.die();
+                }
+            }
+        }, this);
+
+        this.healthBar.decrease(amount);
     }
     collectMushrooms(amount) {
       this.mushrooms += amount;
@@ -214,11 +234,7 @@ export class Player {
     }
 
     update() {
-        if (this.isAttacking) {
-            return;
-        }
-
-        if (this.isDead) {
+        if (this.isAttacking || this.isDead || this.isTakingDamage) {
             return;
         }
     

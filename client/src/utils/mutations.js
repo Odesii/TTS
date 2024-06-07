@@ -71,8 +71,8 @@ export const ADD_TO_INVENTORY = gql`
 `;
 
 export const REMOVE_FROM_INVENTORY = gql`
-  mutation removeFromInventory($itemId: ID!) {
-    removeFromInventory(itemId: $itemId) {
+  mutation removeFromInventory($itemId: ID!, $playerId: ID) {
+    removeFromInventory(itemId: $itemId, playerId: $playerId) {
       inventory {
         _id
       }

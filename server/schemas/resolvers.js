@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { User, Item } = require('../models');
 // import sign token function from auth
 const { signToken, AuthenticationError } = require('../utils/auth');
@@ -103,12 +104,24 @@ const resolvers = {
 
       return user;
     },
-    removeFromInventory: async (parent, { itemId }, context) => {
-      const item = await Item.findById(itemId);
+    removeFromInventory: async (parent, { itemId, playerId }, context) => {
+      // const item = await Item.findById(itemId);
+      // console.log(item);
+      let index = 0;
 
-      const user = await User.findOneAndUpdate(
-        { _id: context.user._id },
-        { $pull: { inventory: item } },
+      const user = await User.findOne({ _id: playerId });
+
+      for (let i = 0; i < user.inventory.length; i++) {
+        if (user.inventory[i]._id.toString() === itemId) {
+          index = i;
+        }
+      }
+
+      const inventoryData = user.inventory.filter((item, i) => i !== index);
+
+      const userData = await User.findOneAndUpdate(
+        { _id: playerId },
+        { inventory: inventoryData },
         { new: true }
       );
 

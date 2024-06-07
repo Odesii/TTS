@@ -34,7 +34,7 @@ const typeDefs =`
     deleteAccount(_id: ID!): User
     updateShrooms(shrooms: Int!, playerID: ID): User
     addToInventory(itemId: ID!): User
-    removeFromInventory(itemId: ID!): User
+    removeFromInventory(itemId: ID!, playerId: ID): User
   }
 `;
 

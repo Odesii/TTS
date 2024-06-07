@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { GET_PLAYER, GET_ITEMS } from '../../utils/queries'
+import { REMOVE_FROM_INVENTORY } from "../../utils/mutations";
 import  Auth  from '../../utils/auth';
 
 const client = new ApolloClient({
@@ -71,7 +72,7 @@ export class InventoryScene extends Phaser.Scene {
             this.container.add(healthPotionQuantityText);
             this.container.add(attackPotionQuantityText);
             this.container.add(defensePotionQuantityText);
-        }, 250)
+        }, 500)
 
         this.container.add(panel);
         this.container.add(healthPotionButton);
@@ -93,6 +94,8 @@ export class InventoryScene extends Phaser.Scene {
             })
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
                 healthPotionButton.setTint(0xffffff);
+
+                this.updateHealthPotions();
             })
 
             attackPotionButton.setInteractive()
@@ -212,6 +215,36 @@ export class InventoryScene extends Phaser.Scene {
         
         console.log("defense quantity: ", quantity);
         return quantity;
+    }
+
+    async updateHealthPotions() {
+        if (this.healthPotionQuantity === 0) {
+            return;
+        }
+
+        let itemId;
+        
+        for (let i = 0; i < this.items.length; i++) {
+            if (this.items[i].effect === "health") {
+                itemId = this.items[i]._id;
+            }
+        }
+        
+        try {
+            let result = await client.mutate({
+                mutation: REMOVE_FROM_INVENTORY,
+                variables: { 
+                    itemId: itemId,
+                    playerId: this.id
+                },
+            });
+            console.log('user:', result);
+            console.log('user inventory: ', result.data.getPlayer.inventory);
+            return result.data.getPlayer.inventory;
+        } catch (error) {
+            console.error('Unexpected error occurred:', error);
+        }
+        console.log(this.healthPotionQuantity);
     }
 }
 

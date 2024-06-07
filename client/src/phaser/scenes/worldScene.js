@@ -172,7 +172,7 @@ export class WorldScene extends Phaser.Scene {
     // Add the player to the scene
     this.matter.world.add(this.player.sprite.body);
 
-this.shroomCount = 10;
+this.shroomCount = 100;
     // Group of NPCs (enemies)
     this.enemies = [];
 

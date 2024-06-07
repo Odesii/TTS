@@ -228,19 +228,21 @@ export class Player {
       
         // Define text style
         const textStyle = {
-          font: "16px Arial",
+          font: "5px Arial",
           fill: "#ffffff",
           stroke: "#000000",
-          strokeThickness: 4,
+          strokeThickness: 1,
           align: 'center'
         };
       
         // Create the text object
         const text = this.scene.add.text(this.sprite.x, this.sprite.y - 20, `+${amount} Shrooms`, textStyle);
+
         
         // Set the origin to the center of the text
         text.setOrigin(0.5, 1);
-      
+        text.setResolution(2);
+        text.setScale(1.5);
         // Create a tween to animate the text
         this.scene.tweens.add({
           targets: text,

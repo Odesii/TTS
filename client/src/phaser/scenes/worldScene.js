@@ -6,8 +6,9 @@ import { NPC } from "../characters/NPC.js";
 import { HealthBar } from "../../UI/healthbars.js";
 import { Chest } from "../loot/Chest.js";
 import { Mushroom } from "../loot/Mushroom.js";
+import { Zone } from "../objects/zone.js";
 import socket from '../../utils/socket.js';
-// import { useMutation } from '@apollo/client'
+
 
 
 
@@ -124,16 +125,18 @@ export class WorldScene extends Phaser.Scene {
     this.matter.world.convertTilemapLayer(this.doorLayer);
 
 
-    // Add the collision plugin to the scene
+
+    // Add the zone object
+    this.zone = new Zone(this);
+
 
     // Create the player
     // this.player = new Player(this, 100);
        // Add the player to the scene
        this.players = {};
-       this.player = new Player(this, 100); // Assuming 100 is the initial health or some parameter
+       this.player = new Player(this); 
        this.players[socket.id] = this.player;
    
-       // Notify the server about the new player
        socket.emit('newPlayer', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
        socket.emit('playerMovement', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
 
@@ -163,7 +166,7 @@ export class WorldScene extends Phaser.Scene {
     // Add the player to the scene
     this.matter.world.add(this.player.sprite.body);
 
-
+this.shroomCount = 10;
     // Group of NPCs (enemies)
     this.enemies = [];
 
@@ -177,7 +180,7 @@ export class WorldScene extends Phaser.Scene {
     //spawn chesticles
     this.spawnChests(10);
     // Spawn enemies
-    this.spawnEnemies(100);
+    this.spawnEnemies(this.shroomCount);
     // Spawn mushrooms
     this.spawnMushrooms(20); // Number of mushrooms to spawn
 
@@ -200,7 +203,6 @@ export class WorldScene extends Phaser.Scene {
       true
     );
 
-    // this.player.sprite.setOnCollideWith(this.enemies, ()=>console.log('hit'));
     this.scene.launch("game-menu");
     this.healthbar = new HealthBar(this, 20, 18, 100);
   }
@@ -237,7 +239,7 @@ export class WorldScene extends Phaser.Scene {
     }
   }
   respawnEnemies() {
-    const spawnThreshold = 1;
+    const spawnThreshold = this.shroomCount;
     let currentCount = this.enemies.length;
     // Remove dead enemies
     this.enemies = this.enemies.filter((enemy) => {

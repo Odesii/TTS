@@ -32,7 +32,6 @@ const resolvers = {
     },
     login: async (parent, { email, password }) => {
       const user = await User.findOne({ email });
-      console.log('userconsolelog', user);
       if (!user) {
         throw AuthenticationError;
       }
@@ -44,7 +43,6 @@ const resolvers = {
       }
   
       const token = signToken(user);
-      console.log('this is token', token);
       return { token, user };
     },
     changeEmail: async (parent, { email }, context) => {

@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Health Potion",
+        "effect": "health",
+        "image": "assets/items/Potion-04.png"
+    },
+    {
+        "name": "Attack Potion",
+        "effect": "attack",
+        "image": "assets/items/Potion-05.png"
+    },
+    {
+        "name": "Defense Potion",
+        "effect": "defense",
+        "image": "assets/items/Potion-03.png"
+    }
+]

@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Item } = require('../models');
 // import sign token function from auth
 const { signToken, AuthenticationError } = require('../utils/auth');
 const bcrypt = require('bcrypt');
@@ -7,9 +7,18 @@ const resolvers = {
   Query:{
     myProfile: async (parent, _, context) => {
       if(context.user) {
-        const user = await User.findById({ _id: context.user._id });
+        const user = await User.findById({ _id: context.user._id }).populate('inventory');
         console.log('this is user', user);
         return user;
+      } else {
+        throw AuthenticationError;
+      }
+    },
+    stockShop: async (parent, _, context) => {
+      if(context.user) {
+        const items = await Item.find();
+
+        return items;
       } else {
         throw AuthenticationError;
       }
@@ -65,7 +74,38 @@ const resolvers = {
       const user = await User.findOneAndDelete({ _id: context.user._id });
 
       return user;
-    }
+    },
+    updateShrooms: async (parent, { shrooms }, context) => {
+      const user = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        { shrooms: shrooms },
+        { new: true }
+      );
+
+      return user;
+    },
+    addToInventory: async (parent, { itemId }, context) => {
+      const item = await Item.findById(itemId);
+      
+      const user = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        { $push: { inventory: item } },
+        { new: true }
+      );
+
+      return user;
+    },
+    removeFromInventory: async (parent, { itemId }, context) => {
+      const item = await Item.findById(itemId);
+
+      const user = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        { $pull: { inventory: item } },
+        { new: true }
+      );
+
+      return user;
+    },
   }
 }
 

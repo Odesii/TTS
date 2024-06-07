@@ -20,7 +20,7 @@ function DeleteAccount() {
                 variables: { _id: '' }
             })
 
-            if (!data.ok) {
+            if (!data) {
                 throw new Error('something went wrong!');
             }
         } catch (err) {

@@ -75,15 +75,19 @@ const resolvers = {
 
       return user;
     },
-    updateShrooms: async (parent, { shrooms }, context) => {
-      if (context.user) {
+    updateShrooms: async (parent, { shrooms, playerID }, context) => {
+      const Player = await User.findOne(
+        { _id: playerID }
+      );
+      const CurrentShrooms = Player.shrooms; 
+      console.log('this is player', Player);
         const user = await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { shrooms: shrooms },
+          { _id: playerID },
+          { shrooms: shrooms + CurrentShrooms},
           { new: true }
         );
                 return user; 
-      }
+      // }
     },
     addToInventory: async (parent, { itemId }, context) => {
       const item = await Item.findById(itemId);

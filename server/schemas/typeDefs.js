@@ -31,7 +31,7 @@ const typeDefs =`
     changeEmail(email: String!): User
     changePassword(password: String!): User
     deleteAccount(_id: ID!): User
-    updateShrooms(shrooms: Int!): User
+    updateShrooms(shrooms: Int!, playerID: ID): User
     addToInventory(itemId: ID!): User
     removeFromInventory(itemId: ID!): User
   }

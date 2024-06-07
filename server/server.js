@@ -17,7 +17,9 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
-
+app.use(cors(
+  {origin: '*'}
+));
 const io = new Server(httpServer, {
   cors: {
     origin: "*", // Allow any origin

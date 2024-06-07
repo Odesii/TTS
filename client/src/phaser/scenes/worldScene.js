@@ -53,6 +53,12 @@ export class WorldScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     })
+    this.load.spritesheet('RogueDmg', 'assets/character/Rogue/RogueDmg.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+
+
     // ENEMY
     this.load.spritesheet("ShroomJump", "assets/enemy/Jump.png", {
       frameWidth: 32,
@@ -70,7 +76,10 @@ export class WorldScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    ;
+    
+
+
+    //UI
     this.load.image("settings-button", "assets/icons/flatDark30.png");
     this.load.image("ui-panel", "assets/textures/tile_0048.png");
     this.load.image("exit-button", "assets/icons/red_button00.png");
@@ -121,9 +130,9 @@ export class WorldScene extends Phaser.Scene {
       repeat: 0,
     });
     //spawn chesticles
-    this.spawnChests(50);
+    this.spawnChests(10);
     // Spawn enemies
-    this.spawnEnemies(50);
+    this.spawnEnemies(100);
     // Spawn mushrooms
     this.spawnMushrooms(20); // Number of mushrooms to spawn
 
@@ -146,49 +155,36 @@ export class WorldScene extends Phaser.Scene {
       true
     );
 
-    this.collisionCheckTimer = this.time.addEvent({
-      delay: 100,
-      callback: this.checkCollisions,
-      callbackScope: this,
-      loop: true,
-    });
-
     // this.player.sprite.setOnCollideWith(this.enemies, ()=>console.log('hit'));
     this.scene.launch("game-menu");
     this.healthbar = new HealthBar(this, 20, 18, 100);
   }
   // Set up collision event check for player and enemy hitboxes to trigger attack
 
-  checkCollisions() {
-    this.matter.world.on("collisionstart", (event, bodyA, bodyB) => {
-      if (bodyA.label === "Hitbox" && bodyB.label === "enemy") {
-        this.handlePlayerAttack(bodyB.gameObject);
-      } else if (bodyB.label === "Hitbox" && bodyA.label === "enemy") {
-        this.handlePlayerAttack(bodyA.gameObject);
-      }
-    });
-  }
+  // checkCollisions() {
+  //   this.matter.world.on("collisionstart", (event, bodyA, bodyB) => {
+  //     if (bodyA.label === "Hitbox" && bodyB.label === "enemy") {
+  //       this.handlePlayerAttack(bodyB.gameObject);
+  //     } else if (bodyB.label === "Hitbox" && bodyA.label === "enemy") {
+  //       this.handlePlayerAttack(bodyA.gameObject);
+  //     }
+  //   });
+  // }
 
-  handlePlayerAttack(npcSprite) {
-    // Ensure the player is attacking
-    if (!this.player.isAttacking || !npcSprite) return;
-    // Check if the NPC sprite is null to avoid hitting dead enemies
-    if (npcSprite === null) return;
-    // Get the NPC instance from the sprite's data
-    const npc = npcSprite.getData("npcInstance");
-    if (npc && !npc.hitDuringAttack) {
-      npc.takeDamage(20); // Call the NPC's takeDamage method
-      npc.hitDuringAttack = true;
-      // this.time.delayedCall(500, () => npc.resetHitFlag());
-    }
-  }
+  // handlePlayerAttack(npcSprite) {
+  //   // Ensure the player is attacking
+  //   if (!this.player.isAttacking || !npcSprite) return;
+  //   // Check if the NPC sprite is null to avoid hitting dead enemies
+  //   if (npcSprite === null) return;
+  //   // Get the NPC instance from the sprite's data
+  //   const npc = npcSprite.getData("npcInstance");
+  //   if (npc && !npc.hitDuringAttack) {
+  //     npc.takeDamage(20); // Call the NPC's takeDamage method
+  //     npc.hitDuringAttack = true;
+  //     // this.time.delayedCall(500, () => npc.resetHitFlag());
+  //   }
+  // }
 
-  handleEnemyAttack(player, enemy) {
-    player.health -= enemy.damage;
-    let ui = this.scene.get("UIScene");
-    ui.healthbar.updateHealth(player.health);
-    console.log(player.health);
-  }
 
   spawnEnemies(count) {
     for (let i = 0; i < count; i++) {
@@ -246,10 +242,6 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update(time, delta) {
-    if (time % 50 < delta) {
-      // Check collisions every 50ms
-      this.checkCollisions();
-    }
 
     // Call the player's update method to handle movement
     this.player.update();

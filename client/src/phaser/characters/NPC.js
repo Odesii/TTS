@@ -126,7 +126,7 @@ export class NPC {
                     this.sprite.x, this.sprite.y,
                     this.scene.player.sprite.x, this.scene.player.sprite.y
                 );
-    
+                // console.log('ENEMY-LOOKING-HIT',distanceToPlayer);
                 // Check if the player is within attack range and hasn't been hit yet
                 if (distanceToPlayer <= this.attackRange && !this.playerHit) {
                     this.scene.player.takeDamage(this.damage);

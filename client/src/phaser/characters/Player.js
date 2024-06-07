@@ -49,7 +49,8 @@ export class Player {
         this.isAttacking = false;
         this.attackCooldown = 0;
         this.attackCooldownTime = 100; // Cooldown time in milliseconds
-
+        this.attackRange = 20;
+        this.damage = 20;
         // Store mouse position
         this.mouseX = 0;
         this.mouseY = 0;
@@ -59,6 +60,7 @@ export class Player {
         this.currentDirection = 'down';
 
         this.isDead = false;
+        this.isTakingDamage = false;
     }
 
     createAnimations(scene) {
@@ -111,6 +113,12 @@ export class Player {
             frameRate: 12,
             repeat: 0
         });
+        scene.anims.create({
+            key: 'dmg',
+            frames: scene.anims.generateFrameNumbers('RogueDmg', { start: 0, end: 3 }),
+            frameRate: 12,
+            repeat: 0
+        });
     }
 
     handlePointerMove = (pointer) => {
@@ -158,8 +166,28 @@ export class Player {
             y: this.sprite.y + offsetY
         });
         this.attackHitbox.render.visible = true;//DEBUG to display box on attack
+
+
+        this.scene.enemies.forEach(enemy => { 
+            
+            const distanceToEnemy = Phaser.Math.Distance.Between(
+                this.attackHitbox.position.x, this.attackHitbox.position.y,
+                enemy.x, enemy.y
+            );
+            const npc = enemy.getData('npcInstance');
+            console.log('PLAYER-LOOKING-HIT',distanceToEnemy<=this.attackRange);
+            // Check if the player is within attack range and hasn't been hit yet
+            if (distanceToEnemy <= this.attackRange) {
+                npc.takeDamage(this.damage);
+                // Set the flag to true to prevent multiple hits
+            }
+            
+        });
+
+
     
         this.scene.time.addEvent({
+
             delay: 100,
             callback: () => {
                 this.attackHitbox.render.visible = false;//hides attack hitbox
@@ -176,18 +204,61 @@ export class Player {
     }
 
     takeDamage(amount) {
-        this.healthBar.decrease(amount);
-        if (this.healthBar.currentHealth <= 0) {
-            this.die();
+        if (this.isTakingDamage || this.isDead) {
+            return;
         }
+
+        this.isTakingDamage = true;
+        this.sprite.anims.play('dmg', true);
+
+        this.sprite.once('animationcomplete', (animation) => {
+            if (animation.key === 'dmg') {
+                this.isTakingDamage = false;
+                if (this.healthBar.currentHealth <= 0) {
+                    this.die();
+                }
+            }
+        }, this);
+
+        this.healthBar.decrease(amount);
     }
     collectMushrooms(amount) {
-      this.mushrooms += amount;
-      console.log(`Collected ${amount} mushrooms. Total: ${this.mushrooms}`);
-  
-      // Send the update to the server
-      // this.updateMushroomsOnServer(amount);
-    }
+        this.mushrooms += amount;
+        console.log(`Collected ${amount} mushrooms. Total: ${this.mushrooms}`);
+      
+        // Define text style
+        const textStyle = {
+          font: "5px Arial",
+          fill: "#ffffff",
+          stroke: "#000000",
+          strokeThickness: 1,
+          align: 'center'
+        };
+      
+        // Create the text object
+        const text = this.scene.add.text(this.sprite.x, this.sprite.y - 20, `+${amount} Shrooms`, textStyle);
+
+        
+        // Set the origin to the center of the text
+        text.setOrigin(0.5, 1);
+        text.setResolution(2);
+        text.setScale(1.5);
+        // Create a tween to animate the text
+        this.scene.tweens.add({
+          targets: text,
+          y: text.y - 30, // Move the text up by 30 pixels
+          alpha: 0,       // Fade out the text
+          duration: 1000, // Duration of the tween in milliseconds
+          ease: 'Power1',
+          onComplete: () => {
+            text.destroy(); // Destroy the text object after the tween completes
+          }
+        });
+      
+        // Send the update to the server
+        // this.updateMushroomsOnServer(amount);
+      }
+      
 
     
       
@@ -208,17 +279,13 @@ export class Player {
                 this.sprite.setActive(false);
                 this.sprite.setVisible(false);
 
-                window.location.replace('/');
+                window.location.replace('/profile');
             }
         }, this);
     }
 
     update() {
-        if (this.isAttacking) {
-            return;
-        }
-
-        if (this.isDead) {
+        if (this.isAttacking || this.isDead || this.isTakingDamage) {
             return;
         }
     

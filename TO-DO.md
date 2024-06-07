@@ -1,10 +1,14 @@
+
+
 ✅🟦🟥
+
+
+
 -✅ Fix player jitter/ find better movement 
 - ✅get collisions with world working
 	- ✅ they aren't correct via tilled and still ne world boundary 
 - ✅scale sprites down to make world bigger
 - ✅get camera and player to stop at world border
-- 
 ---
 
 
@@ -16,15 +20,16 @@
 - ✅give player HP
 - ✅health bar
   - STYLE it
-- take damage animation
+- ✅ take damage animation
 - projectiles
 - ✅give player death state
-- adjust attack
-  - get it to use shroom style of distance detection to help make it more consistent
+- ✅ adjust attack
+  - ✅ get it to use shroom style of distance detection to help make it more consistent
 
 ### Enemy
 - 🟦 make an base Enemy class to extend with different types
-- ✅ random movement
+#### Shroom
+- ✅ random movement *removed for preformance*
 - ✅agro on player when in a range 
 - ✅give HP
 - ✅Give it attacks
@@ -42,8 +47,10 @@
 - ✅and set so camera can't go past the bounds
 
 ### LOOT
--!CHests !work!!!! !need to edit tile sheet for anims
-- Shrooms
+- !CHests !work!!!! !need to edit tile sheet for anims
+- adjust range on pick up
+- make it only interactive once 
+- Shrooms *currency*
 	- drops from enemies
 	- ✅random chests on map
 		- ✅random shroom value
@@ -76,6 +83,8 @@
 ## SOCKET IO
 - get players on same screen 
 
+
+## Full Polish For demo
 
 
 

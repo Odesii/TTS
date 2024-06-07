@@ -25,6 +25,8 @@
 - ✅give player death state
 - ✅ adjust attack
   - ✅ get it to use shroom style of distance detection to help make it more consistent
+- 🟦 FIX BUG - where if player attacks and takes damage at the same time player locks up
+  - fixed but the player cant take damage if they are attacking 
 
 ### Enemy
 - 🟦 make an base Enemy class to extend with different types
@@ -48,13 +50,13 @@
 
 ### LOOT
 - !CHests !work!!!! !need to edit tile sheet for anims
-- adjust range on pick up
-- make it only interactive once 
-- Shrooms *currency*
-	- drops from enemies
+- ✅ adjust range on pick up
+- ✅ make it only interactive once 
+- ✅Shrooms *currency*
+	- ✅drops from enemies
 	- ✅random chests on map
 		- ✅random shroom value
-		- display above player head "5x'Shr0om Icon'"
+		- ✅display above player head "5x'Shr0om Icon'"
 
 ### Escape menu
 - take you to /profile
@@ -83,9 +85,8 @@
 ## SOCKET IO
 - get players on same screen 
 
+### OTHER
+- kill feed on pvp
+
 
 ## Full Polish For demo
-
-
-
-kill feed on pvp

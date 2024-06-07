@@ -52,8 +52,9 @@ export const DELETE_ACCOUNT = gql`
 `;
 
 export const UPDATE_SHROOMS = gql`
-  mutation updateShrooms($shrooms: Int!) {
-    updateShrooms(shrooms: $shrooms) {
+  mutation updateShrooms($shrooms: Int!, $playerID: ID) {
+    updateShrooms(shrooms: $shrooms, playerID: $playerID) {
+      _id
       shrooms
     }
   }

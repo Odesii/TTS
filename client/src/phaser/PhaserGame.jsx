@@ -59,7 +59,10 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
     return (
         <>
             {Auth.loggedIn() ? (
+                <>
                 <div className='container' id="game-container"></div>
+                <div>{JSON.stringify(Auth.getProfile())}</div>
+                </>
             ) : (
                 <>
                     <h2>You must be logged in to view this page.</h2>

@@ -82,7 +82,13 @@ export class WorldScene extends Phaser.Scene {
     //UI
     this.load.image("settings-button", "assets/icons/flatDark30.png");
     this.load.image("ui-panel", "assets/textures/tile_0048.png");
+    this.load.image("inventory-panel", "assets/textures/tile_0049.png");
     this.load.image("exit-button", "assets/icons/red_button00.png");
+
+    // Potions
+    this.load.image("health-potion", "assets/items/Potion-04.png");
+    this.load.image("attack-potion", "assets/items/Potion-05.png");
+    this.load.image("defense-potion", "assets/items/Potion-03.png");
   }
 
   create() {
@@ -157,6 +163,7 @@ export class WorldScene extends Phaser.Scene {
 
     // this.player.sprite.setOnCollideWith(this.enemies, ()=>console.log('hit'));
     this.scene.launch("game-menu");
+    this.scene.launch("inventory-menu");
     this.healthbar = new HealthBar(this, 20, 18, 100);
   }
   // Set up collision event check for player and enemy hitboxes to trigger attack

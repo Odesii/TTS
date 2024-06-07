@@ -1,10 +1,12 @@
 import Phaser from "phaser";
+import PhaserMatterCollisionPlugin from 'phaser-matter-collision-plugin';
 import { SCENE_KEYS } from "./sceneKey.js";
 import { Player } from "../characters/Player.js";
 import { NPC } from "../characters/NPC.js";
 import { HealthBar } from "../../UI/healthbars.js";
 import { Chest } from "../loot/Chest.js";
 import { Mushroom } from "../loot/Mushroom.js";
+
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -116,6 +118,9 @@ export class WorldScene extends Phaser.Scene {
     this.matter.world.convertTilemapLayer(this.castleLayer);
     this.matter.world.convertTilemapLayer(this.doorLayer);
 
+
+    // Add the collision plugin to the scene
+    
     // Create the player
     this.player = new Player(this, 100);
 

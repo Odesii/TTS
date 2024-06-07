@@ -10,8 +10,6 @@ export class Player {
         // Create the sprite and assign it to a class property
         this.sprite = scene.matter.add.sprite(32, 32, 'RogueWalk', 'Rougewalk.png', {
             label: 'player',
-            frictionAir: 0.05, // Adjusted air friction for smoother movementd
-            mass: 5, // Adjust mass to control movement speed
             shape: {
                 type: 'circle',
                 radius: 2.5,
@@ -175,7 +173,6 @@ export class Player {
                 enemy.x, enemy.y
             );
             const npc = enemy.getData('npcInstance');
-            console.log('PLAYER-LOOKING-HIT',distanceToEnemy<=this.attackRange);
             // Check if the player is within attack range and hasn't been hit yet
             if (distanceToEnemy <= this.attackRange) {
                 npc.takeDamage(this.damage);
@@ -224,7 +221,6 @@ export class Player {
     }
     collectMushrooms(amount) {
         this.mushrooms += amount;
-        console.log(`Collected ${amount} mushrooms. Total: ${this.mushrooms}`);
       
         // Define text style
         const textStyle = {

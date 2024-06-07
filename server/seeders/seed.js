@@ -7,7 +7,7 @@ db.once('open', async () => {
   try {
     await cleanDB('Item', 'items');
 
-    await Item.create(itemSeeds);
+    await Item.insertMany(itemSeeds);
 
   } catch (err) {
     console.error(err);

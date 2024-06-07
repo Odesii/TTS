@@ -6,6 +6,11 @@ import { NPC } from "../characters/NPC.js";
 import { HealthBar } from "../../UI/healthbars.js";
 import { Chest } from "../loot/Chest.js";
 import { Mushroom } from "../loot/Mushroom.js";
+import socket from '../../utils/socket.js';
+// import { useMutation } from '@apollo/client'
+
+
+
 
 
 export class WorldScene extends Phaser.Scene {
@@ -120,9 +125,44 @@ export class WorldScene extends Phaser.Scene {
 
 
     // Add the collision plugin to the scene
-    
+
     // Create the player
-    this.player = new Player(this, 100);
+    // this.player = new Player(this, 100);
+       // Add the player to the scene
+       this.players = {};
+       this.player = new Player(this, 100); // Assuming 100 is the initial health or some parameter
+       this.players[socket.id] = this.player;
+   
+       // Notify the server about the new player
+       socket.emit('newPlayer', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
+       socket.emit('playerMovement', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
+
+       // Listen for new player events
+       socket.on('newPlayer', (playerData) => {
+         if (!this.players[playerData.id]) {
+           const newPlayer = new Player(this, playerData.x, playerData.y);
+           this.players[playerData.id] = newPlayer;
+         }
+       });
+   
+       // Listen for player movement events
+       socket.on('playerMoved', (playerData) => {
+         if (this.players[playerData.id]) {
+           this.players[playerData.id].sprite.setPosition(playerData.x, playerData.y);
+         }
+       });
+
+       // Listen for player disconnection
+       socket.on('disconnect')
+       
+        // if (this.players[playerId]) {
+        //   this.players[playerId].sprite.destroy();
+        //   delete this.players[playerId];
+        // }
+      
+    // Add the player to the scene
+    this.matter.world.add(this.player.sprite.body);
+
 
     // Group of NPCs (enemies)
     this.enemies = [];
@@ -164,31 +204,6 @@ export class WorldScene extends Phaser.Scene {
     this.scene.launch("game-menu");
     this.healthbar = new HealthBar(this, 20, 18, 100);
   }
-  // Set up collision event check for player and enemy hitboxes to trigger attack
-
-  // checkCollisions() {
-  //   this.matter.world.on("collisionstart", (event, bodyA, bodyB) => {
-  //     if (bodyA.label === "Hitbox" && bodyB.label === "enemy") {
-  //       this.handlePlayerAttack(bodyB.gameObject);
-  //     } else if (bodyB.label === "Hitbox" && bodyA.label === "enemy") {
-  //       this.handlePlayerAttack(bodyA.gameObject);
-  //     }
-  //   });
-  // }
-
-  // handlePlayerAttack(npcSprite) {
-  //   // Ensure the player is attacking
-  //   if (!this.player.isAttacking || !npcSprite) return;
-  //   // Check if the NPC sprite is null to avoid hitting dead enemies
-  //   if (npcSprite === null) return;
-  //   // Get the NPC instance from the sprite's data
-  //   const npc = npcSprite.getData("npcInstance");
-  //   if (npc && !npc.hitDuringAttack) {
-  //     npc.takeDamage(20); // Call the NPC's takeDamage method
-  //     npc.hitDuringAttack = true;
-  //     // this.time.delayedCall(500, () => npc.resetHitFlag());
-  //   }
-  // }
 
 
   spawnEnemies(count) {
@@ -250,6 +265,9 @@ export class WorldScene extends Phaser.Scene {
 
     // Call the player's update method to handle movement
     this.player.update();
+
+    socket.emit('playerMovement', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
+
 
     // Call the update method for each enemy used for their AI
     this.enemies.forEach((enemy) => {

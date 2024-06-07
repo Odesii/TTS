@@ -1,5 +1,13 @@
 import Phaser from 'phaser';
 import { HealthBar } from '../../UI/healthbars';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { UPDATE_SHROOMS } from '../../utils/mutations'
+
+
+const client = new ApolloClient({
+    link: new HttpLink({ uri: 'http://localhost:3001/graphql' }), // Your GraphQL endpoint
+    cache: new InMemoryCache(),
+  });
 
 export class Player {
     constructor(scene) {
@@ -59,7 +67,27 @@ export class Player {
 
         this.isDead = false;
         this.isTakingDamage = false;
+
+        this.graphQLClient = client;
     }
+
+
+
+    async updateMushroomsOnServer(amount) {
+        try {
+            const result = await this.graphQLClient.mutate({
+                mutation: UPDATE_SHROOMS,
+                variables: {
+                    shrooms: this.mushrooms,
+                },
+            });
+            console.log('Mushroom count updated:', result.data.updateShrooms.shrooms);
+        } catch (error) {
+                console.error('Unexpected error occurred:', error);
+            }
+        }
+    
+
 
     createAnimations(scene) {
         const anims = [

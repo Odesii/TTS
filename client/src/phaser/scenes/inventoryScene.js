@@ -8,8 +8,6 @@ const client = new ApolloClient({
     cache: new InMemoryCache(),
 });
 
-console.log(Auth.getProfile())
-
 export class InventoryScene extends Phaser.Scene {
     container;
 
@@ -21,6 +19,7 @@ export class InventoryScene extends Phaser.Scene {
 
     preload() {
         this.player = this.loadUser();
+        this.items = this.loadItems();
     }
 
     create() {
@@ -112,9 +111,7 @@ export class InventoryScene extends Phaser.Scene {
     }
 
     async loadUser() {
-        console.log(client.query);
         try {
-            console.log(Auth.getProfile());
             let result = await client.query({
                 query: GET_PLAYER,
                 variables: { 
@@ -122,6 +119,18 @@ export class InventoryScene extends Phaser.Scene {
                 },
             });
             console.log('user:', result);
+        } catch (error) {
+            console.error('Unexpected error occurred:', error);
+        }
+    }
+
+    async loadItems() {
+        try {
+            let result = await client.query({
+                query: GET_ITEMS,
+                variables: {}
+            });
+            console.log('items:', result);
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }

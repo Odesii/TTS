@@ -17,13 +17,9 @@ const resolvers = {
       }
     },
     stockShop: async (parent, _, context) => {
-      if(context.user) {
-        const items = await Item.find();
+      const items = await Item.find();
 
-        return items;
-      } else {
-        throw AuthenticationError;
-      }
+      return items;
     },
     getPlayer: async (parent, { playerId }, context) => {
       const user = await User.findById({ _id: playerId }).populate('inventory');

@@ -13,10 +13,14 @@ export class Chest {
 
   }
   open() {
+
+    if (this.isOpen) return; // If the chest is already open, don't open it again
+    
     // Define what happens when the chest is opened
+    this.isOpen = true;
     console.log('Chest opened!');
     this.sprite.play('chest_open');
-    const mushroomCount=Phaser.Math.Between(1,5);
+    const mushroomCount=Phaser.Math.Between(2,10);
     this.scene.player.collectMushrooms(mushroomCount);
 }
 }

@@ -26,7 +26,11 @@ export class InventoryScene extends Phaser.Scene {
         this.defensePotionQuantity = await this.loadDefensePotions();
     }
 
-    create() {
+    async create() {
+        setTimeout(() => {
+            console.log(this.healthPotionQuantity)
+        }, 5000);
+
         this.container = this.add.container(0, 0);
 
         const panel = this.add.nineslice(130, 152, 'inventory-panel', null, 100);
@@ -39,37 +43,43 @@ export class InventoryScene extends Phaser.Scene {
         attackPotionButton.setScale(0.7);
         defensePotionButton.setScale(0.7);
 
-        const healthPotionQuantityText = this.add.text(
-            98, 146,
-            'x1', {
-                color: 'white',
-                fontSize: 11
-            }
-        )
+        setTimeout(() => {
+            const healthPotionQuantityText = this.add.text(
+                98, 146,
+                `x${this.healthPotionQuantity}`, {
+                    color: 'white',
+                    fontSize: 11
+                }
+            )
 
-        const attackPotionQuantityText = this.add.text(
-            128, 146,
-            'x2', {
-                color: 'white',
-                fontSize: 11
-            }
-        )
+            const attackPotionQuantityText = this.add.text(
+                128, 146,
+                `x${this.attackPotionQuantity}`, {
+                    color: 'white',
+                    fontSize: 11
+                }
+            )
+    
+            const defensePotionQuantityText = this.add.text(
+                158, 146,
+                `x${this.defensePotionQuantity}`, {
+                    color: 'white',
+                    fontSize: 11
+                }
+            )
 
-        const defensePotionQuantityText = this.add.text(
-            158, 146,
-            'x3', {
-                color: 'white',
-                fontSize: 11
-            }
-        )
+            this.container.add(healthPotionQuantityText);
+            this.container.add(attackPotionQuantityText);
+            this.container.add(defensePotionQuantityText);
+        }, 250)
 
         this.container.add(panel);
         this.container.add(healthPotionButton);
         this.container.add(attackPotionButton);
         this.container.add(defensePotionButton);
-        this.container.add(healthPotionQuantityText);
-        this.container.add(attackPotionQuantityText);
-        this.container.add(defensePotionQuantityText);
+        // this.container.add(healthPotionQuantityText);
+        // this.container.add(attackPotionQuantityText);
+        // this.container.add(defensePotionQuantityText);
 
         healthPotionButton.setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
@@ -146,6 +156,8 @@ export class InventoryScene extends Phaser.Scene {
         let index = 0;
         let quantity = 0;
 
+        console.log("inv: ", this.playerInventory);
+        console.log("items: ", this.items);
         for (let i = 0; i < this.items.length; i++) {
             if (this.items[i].effect === "health") {
                 index = i;

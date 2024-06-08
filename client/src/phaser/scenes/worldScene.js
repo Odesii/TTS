@@ -140,16 +140,23 @@ export class WorldScene extends Phaser.Scene {
     // Add the zone object
     this.zone = new Zone(this);
 
-
+    
+    
     // Create the player
     // this.player = new Player(this, 100);
-       // Add the player to the scene
-       this.players = {};
-       this.player = new Player(this); 
-       this.players[socket.id] = this.player;
-   
-       socket.emit('newPlayer', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
-       socket.emit('playerMovement', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
+    // Add the player to the scene
+    this.players = {};
+    this.player = new Player(this); 
+    this.players[socket.id] = this.player;
+    
+    //pionter events
+    this.input.on('pointerdown', this.players[socket.id].handlePointerDown, this.player);
+    this.input.on('pointermove', this.players[socket.id].handlePointerMove, this.player);
+
+    socket.emit('newPlayer', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
+    socket.emit('playerMovement', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
+    
+
 
        // Listen for new player events
        socket.on('newPlayer', (playerData) => {
@@ -168,6 +175,13 @@ export class WorldScene extends Phaser.Scene {
           });
        })
 
+       socket.on('playerHit1', (playerData) => {
+        console.log('SCREEM', playerData);
+         if(this.players[playerData.id]) {
+          //  this.players[playerData.id].sprite.anims.play('RogueAttack', true)
+           this.players[playerData.id].attack(playerData.x, playerData.y);
+         }
+       })
        // Listen for player movement events
        socket.on('playerMoved', (playerData) => {
          if (this.players[playerData.id]) {
@@ -175,13 +189,17 @@ export class WorldScene extends Phaser.Scene {
          }
        });
 
-       // Listen for player disconnection
-       socket.on('disconnect')
+       socket.on('playerDisconnected', (socketID) => {
+        if (this.players[socketID.id]) {
+          this.players[socketID.id].sprite.destroy();
+          delete this.players[socketID.id];
+        }
+       })
       
     // Add the player to the scene
     this.matter.world.add(this.player.sprite.body);
 
-this.shroomCount = 100;
+this.shroomCount = 0;
     // Group of NPCs (enemies)
     this.enemies = [];
 

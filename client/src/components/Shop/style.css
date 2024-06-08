@@ -20,14 +20,16 @@ form {
 /* Adjusting margins and positioning of text on the form */
 form h2 {
     margin-bottom: 5px;
-    font-size: 1vw;
+    font-size: 3vw;
+    color: #896f4e;
 }
 
 form label {
-    font-size: 1vw;
+    font-size: 3vw;
     margin-bottom: 3px;
     margin-top: 10px;
     padding: 5px;
+    color: #896f4e;
 }
 
 /* Input background box and text */
@@ -42,13 +44,19 @@ input {
 #submit {
     font-size: 1vw;
     margin-bottom: 10px;
-    background-color: #78202d;
+    background-color: #33090f;
+    border-radius: 5px; ;
     color: #f4e7d0;
 }
 
 /* Display a message of error/success based on whether the input is valid or not */
 form p {
-    font-size: 1vw;
+    font-size: 3vw;
     margin: 10px 0;
-    color: #eaafb7;
+    color: #896f4e;
+}
+
+div img {
+    width: 70px;
+    height: auto;
 }

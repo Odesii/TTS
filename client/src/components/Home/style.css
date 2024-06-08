@@ -8,7 +8,9 @@
     text-align: center; /* Center text for better appearance */
     }
 
-    
+    .logo {
+    width: 50vw;
+    }
     
     h1 {
     font-size: 5rem;

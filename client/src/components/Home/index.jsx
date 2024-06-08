@@ -15,7 +15,7 @@ function Home() {
 
     return (
         <section className="layout">
-            <h1>Take Their Shrooms</h1>
+            <img className="logo" src='assets/icons/TTS.png' alt='logo' />
             {Auth.loggedIn() ? (
                 <>
                     <h2>Welcome {userData.username}</h2>
@@ -35,6 +35,7 @@ function Home() {
                     <Link to='/register'>
                         Register
                     </Link>
+                    <img src='assets/textures/bubbles.png' alt='bubble' className='bubble' />
                 </>
             )}
         </section>

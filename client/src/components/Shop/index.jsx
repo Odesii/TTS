@@ -56,7 +56,7 @@ function Shop() {
                         <form onSubmit={handleEvent}>
                             {itemData.map((item) => (
                                 <div key={item._id}>
-                                    <p>Item Name: {item.name}</p>
+                                    <p>{item.name}</p>
                                     <img src={item.image} />
                                     <p>Effect: {item.effect}</p>
                                     <button id="submit" onClick={() => handlePurchase(item._id, item.name)}>Purchase</button>

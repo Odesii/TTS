@@ -10,9 +10,9 @@ nav ul {
    Credits to this site: https://css-tricks.com/css-link-hover-effects/ */
 nav ul span {
     font-size: 40px;
-    color: #eaafb7;
+    color: #896f4e;
     margin: 7.5px;
-    background-image: linear-gradient(to right,  #580285, #580285 50%, #c455ff 50%);
+    background-image: linear-gradient(to right,  #520e09, #540808 50%, #8f2d2d 50%);
     background-size: 200% 100%;
     background-position: -100%;
     display: inline-block;

@@ -1,5 +1,4 @@
 import Phaser from "phaser";
-import { HealthBar } from "../../UI/healthbars.js";
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { GET_PLAYER, GET_ITEMS } from '../../utils/queries'
 import { REMOVE_FROM_INVENTORY } from "../../utils/mutations";

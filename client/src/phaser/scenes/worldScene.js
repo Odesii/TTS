@@ -92,6 +92,7 @@ export class WorldScene extends Phaser.Scene {
     this.load.image("ui-panel", "assets/textures/tile_0048.png");
     this.load.image("inventory-panel", "assets/textures/tile_0049.png");
     this.load.image("exit-button", "assets/icons/red_button00.png");
+    this.load.image("healthBarImage", "assets/BarOverlay.png");
     this.load.spritesheet("extractionAnimation", "assets/exit.png", {
       frameWidth: 64,
       frameHeight: 32,

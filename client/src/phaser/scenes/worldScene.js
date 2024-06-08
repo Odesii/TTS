@@ -160,7 +160,6 @@ export class WorldScene extends Phaser.Scene {
       y: this.player.sprite.y,
     });
 
-
     // Listen for new player events
     socket.on("newPlayer", (playerData) => {
       if (!this.players[playerData.id]) {
@@ -179,9 +178,10 @@ export class WorldScene extends Phaser.Scene {
     });
 
     socket.on("playerAttack", (playerData) => {
-      if (this.players[playerData]) {
-        console.log("SCREEM", [playerData]);
+      if (this.players[playerData.id]) {
         this.players[playerData.id].attack(playerData.x, playerData.y);
+        this.players[playerData.id].sprite.anims.play("attack_right", true);
+
       } else {
         console.log("Player not found");
       }

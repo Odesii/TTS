@@ -3,7 +3,7 @@ import { HealthBar } from '../../UI/healthbars';
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { UPDATE_SHROOMS } from '../../utils/mutations'
 import  Auth  from '../../utils/auth';
-
+import socket from '../../utils/socket.js';
 
 
 const client = new ApolloClient({
@@ -62,8 +62,9 @@ export class Player {
         // Store mouse position
         this.mouseX = 0;
         this.mouseY = 0;
-        scene.input.on('pointermove', this.handlePointerMove, this);
-        scene.input.on('pointerdown', this.handlePointerDown, this);
+
+        // scene.input.on('pointermove', this.handlePointerMove, this);
+        // scene.input.on('pointerdown', this.handlePointerDown, this);
 
         this.currentDirection = 'down';
 
@@ -156,7 +157,9 @@ export class Player {
     }
 
     handlePointerDown = (pointer) => {
+
         if (pointer.leftButtonDown()) {
+            socket.emit('playerHit', { id: socket.id, x: this.mouseX, y: this.mouseY});
             this.attack(this.mouseX, this.mouseY);
         }
     }

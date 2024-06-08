@@ -53,25 +53,30 @@ const startApolloServer = async () => {
           players[socket.id] = playerData;
           console.log('New player connected', playerData);
           // Broadcast new player to other clients
-          socket.broadcast.emit('newPlayer', playerData);
+          io.emit('newPlayer', playerData);
       
           // Send the updated list of players to the new player
           socket.emit('currentPlayers', players);
         });
+
+      socket.on('playerHit', (playerData) => {
+        console.log('playerHit', playerData);
+        io.emit('playerHit1', playerData);
+      })
       
         // Broadcast player movement to other clients
         socket.on('playerMovement', (playerData) => {
           if (players[socket.id]) {
             players[socket.id].x = playerData.x;
             players[socket.id].y = playerData.y;
-            socket.broadcast.emit('playerMoved', playerData);
+            io.emit('playerMoved', playerData);
           }
         });
       
         socket.on('disconnect', () => {
           console.log('user disconnected: ' + socket.id);
-          delete players[socket.id];
           socket.broadcast.emit('playerDisconnected', { id: socket.id });
+          delete players[socket.id];
         });
       });
 

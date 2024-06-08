@@ -347,6 +347,13 @@ export class InventoryScene extends Phaser.Scene {
     }
 
     useDefensePotion() {
-        
+        // Numbers can be changed if needed
+        this.player.damageReduction = 10;
+
+        setTimeout(() => {
+            // Reset to base
+            this.player.damageReduction = 0;
+            console.log("def pot expired!")
+        }, 60000)
     }
 }

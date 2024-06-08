@@ -7,7 +7,7 @@ import  Auth  from '../../utils/auth';
 
 
 const client = new ApolloClient({
-    link: new HttpLink({ uri: `${import.meta.env.VITE_DEPLOYED_URL}/graphql`||'http://localhost:3000/graphql' }), // Your GraphQL endpoint
+    link: new HttpLink({ uri: import.meta.env.VITE_DEPLOYED_GQL||'http://localhost:3000/graphql' }), // Your GraphQL endpoint
     cache: new InMemoryCache(),
   });
 

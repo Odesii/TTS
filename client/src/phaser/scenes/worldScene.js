@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import PhaserMatterCollisionPlugin from 'phaser-matter-collision-plugin';
+import PhaserMatterCollisionPlugin from "phaser-matter-collision-plugin";
 import { SCENE_KEYS } from "./sceneKey.js";
 import { Player } from "../characters/Player.js";
 import { NPC } from "../characters/NPC.js";
@@ -7,12 +7,7 @@ import { HealthBar } from "../../UI/healthbars.js";
 import { Chest } from "../loot/Chest.js";
 import { Mushroom } from "../loot/Mushroom.js";
 import { Zone } from "../objects/zone.js";
-import socket from '../../utils/socket.js';
-
-
-
-
-
+import socket from "../../utils/socket.js";
 
 export class WorldScene extends Phaser.Scene {
   constructor() {
@@ -26,7 +21,7 @@ export class WorldScene extends Phaser.Scene {
     const RogueIdle = "assets/character/Rogue/RogueJump.png";
     const RogueAtt = "assets/character/Rogue/RogueAttack.png";
     const chest = "assets/chest.png";
-    const mushroom= "assets/shrooms.png"
+    const mushroom = "assets/shrooms.png";
     // Load the tileset images
     this.load.image(
       "Minifantasy_ForgottenPlainsTiles",
@@ -57,15 +52,14 @@ export class WorldScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    this.load.spritesheet('RogueDie', 'assets/character/Rogue/RogueDie.png', {
-      frameWidth: 32,
-      frameHeight: 32,
-    })
-    this.load.spritesheet('RogueDmg', 'assets/character/Rogue/RogueDmg.png', {
+    this.load.spritesheet("RogueDie", "assets/character/Rogue/RogueDie.png", {
       frameWidth: 32,
       frameHeight: 32,
     });
-
+    this.load.spritesheet("RogueDmg", "assets/character/Rogue/RogueDmg.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
 
     // ENEMY
     this.load.spritesheet("ShroomJump", "assets/enemy/Jump.png", {
@@ -84,8 +78,6 @@ export class WorldScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    
-
 
     //UI
     this.load.image("settings-button", "assets/icons/setting.png");
@@ -96,7 +88,7 @@ export class WorldScene extends Phaser.Scene {
     this.load.spritesheet("extractionAnimation", "assets/exit.png", {
       frameWidth: 64,
       frameHeight: 32,
-    }) ;
+    });
 
     // Potions
     this.load.image("health-potion", "assets/items/health.png");
@@ -135,71 +127,86 @@ export class WorldScene extends Phaser.Scene {
     this.matter.world.convertTilemapLayer(this.castleLayer);
     this.matter.world.convertTilemapLayer(this.doorLayer);
 
-
-
     // Add the zone object
     this.zone = new Zone(this);
 
-    
-    
     // Create the player
     // this.player = new Player(this, 100);
     // Add the player to the scene
     this.players = {};
-    this.player = new Player(this); 
+    this.player = new Player(this);
     this.players[socket.id] = this.player;
-    
+
     //pionter events
-    this.input.on('pointerdown', this.players[socket.id].handlePointerDown, this.player);
-    this.input.on('pointermove', this.players[socket.id].handlePointerMove, this.player);
+    this.input.on(
+      "pointerdown",
+      this.players[socket.id].handlePointerDown,
+      this.player
+    );
+    this.input.on(
+      "pointermove",
+      this.players[socket.id].handlePointerMove,
+      this.player
+    );
 
-    socket.emit('newPlayer', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
-    socket.emit('playerMovement', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
-    
+    socket.emit("newPlayer", {
+      id: socket.id,
+      x: this.player.sprite.x,
+      y: this.player.sprite.y,
+    });
+    socket.emit("playerMovement", {
+      id: socket.id,
+      x: this.player.sprite.x,
+      y: this.player.sprite.y,
+    });
 
 
-       // Listen for new player events
-       socket.on('newPlayer', (playerData) => {
-         if (!this.players[playerData.id]) {
-           const newPlayer = new Player(this, playerData.x, playerData.y);
-           this.players[playerData.id] = newPlayer;
-         }
-       });
-       
-       socket.on('currentPlayers', (players) => {
-          Object.keys(players).forEach((id) => {
-            if (id !== socket.id) {
-              const player = new Player(this, players[id].x, players[id].y);
-              this.players[id] = player;
-            }
-          });
-       })
+    // Listen for new player events
+    socket.on("newPlayer", (playerData) => {
+      if (!this.players[playerData.id]) {
+        const newPlayer = new Player(this, playerData.x, playerData.y);
+        this.players[playerData.id] = newPlayer;
+      }
+    });
 
-       socket.on('playerHit1', (playerData) => {
-        console.log('SCREEM', playerData);
-         if(this.players[playerData.id]) {
-          //  this.players[playerData.id].sprite.anims.play('RogueAttack', true)
-           this.players[playerData.id].attack(playerData.x, playerData.y);
-         }
-       })
-       // Listen for player movement events
-       socket.on('playerMoved', (playerData) => {
-         if (this.players[playerData.id]) {
-           this.players[playerData.id].sprite.setPosition(playerData.x, playerData.y);
-         }
-       });
-
-       socket.on('playerDisconnected', (socketID) => {
-        if (this.players[socketID.id]) {
-          this.players[socketID.id].sprite.destroy();
-          delete this.players[socketID.id];
+    socket.on("currentPlayers", (players) => {
+      Object.keys(players).forEach((id) => {
+        if (id !== socket.id) {
+          const player = new Player(this, players[id].x, players[id].y);
+          this.players[id] = player;
         }
-       })
-      
+      });
+    });
+
+    socket.on("playerAttack", (playerData) => {
+      if (this.players[playerData]) {
+        console.log("SCREEM", [playerData]);
+        this.players[playerData.id].attack(playerData.x, playerData.y);
+      } else {
+        console.log("Player not found");
+      }
+    });
+    // Listen for player movement events
+    socket.on("playerMoved", (playerData) => {
+      if (this.players[playerData.id]) {
+        this.players[playerData.id].sprite.setPosition(
+          playerData.x,
+          playerData.y
+        );
+      }
+    });
+
+    socket.on("playerDisconnected", (socketID) => {
+      if (this.players[socketID.id]) {
+        this.players[socketID.id].sprite.destroy();
+        delete this.players[socketID.id];
+      }
+    });
+
     // Add the player to the scene
     this.matter.world.add(this.player.sprite.body);
 
-this.shroomCount = 0;
+    this.shroomCount = 0;
     // Group of NPCs (enemies)
     this.enemies = [];
 
@@ -241,7 +248,6 @@ this.shroomCount = 0;
     this.healthbar = new HealthBar(this, 20, 18, 100);
   }
 
-
   spawnEnemies(count) {
     for (let i = 0; i < count; i++) {
       const x = Phaser.Math.Between(0, this.map.widthInPixels);
@@ -260,11 +266,11 @@ this.shroomCount = 0;
   }
   spawnMushrooms(count) {
     for (let i = 0; i < count; i++) {
-        const x = Phaser.Math.Between(0, this.map.widthInPixels);
-        const y = Phaser.Math.Between(0, this.map.heightInPixels);
-        const mushroom = new Mushroom(this, x, y);
+      const x = Phaser.Math.Between(0, this.map.widthInPixels);
+      const y = Phaser.Math.Between(0, this.map.heightInPixels);
+      const mushroom = new Mushroom(this, x, y);
     }
-}
+  }
   spawnChests(count) {
     for (let i = 0; i < count; i++) {
       const x = Phaser.Math.Between(0, this.map.widthInPixels);
@@ -298,12 +304,14 @@ this.shroomCount = 0;
   }
 
   update(time, delta) {
-
     // Call the player's update method to handle movement
     this.player.update();
 
-    socket.emit('playerMovement', { id: socket.id, x: this.player.sprite.x, y: this.player.sprite.y });
-
+    socket.emit("playerMovement", {
+      id: socket.id,
+      x: this.player.sprite.x,
+      y: this.player.sprite.y,
+    });
 
     // Call the update method for each enemy used for their AI
     this.enemies.forEach((enemy) => {

@@ -312,7 +312,7 @@ attack(targetX, targetY) {
             return;
         }
     
-        const speed = 0.5;
+        const speed = 0.3;
         let velocityX = 0;
         let velocityY = 0;
     

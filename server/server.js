@@ -61,7 +61,7 @@ const startApolloServer = async () => {
 
       socket.on('playerHit', (playerData) => {
         console.log('playerHit', playerData);
-        io.emit('playerHit1', playerData);
+        io.emit('playerAttack', playerData);
       })
       
         // Broadcast player movement to other clients

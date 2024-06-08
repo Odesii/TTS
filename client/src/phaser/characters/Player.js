@@ -50,8 +50,7 @@ export class Player {
         this.prevAnimation = '';
         this.currentDirection = 'down'; // Initial direction
 
-        // Add pointer down listener for left mouse button
-        scene.input.on('pointerdown', this.handlePointerDown, this);
+
 
         this.isAttacking = false;
         this.attackCooldown = 0;
@@ -63,8 +62,6 @@ export class Player {
         this.mouseX = 0;
         this.mouseY = 0;
 
-        // scene.input.on('pointermove', this.handlePointerMove, this);
-        // scene.input.on('pointerdown', this.handlePointerDown, this);
 
         this.currentDirection = 'down';
 
@@ -157,7 +154,6 @@ export class Player {
     }
 
     handlePointerDown = (pointer) => {
-
         if (pointer.leftButtonDown()) {
             socket.emit('playerHit', { id: socket.id, x: this.mouseX, y: this.mouseY});
             this.attack(this.mouseX, this.mouseY);

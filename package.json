@@ -15,14 +15,5 @@
     "license": "ISC",
     "devDependencies": {
         "concurrently": "^5.1.0"
-    },
-    "dependencies": {
-        "cors": "^2.8.5",
-        "dotenv": "^16.4.5",
-        "phaser": "^3.80.1",
-        "phaser-matter-collision-plugin": "^1.0.0",
-        "phaser3-nineslice": "^0.5.0",
-        "socket.io": "^4.7.5",
-        "socket.io-client": "^4.7.5"
     }
 }

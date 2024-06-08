@@ -5,12 +5,12 @@ import { UPDATE_SHROOMS } from '../../utils/mutations'
 import  Auth  from '../../utils/auth';
 
 
+
 const client = new ApolloClient({
-    link: new HttpLink({ uri: 'http://localhost:3000/graphql' }), // Your GraphQL endpoint
+    link: new HttpLink({ uri: import.meta.env.VITE_DEPLOYED_URL||'http://localhost:3000/graphql' }), // Your GraphQL endpoint
     cache: new InMemoryCache(),
   });
 
-//   console.log(Auth.getProfile())
 export class Player {
     constructor(scene) {
         this.scene = scene; // Store the scene reference
@@ -78,7 +78,7 @@ export class Player {
 
     async updateMushroomsOnServer(amount) {
         try {
-            let result = await client.mutate({
+            await client.mutate({
                 mutation: UPDATE_SHROOMS,
                 variables: { 
                     shrooms: amount, 

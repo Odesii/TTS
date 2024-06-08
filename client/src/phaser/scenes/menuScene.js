@@ -14,7 +14,7 @@ export class MenuScene extends Phaser.Scene {
         const { width } = this.scale;
 
         const settingsButton = this.add.image(width - 10, 10, 'settings-button').setOrigin(1, 0);
-        settingsButton.setScale(0.3);
+        settingsButton.setScale(.8);
         this.add.image(settingsButton.x - settingsButton.width * 0.5, settingsButton.y + settingsButton.width * 0.5)
             .setScale(0.7);
 

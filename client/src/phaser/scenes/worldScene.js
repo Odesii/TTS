@@ -88,7 +88,7 @@ export class WorldScene extends Phaser.Scene {
 
 
     //UI
-    this.load.image("settings-button", "assets/icons/flatDark30.png");
+    this.load.image("settings-button", "assets/icons/setting.png");
     this.load.image("ui-panel", "assets/textures/tile_0048.png");
     this.load.image("inventory-panel", "assets/textures/tile_0049.png");
     this.load.image("exit-button", "assets/icons/red_button00.png");

@@ -13,7 +13,7 @@ function ProfileMain() {
     return (
         <>
             <h2>Welcome to your profile, {userData.username}</h2>
-            <h3>Shrooms: <span className="shrooms"></span> </h3>
+            <h3>Shrooms: {userData.shrooms} </h3>
         </>
     )
 }

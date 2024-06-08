@@ -15,11 +15,12 @@ function Home() {
 
     return (
         <section className="layout">
+            <h1>Take Their Shrooms</h1>
             {Auth.loggedIn() ? (
                 <>
-                    <h2>Welcome back, {userData.username}</h2>
+                    <h2>Welcome {userData.username}</h2>
                     <Link to='/play'>
-                        Play button goes here
+                        <img className='play' src="assets/icons/play.png" alt="Play" />
                     </Link>
                     <Link to='/profile'>
                         Profile
@@ -31,7 +32,6 @@ function Home() {
                 </>
             ) : (
                 <>
-                    <h2>Welcome to TTS ya noob, now go steal ya bozo</h2>
                     <Link to='/login'>
                         Login
                     </Link>

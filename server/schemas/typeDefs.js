@@ -7,7 +7,9 @@ const typeDefs =`
     shrooms: Int
     inventory: [Item]
   }
+    
 
+  
   type Item {
     _id: ID!
     name: String!
@@ -24,6 +26,7 @@ const typeDefs =`
     myProfile: User
     stockShop: [Item]
     getPlayer(playerId: ID!): User
+    getUserShrooms(userId: ID!): Int
   }
 
   type Mutation {

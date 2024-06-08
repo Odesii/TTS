@@ -7,6 +7,7 @@ import Page from '../Page';
 function Profile() {
     const [pages] = useState([
         { page: "Profile" },
+        { page: "Shop"},
         { page: "Email" },
         { page: "Password" },
         { page: "Delete" }
@@ -23,10 +24,10 @@ function Profile() {
         <section className="layout">
             {Auth.loggedIn() ? (
                 <>
+                    <Nav pages={pages} current={current} setCurrent={setCurrent} />
                     <Link to='/'>
                         Go home
                     </Link>
-                    <Nav pages={pages} current={current} setCurrent={setCurrent} />
                     <Page current={current} />
                 </>
             ) : (

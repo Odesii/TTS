@@ -1,8 +1,53 @@
 .layout {
     display: flex;
     flex-wrap: wrap;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100vw;
+    font-family: 'MyCustomFont', sans-serif;
+    text-align: center; /* Center text for better appearance */
+    }
+    
+    h1 {
+    font-size: 5rem;
+    margin: 1rem;
+}
+
+.layout a {
+    font-size: 50px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease; /* Smooth transition for scaling */
+}
+
+.layout a:hover {
+    transform: scale(1.1); /* Scale effect on hover */
+}
+
+.play {
+    width: 250px;
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.play:hover {
+    transform: scale(1.1);
+}
+
+/* Media Queries for better scaling on different screen sizes */
+@media (max-width: 1200px) {
+    .play {
+        width: 200px;
+    }
+}
+
+@media (max-width: 800px) {
+    .play {
+        width: 150px;
+    }
+}
+
+@media (max-width: 500px) {
+    .play {
+        width: 100px;
+    }
 }

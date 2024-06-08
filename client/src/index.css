@@ -1,6 +1,29 @@
+@font-face {
+  font-family: 'MyCustomFont';
+  src:url('assets/DarkMagic.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body, .container {
   margin: 0px;
   height: 100%;
   overflow: hidden;
   background-color: rgb(131, 131, 131);
+}
+
+.hero-background {
+  background: url('assets/HeroBG.gif') no-repeat; /* Adjust the path to your image */
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: rgb(0, 0, 0); /*  Set text color */
+  cursor: url('assets/icons/cursorSword_gold.png'), auto;
+}
+
+a, button, .custom-pointer {
+  cursor: url('assets/icons/cursorGauntlet_grey.png'), pointer; /* Custom pointer cursor */
 }

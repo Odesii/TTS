@@ -58,6 +58,7 @@ export class Player {
         this.attackCooldownTime = 100; // Cooldown time in milliseconds
         this.attackRange = 20;
         this.damage = 20;
+        this.damageReduction = 0;
         // Store mouse position
         this.mouseX = 0;
         this.mouseY = 0;
@@ -246,7 +247,14 @@ attack(targetX, targetY) {
             }
         }, this);
 
-        this.healthBar.decrease(amount);
+        if (amount > this.damageReduction) {
+            console.log("dmg taken: ", amount - this.damageReduction);
+            this.healthBar.decrease(amount - this.damageReduction);
+        }
+
+        else {
+            console.log("negative #: ", amount - this.damageReduction);
+        }
     }
     collectMushrooms(amount) {
         // Define text style

@@ -16,6 +16,13 @@ export class InventoryScene extends Phaser.Scene {
         super('inventory-menu');
 
         this.id = Auth.getProfile().data._id;
+        this.attackPotionTimer = null;
+        this.defensePotionTimer = null;
+    }
+
+    init (data) {
+        console.log('init', data);
+        this.player = data.player;
     }
 
     async preload() {
@@ -28,9 +35,6 @@ export class InventoryScene extends Phaser.Scene {
     }
 
     async create() {
-        setTimeout(() => {
-        }, 5000);
-
         this.container = this.add.container(0, 0);
 
         const panel = this.add.nineslice(130, 152, 'inventory-panel', null, 100);
@@ -71,7 +75,7 @@ export class InventoryScene extends Phaser.Scene {
             this.container.add(this.healthPotionQuantityText);
             this.container.add(this.attackPotionQuantityText);
             this.container.add(this.defensePotionQuantityText);
-        }, 500)
+        }, 1000)
 
         this.container.add(panel);
         this.container.add(healthPotionButton);
@@ -211,6 +215,7 @@ export class InventoryScene extends Phaser.Scene {
 
     async updateHealthPotions() {
         if (this.healthPotionQuantity === 0) {
+            console.log("no health pot to drink!")
             return;
         }
 
@@ -223,7 +228,7 @@ export class InventoryScene extends Phaser.Scene {
         }
         
         try {
-            let result = await client.mutate({
+            await client.mutate({
                 mutation: REMOVE_FROM_INVENTORY,
                 variables: { 
                     itemId: itemId,
@@ -231,16 +236,20 @@ export class InventoryScene extends Phaser.Scene {
                 },
             });
 
+            this.useHealthPotion();
             this.healthPotionQuantity = this.healthPotionQuantity - 1;
             this.healthPotionQuantityText.setText(`x${this.healthPotionQuantity}`);
-            return result.data.getPlayer.inventory;
+            // console.log('user: ', result);
+            // console.log('user inventory: ', result.data.removeFromInventory.inventory);
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
+        console.log("health pot #: ", this.healthPotionQuantity);
     }
 
     async updateAttackPotions() {
         if (this.attackPotionQuantity === 0) {
+            console.log("no att pot to drink!")
             return;
         }
 
@@ -253,7 +262,7 @@ export class InventoryScene extends Phaser.Scene {
         }
         
         try {
-            let result = await client.mutate({
+            await client.mutate({
                 mutation: REMOVE_FROM_INVENTORY,
                 variables: { 
                     itemId: itemId,
@@ -261,15 +270,21 @@ export class InventoryScene extends Phaser.Scene {
                 },
             });
 
+            clearTimeout(this.attackPotionTimer);
+            this.useAttackPotion();
             this.attackPotionQuantity = this.attackPotionQuantity - 1;
             this.attackPotionQuantityText.setText(`x${this.attackPotionQuantity}`);
+            // console.log('user: ', result);
+            // console.log('user inventory: ', result.data.removeFromInventory.inventory);
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
+        console.log("att pot #: ", this.attackPotionQuantity);
     }
 
     async updateDefensePotions() {
         if (this.defensePotionQuantity === 0) {
+            console.log("no def pot to drink!")
             return;
         }
 
@@ -282,7 +297,7 @@ export class InventoryScene extends Phaser.Scene {
         }
         
         try {
-            let result = await client.mutate({
+            await client.mutate({
                 mutation: REMOVE_FROM_INVENTORY,
                 variables: { 
                     itemId: itemId,
@@ -290,10 +305,44 @@ export class InventoryScene extends Phaser.Scene {
                 },
             });
 
+            clearTimeout(this.defensePotionTimer);
+            this.useDefensePotion();
             this.defensePotionQuantity = this.defensePotionQuantity - 1;
             this.defensePotionQuantityText.setText(`x${this.defensePotionQuantity}`);
+            // console.log('user:', result);
+            // console.log('user inventory: ', result.data.removeFromInventory.inventory);
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
+        console.log("def pot #: ", this.defensePotionQuantity);
+    }
+
+    useHealthPotion() {
+        // Numbers can be changed if needed
+        this.player.healthBar.increase(20);
+    }
+
+    useAttackPotion() {
+        // Numbers can be changed if needed
+        this.player.damage = 50;
+        console.log("att pot drank!")
+
+        this.attackPotionTimer = setTimeout(() => {
+            // Reset to base
+            this.player.damage = 20;
+            console.log("att pot expired!")
+        }, 30000)
+    }
+
+    useDefensePotion() {
+        // Numbers can be changed if needed
+        this.player.damageReduction = 10;
+        console.log("def pot drank!")
+
+        this.defensePotionTimer = setTimeout(() => {
+            // Reset to base
+            this.player.damageReduction = 0;
+            console.log("def pot expired!")
+        }, 30000)
     }
 }

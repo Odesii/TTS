@@ -5,7 +5,6 @@ const path = require('path');
 const { authMiddleware } = require('./utils/auth');
 const { typeDefs, resolvers } = require('./schemas');
 const db = require('./config/connection');
-const cors = require('cors');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 
@@ -17,9 +16,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
-app.use(cors(
-  {origin: '*'}
-));
+
 const io = new Server(httpServer, {
   cors: {
     origin: "*", // Allow any origin

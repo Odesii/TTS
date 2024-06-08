@@ -8,8 +8,14 @@
 html, body, .container {
   margin: 0px;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   background-color: rgb(131, 131, 131);
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  
+}
+::-webkit-scrollbar {
+  display: none;  /* WebKit browsers */
 }
 
 .hero-background {
@@ -26,4 +32,12 @@ html, body, .container {
 
 a, button, .custom-pointer {
   cursor: url('assets/icons/cursorGauntlet_grey.png'), pointer; /* Custom pointer cursor */
+}
+
+.bubble {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30%; /* Adjust size as needed */
+  height: auto;
 }

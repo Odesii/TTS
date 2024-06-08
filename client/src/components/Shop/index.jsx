@@ -51,7 +51,7 @@ function Shop() {
                     <Link to='/'>
                         Go home
                     </Link>
-                    <section className="form-box">
+                    <section className="form-box scrollable-content">
                         {/* Call the form handler when the submit button is clicked */}
                         <form onSubmit={handleEvent}>
                             {itemData.map((item) => (
@@ -67,6 +67,7 @@ function Shop() {
                             {success && <p id="error">{success}</p>}
 
                         </form>
+                        <img src='assets/textures/bubbles.png' alt='bubble' className='bubble' />
                     </section>
                 </>
             ) : (

@@ -251,10 +251,10 @@ attack(targetX, targetY) {
     collectMushrooms(amount) {
         // Define text style
         const textStyle = {
-          font: "5px Arial",
+          font: "1px Arial",
           fill: "#ffffff",
           stroke: "#000000",
-          strokeThickness: 1,
+          strokeThickness: .4,
           align: 'center'
         };
       
@@ -263,9 +263,9 @@ attack(targetX, targetY) {
 
         
         // Set the origin to the center of the text
-        text.setOrigin(0.5, 1);
+        // text.setOrigin(0.5, 1);
         text.setResolution(200);
-        text.setScale(1.5);
+        text.setScale(12);
         // Create a tween to animate the text
         this.scene.tweens.add({
           targets: text,

@@ -119,6 +119,7 @@ function Register() {
             <Link to='/'>
                 Go Home
             </Link>
+            <img src='assets/textures/bubbles.png' alt='bubble' className='bubble' />
         </section>
     )
 }

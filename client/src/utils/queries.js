@@ -38,3 +38,9 @@ export const GET_PLAYER = gql`
     }
   }
 `;
+
+export const GET_USER_SHROOMS = gql`
+  query getUserShrooms($userId: ID!) {
+    getUserShrooms(userId: $userId)
+  }
+`;

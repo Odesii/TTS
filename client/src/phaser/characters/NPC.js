@@ -34,7 +34,7 @@ export class NPC {
         this.cooldownTime = 1000;
         this.attackDelay = 1000;
 
-        this.attackRangeGraphics = scene.add.graphics({ fillStyle: { color: 0xff0000, alpha: 0.5 } });
+        this.attackRangeGraphics = scene.add.graphics({ fillStyle: { color: 0x00FFA4, alpha: 0.3 } });
         this.attackRangeGraphics.setVisible(false);
     }
 

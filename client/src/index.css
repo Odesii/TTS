@@ -1,6 +1,57 @@
+@font-face {
+  font-family: 'MyCustomFont';
+  src:url('assets/DarkMagic.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body, .container {
   margin: 0px;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
   background-color: rgb(131, 131, 131);
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  
+}
+::-webkit-scrollbar {
+  display: none;  /* WebKit browsers */
+}
+
+.hero-background {
+  background: url('assets/HeroBG.gif') no-repeat; /* Adjust the path to your image */
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: rgb(0, 0, 0); /*  Set text color */
+  cursor: url('assets/icons/cursorSword_gold.png'), auto;
+}
+
+a, button, .custom-pointer {
+  cursor: url('assets/icons/cursorGauntlet_grey.png'), pointer; /* Custom pointer cursor */
+}
+
+.bubble {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 30%; /* Adjust size as needed */
+  height: auto;
+}
+
+
+.form-box {
+    background-color: #440c14d4;
+    color: white;
+    border: 2px solid #896f4e;
+    border-radius: 8px;
+    box-shadow: rgba(60, 64, 67, 2) 0 1px 2px 0,
+      rgba(1, 15, 26, 0.15) 0 2px 4px 3px;
+    margin: 20px auto;
+    padding: 5px 20px;
+    width: 40vw;
+    display: block;
 }

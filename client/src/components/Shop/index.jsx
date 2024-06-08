@@ -51,12 +51,12 @@ function Shop() {
                     <Link to='/'>
                         Go home
                     </Link>
-                    <section className="form-box">
+                    <section className="form-box scrollable-content">
                         {/* Call the form handler when the submit button is clicked */}
                         <form onSubmit={handleEvent}>
                             {itemData.map((item) => (
                                 <div key={item._id}>
-                                    <p>Item Name: {item.name}</p>
+                                    <p>{item.name}</p>
                                     <img src={item.image} />
                                     <p>Effect: {item.effect}</p>
                                     <button id="submit" onClick={() => handlePurchase(item._id, item.name)}>Purchase</button>
@@ -67,6 +67,7 @@ function Shop() {
                             {success && <p id="error">{success}</p>}
 
                         </form>
+                        <img src='assets/textures/bubbles.png' alt='bubble' className='bubble' />
                     </section>
                 </>
             ) : (

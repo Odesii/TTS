@@ -47,21 +47,21 @@ const startApolloServer = async () => {
 
       io.on('connection', (socket) => {
         console.log('a user connected: ' + socket.id);
-
+      
         // Send the current players to the new player
-        socket.emit('currentPlayers', players => {
-          console.log('currentPlayers', players);
-          
-        });
-
+        socket.emit('currentPlayers', players);
+      
         // Add the new player to the players object
         socket.on('newPlayer', (playerData) => {
           players[socket.id] = playerData;
           console.log('New player connected', playerData);
           // Broadcast new player to other clients
           socket.broadcast.emit('newPlayer', playerData);
+      
+          // Send the updated list of players to the new player
+          socket.emit('currentPlayers', players);
         });
-
+      
         // Broadcast player movement to other clients
         socket.on('playerMovement', (playerData) => {
           if (players[socket.id]) {
@@ -70,7 +70,7 @@ const startApolloServer = async () => {
             socket.broadcast.emit('playerMoved', playerData);
           }
         });
-
+      
         socket.on('disconnect', () => {
           console.log('user disconnected: ' + socket.id);
           delete players[socket.id];

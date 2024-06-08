@@ -15,29 +15,27 @@ function Home() {
 
     return (
         <section className="layout">
+            <img className="logo" src='assets/icons/TTS.png' alt='logo' />
             {Auth.loggedIn() ? (
                 <>
-                    <h2>Welcome back, {userData.username}</h2>
+                    <h2>Welcome {userData.username}</h2>
                     <Link to='/play'>
-                        Play button goes here
+                        <img className='play' src="assets/icons/play.png" alt="Play" />
                     </Link>
                     <Link to='/profile'>
                         Profile
-                    </Link>
-                    <Link to='/shop'>
-                        Shop
                     </Link>
                     <Link onClick={Auth.logout}>Logout</Link>
                 </>
             ) : (
                 <>
-                    <h2>Welcome to TTS ya noob, now go steal ya bozo</h2>
                     <Link to='/login'>
                         Login
                     </Link>
                     <Link to='/register'>
                         Register
                     </Link>
+                    <img src='assets/textures/bubbles.png' alt='bubble' className='bubble' />
                 </>
             )}
         </section>

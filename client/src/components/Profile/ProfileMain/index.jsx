@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { GET_USER } from '../../../utils/queries';
+import { Link } from 'react-router-dom';
 import './style.css';
 
 function ProfileMain() {
@@ -12,8 +13,11 @@ function ProfileMain() {
 
     return (
         <>
-            <h2>Welcome to your profile, {userData.username}</h2>
-            <h3>Shrooms: <span className="shrooms"></span> </h3>
+            <h2 className='greet'>Been Collecting Shrooms?, {userData.username}</h2>
+            <h3 className='count'>Shrooms: <span className='bounce'>{userData.shrooms}</span> </h3>
+            <Link to='/play'>
+                <img className='play' src="assets/icons/play.png" alt="Play" />
+            </Link>
         </>
     )
 }

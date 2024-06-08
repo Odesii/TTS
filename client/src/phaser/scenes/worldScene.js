@@ -88,15 +88,20 @@ export class WorldScene extends Phaser.Scene {
 
 
     //UI
-    this.load.image("settings-button", "assets/icons/flatDark30.png");
+    this.load.image("settings-button", "assets/icons/setting.png");
     this.load.image("ui-panel", "assets/textures/tile_0048.png");
     this.load.image("inventory-panel", "assets/textures/tile_0049.png");
     this.load.image("exit-button", "assets/icons/red_button00.png");
+    this.load.image("healthBarImage", "assets/BarOverlay.png");
+    this.load.spritesheet("extractionAnimation", "assets/exit.png", {
+      frameWidth: 64,
+      frameHeight: 32,
+    }) ;
 
     // Potions
-    this.load.image("health-potion", "assets/items/Potion-04.png");
-    this.load.image("attack-potion", "assets/items/Potion-05.png");
-    this.load.image("defense-potion", "assets/items/Potion-03.png");
+    this.load.image("health-potion", "assets/items/health.png");
+    this.load.image("attack-potion", "assets/items/Potion-attack.png");
+    this.load.image("defense-potion", "assets/items/def.png");
   }
 
   create() {
@@ -172,11 +177,6 @@ export class WorldScene extends Phaser.Scene {
 
        // Listen for player disconnection
        socket.on('disconnect')
-       
-        // if (this.players[playerId]) {
-        //   this.players[playerId].sprite.destroy();
-        //   delete this.players[playerId];
-        // }
       
     // Add the player to the scene
     this.matter.world.add(this.player.sprite.body);

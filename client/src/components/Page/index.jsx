@@ -2,12 +2,15 @@ import ProfileMain from '../Profile/ProfileMain';
 import ChangeEmail from '../Profile/ChangeEmail';
 import ChangePassword from '../Profile/ChangePassword';
 import DeleteAccount from '../Profile/DeleteAccount';
-
+import Shop from '../Shop';
 function Page({current}) {
     // Return the element of the current page for rendering
     function render() {
         if (current.page === "Profile") {
             return <ProfileMain />;
+        }
+        else if (current.page === "Shop") {
+            return <Shop />;
         }
 
         else if (current.page === "Email") {

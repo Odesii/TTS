@@ -3,16 +3,16 @@ nav ul {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    list-style: none;
+    list-style: none;;
 }
 
 /* Hover effect for each of the nav bar items
    Credits to this site: https://css-tricks.com/css-link-hover-effects/ */
 nav ul span {
-    font-size: 15px;
-    color: #eaafb7;
+    font-size: 40px;
+    color: #896f4e;
     margin: 7.5px;
-    background-image: linear-gradient(to right, #cb010d, #cb010d 50%, #eaafb7 50%);
+    background-image: linear-gradient(to right,  #520e09, #540808 50%, #8f2d2d 50%);
     background-size: 200% 100%;
     background-position: -100%;
     display: inline-block;
@@ -26,7 +26,7 @@ nav ul span {
   
 nav ul span:before {
     content: '';
-    background: #cb010d;
+    background: #580285;
     display: block;
     position: absolute;
     bottom: -3px;
@@ -47,10 +47,10 @@ nav ul span:hover::before {
 
 /* Duplicated hover effect that reverses the colors to indicated which page it is on */
 nav ul > li.active span {
-    font-size: 15px;
-    color: #cb010d;
+    font-size: 45px;
+    color: #580285;
     margin: 7.5px;
-    background-image: linear-gradient(to left, #cb010d, #cb010d 50%, #eaafb7 50%);
+    background-image: linear-gradient(to left, #580285, #580285 50%, #c455ff 50%);
     background-size: 200% 100%;
     background-position: -100%;
     display: inline-block;
@@ -64,7 +64,7 @@ nav ul > li.active span {
   
 nav ul > li.active span:before {
     content: '';
-    background: #eaafb7;
+    background: #bf6bf0;
     display: block;
     position: absolute;
     bottom: -3px;

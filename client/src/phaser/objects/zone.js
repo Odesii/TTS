@@ -11,21 +11,27 @@ export class Zone {
 
         this.inZone = false;
         this.extractionTimer = null;
-        this.remainingTime = 5; // Initial countdown time
+        this.remainingTime = 10; // Initial countdown time
 
-        // Create the countdown text, initially hidden
-        this.countdownText = this.scene.add.text(0, 0, '', {
-            font: "62px Arial",
-            fill: "#ffffff",
-            stroke: "#000000",
-            align: 'center'
-        }).setOrigin(.5 ,0.5)
-        .setVisible(false)
-        .setResolution(25)
-        .setScale(.25);
+        // Create the extraction sprite, initially hidden
+        this.extractionSprite = this.scene.add.sprite(0, 0, 'extractionAnimation')
+            .setVisible(false)
+            .setScale(1); // Adjust the scale as needed
+
+        // Create the extraction animation
+        this.createExtractionAnimation();
 
         // Adding the update method to the scene's update loop
         scene.events.on('update', this.update, this);
+    }
+
+    createExtractionAnimation() {
+        this.scene.anims.create({
+            key: 'extract',
+            frames: this.scene.anims.generateFrameNumbers('extractionAnimation', { start: 0, end: 9 }), // Adjust the end frame as needed
+            frameRate: 1,
+            repeat: -1 // Loop the animation
+        });
     }
 
     update() {
@@ -34,11 +40,11 @@ export class Zone {
             this.scene.player.sprite.x, this.scene.player.sprite.y
         );
 
-        // Update countdown text position to be above the player's head
-        this.countdownText.setPosition(this.scene.player.sprite.x, this.scene.player.sprite.y - 50);
+        // Update extraction sprite position to be above the player's head
+        this.extractionSprite.setPosition(this.scene.player.sprite.x, this.scene.player.sprite.y - 50);
 
         // Check if the player is within the extraction range
-        if (distanceToPlayer <= 50 && !this.inZone) { // Assuming 100 is the extraction range
+        if (distanceToPlayer <= 50 && !this.inZone) { // Assuming 50 is the extraction range
             console.log('Player in extraction range');
             this.inZone = true;
             this.startExtracting();
@@ -51,14 +57,14 @@ export class Zone {
 
     startExtracting() {
         if (!this.extractionTimer) {
-            this.remainingTime = 5; // Reset countdown time
-            this.countdownText.setVisible(true).setText(`Extracting in: ${this.remainingTime}`);
+            this.remainingTime = 10; // Reset countdown time
+            this.extractionSprite.setVisible(true).play('extract');
 
             this.extractionTimer = this.scene.time.addEvent({
                 delay: 1000,
                 callback: this.updateCountdown,
                 callbackScope: this,
-                repeat: 4 // Call 5 times (5 seconds countdown)
+                repeat: 9 // Call 10 times (10 seconds countdown)
             });
         }
     }
@@ -67,14 +73,14 @@ export class Zone {
         if (this.extractionTimer) {
             this.extractionTimer.remove(false);
             this.extractionTimer = null;
-            this.countdownText.setVisible(false);
+            this.extractionSprite.setVisible(false).stop();
         }
     }
 
     updateCountdown() {
         this.remainingTime -= 1;
         if (this.remainingTime > 0) {
-            this.countdownText.setText(`Extracting in: ${this.remainingTime}`);
+            // You can optionally update the sprite frame or other visual indicators here
         } else {
             this.extract();
         }

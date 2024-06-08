@@ -10,7 +10,7 @@ const client = new ApolloClient({
     cache: new InMemoryCache(),
   });
 
-  console.log(Auth.getProfile())
+//   console.log(Auth.getProfile())
 export class Player {
     constructor(scene) {
         this.scene = scene; // Store the scene reference

@@ -153,7 +153,16 @@ export class WorldScene extends Phaser.Scene {
            this.players[playerData.id] = newPlayer;
          }
        });
-   
+       
+       socket.on('currentPlayers', (players) => {
+          Object.keys(players).forEach((id) => {
+            if (id !== socket.id) {
+              const player = new Player(this, players[id].x, players[id].y);
+              this.players[id] = player;
+            }
+          });
+       })
+
        // Listen for player movement events
        socket.on('playerMoved', (playerData) => {
          if (this.players[playerData.id]) {

@@ -26,7 +26,7 @@ const io = new Server(httpServer, {
   }
 });
 
-
+const players = {}; // Store all connected players
 
 // Create a new instance of an Apollo server with the GraphQL schema
 const startApolloServer = async () => {
@@ -46,26 +46,38 @@ const startApolloServer = async () => {
     httpServer.listen(PORT, () => {
 
       io.on('connection', (socket) => {
-  console.log('a user connected: ' + socket.id);
+        console.log('a user connected: ' + socket.id);
 
-  socket.on('newPlayer', (playerData) => {
-    console.log('New player connected', playerData);
-    // Broadcast new player to other clients
-    socket.broadcast.emit('newPlayer', playerData);
-  });
+        // Send the current players to the new player
+        socket.emit('currentPlayers', players => {
+          console.log('currentPlayers', players);
+          
+        });
 
-  socket.on('playerMovement', (playerData) => {
-    // Broadcast player movement to other clients
-    socket.broadcast.emit('playerMoved', playerData);
-  });
+        // Add the new player to the players object
+        socket.on('newPlayer', (playerData) => {
+          players[socket.id] = playerData;
+          console.log('New player connected', playerData);
+          // Broadcast new player to other clients
+          socket.broadcast.emit('newPlayer', playerData);
+        });
 
-  socket.on('disconnect', () => {
-    console.log('user disconnected: ' + socket.id);
-    // Handle player disconnection logic
-    // socket.broadcast.emit('disconnect', socket.id);
-    socket.disconnect();
-  });
-});
+        // Broadcast player movement to other clients
+        socket.on('playerMovement', (playerData) => {
+          if (players[socket.id]) {
+            players[socket.id].x = playerData.x;
+            players[socket.id].y = playerData.y;
+            socket.broadcast.emit('playerMoved', playerData);
+          }
+        });
+
+        socket.on('disconnect', () => {
+          console.log('user disconnected: ' + socket.id);
+          delete players[socket.id];
+          socket.broadcast.emit('playerDisconnected', { id: socket.id });
+        });
+      });
+
       console.log(`API server running on port ${PORT}!`);
       console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
     });

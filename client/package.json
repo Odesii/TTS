@@ -12,10 +12,14 @@
   "dependencies": {
     "@apollo/client": "^3.7.14",
     "graphql": "^16.6.0",
-    "jwt-decode": "^3.1.2",
+    "jwt-decode": "^4.0.0",
+    "phaser": "^3.80.1",
+    "phaser-matter-collision-plugin": "^1.0.0",
+    "phaser3-nineslice": "^0.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.11.2"
+    "react-router-dom": "^6.11.2",
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

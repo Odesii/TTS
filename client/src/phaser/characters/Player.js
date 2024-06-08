@@ -248,7 +248,12 @@ attack(targetX, targetY) {
         }, this);
 
         if (amount > this.damageReduction) {
+            console.log("dmg taken: ", amount - this.damageReduction);
             this.healthBar.decrease(amount - this.damageReduction);
+        }
+
+        else {
+            console.log("negative #: ", amount - this.damageReduction);
         }
     }
     collectMushrooms(amount) {

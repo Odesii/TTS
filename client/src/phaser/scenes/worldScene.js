@@ -99,9 +99,9 @@ export class WorldScene extends Phaser.Scene {
     }) ;
 
     // Potions
-    this.load.image("health-potion", "assets/items/Potion-04.png");
-    this.load.image("attack-potion", "assets/items/Potion-05.png");
-    this.load.image("defense-potion", "assets/items/Potion-03.png");
+    this.load.image("health-potion", "assets/items/health.png");
+    this.load.image("attack-potion", "assets/items/Potion-attack.png");
+    this.load.image("defense-potion", "assets/items/def.png");
   }
 
   create() {

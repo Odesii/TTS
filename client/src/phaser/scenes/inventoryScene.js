@@ -39,9 +39,9 @@ export class InventoryScene extends Phaser.Scene {
         const attackPotionButton = this.add.image(120, 152, 'attack-potion');
         const defensePotionButton = this.add.image(150, 152, 'defense-potion');
 
-        healthPotionButton.setScale(0.7);
-        attackPotionButton.setScale(0.7);
-        defensePotionButton.setScale(0.7);
+        healthPotionButton.setScale(1);
+        attackPotionButton.setScale(1);
+        defensePotionButton.setScale(1);
 
         setTimeout(() => {
             this.healthPotionQuantityText = this.add.text(
@@ -58,7 +58,7 @@ export class InventoryScene extends Phaser.Scene {
                     color: 'white',
                     fontSize: 11
                 }
-            )
+            );
     
             this.defensePotionQuantityText = this.add.text(
                 158, 146,

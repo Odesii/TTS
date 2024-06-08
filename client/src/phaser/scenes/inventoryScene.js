@@ -331,7 +331,8 @@ export class InventoryScene extends Phaser.Scene {
     }
 
     useHealthPotion() {
-        
+        // Numbers can be changed if needed
+        this.player.healthBar.increase(20);
     }
 
     useAttackPotion() {

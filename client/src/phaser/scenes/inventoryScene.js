@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { HealthBar } from "../../UI/healthbars.js";
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { GET_PLAYER, GET_ITEMS } from '../../utils/queries'
 import { REMOVE_FROM_INVENTORY } from "../../utils/mutations";
@@ -16,6 +17,11 @@ export class InventoryScene extends Phaser.Scene {
         super('inventory-menu');
 
         this.id = Auth.getProfile().data._id;
+    }
+
+    init (data) {
+        console.log('init', data);
+        this.player = data.player;
     }
 
     async preload() {
@@ -72,7 +78,7 @@ export class InventoryScene extends Phaser.Scene {
             this.container.add(this.healthPotionQuantityText);
             this.container.add(this.attackPotionQuantityText);
             this.container.add(this.defensePotionQuantityText);
-        }, 500)
+        }, 1000)
 
         this.container.add(panel);
         this.container.add(healthPotionButton);
@@ -223,6 +229,7 @@ export class InventoryScene extends Phaser.Scene {
 
     async updateHealthPotions() {
         if (this.healthPotionQuantity === 0) {
+            console.log("no health pot to drink!")
             return;
         }
 
@@ -243,6 +250,7 @@ export class InventoryScene extends Phaser.Scene {
                 },
             });
 
+            this.useHealthPotion();
             this.healthPotionQuantity = this.healthPotionQuantity - 1;
             this.healthPotionQuantityText.setText(`x${this.healthPotionQuantity}`);
             console.log('user:', result);
@@ -256,6 +264,7 @@ export class InventoryScene extends Phaser.Scene {
 
     async updateAttackPotions() {
         if (this.attackPotionQuantity === 0) {
+            console.log("no att pot to drink!")
             return;
         }
 
@@ -276,6 +285,7 @@ export class InventoryScene extends Phaser.Scene {
                 },
             });
 
+            this.useAttackPotion();
             this.attackPotionQuantity = this.attackPotionQuantity - 1;
             this.attackPotionQuantityText.setText(`x${this.attackPotionQuantity}`);
             console.log('user:', result);
@@ -288,6 +298,7 @@ export class InventoryScene extends Phaser.Scene {
 
     async updateDefensePotions() {
         if (this.defensePotionQuantity === 0) {
+            console.log("no def pot to drink!")
             return;
         }
 
@@ -308,6 +319,7 @@ export class InventoryScene extends Phaser.Scene {
                 },
             });
 
+            this.useDefensePotion();
             this.defensePotionQuantity = this.defensePotionQuantity - 1;
             this.defensePotionQuantityText.setText(`x${this.defensePotionQuantity}`);
             console.log('user:', result);
@@ -316,5 +328,17 @@ export class InventoryScene extends Phaser.Scene {
             console.error('Unexpected error occurred:', error);
         }
         console.log(this.healthPotionQuantity);
+    }
+
+    useHealthPotion() {
+        
+    }
+
+    useAttackPotion() {
+        
+    }
+
+    useDefensePotion() {
+        
     }
 }

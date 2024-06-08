@@ -7,18 +7,7 @@
     width: 100vw;
 }
 
-.form-box {
-    background-color: #440c14;
-    color: white;
-    border: 1px solid #d8232e;
-    border-radius: 8px;
-    box-shadow: rgba(60, 64, 67, 2) 0 1px 2px 0,
-      rgba(1, 15, 26, 0.15) 0 2px 4px 3px;
-    margin: 20px auto;
-    padding: 5px 20px;
-    width: 40vw;
-    display: block;
-}
+
 
 /* Defining the form as a flex display */
 form {

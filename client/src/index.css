@@ -41,3 +41,13 @@ a, button, .custom-pointer {
   width: 30%; /* Adjust size as needed */
   height: auto;
 }
+
+.form-box {
+  background: url('assets/textures/scroll.svg') no-repeat center center;
+  
+  margin: 20px auto;
+  padding: 5px 20px;
+  width: 50vw;
+  display: block;
+}
+

@@ -1,4 +1,4 @@
-.form-box {
+/* .form-box {
     background-color: #440c14;
     color: white;
     border: 1px solid #d8232e;
@@ -9,7 +9,7 @@
     padding: 5px 20px;
     width: 40vw;
     display: block;
-}
+} */
 
 /* Defining the form as a flex display */
 form {

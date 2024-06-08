@@ -256,7 +256,7 @@ export class InventoryScene extends Phaser.Scene {
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
-        console.log(this.healthPotionQuantity);
+        console.log("health pot #: ", this.healthPotionQuantity);
     }
 
     async updateAttackPotions() {
@@ -291,7 +291,7 @@ export class InventoryScene extends Phaser.Scene {
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
-        console.log(this.attackPotionQuantity);
+        console.log("att pot #: ", this.attackPotionQuantity);
     }
 
     async updateDefensePotions() {
@@ -326,7 +326,7 @@ export class InventoryScene extends Phaser.Scene {
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
-        console.log(this.defensePotionQuantity);
+        console.log("def pot #: ", this.defensePotionQuantity);
     }
 
     useHealthPotion() {

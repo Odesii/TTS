@@ -219,7 +219,7 @@ this.shroomCount = 100;
     );
 
     this.scene.launch("game-menu");
-    this.scene.launch("inventory-menu");
+    this.scene.launch("inventory-menu", { player: this.player });
     this.healthbar = new HealthBar(this, 20, 18, 100);
   }
 

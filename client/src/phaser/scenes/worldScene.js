@@ -67,7 +67,7 @@ export class WorldScene extends Phaser.Scene {
     this.load.image("castle", "assets/map/OutdoorTileset.png");
 
     this.load.spritesheet("mushroom", mushroom, {
-      frameWidth: 7.5,
+      frameWidth: 8,
       frameHeight: 5,
     });
     this.load.spritesheet("chest", chest, { frameWidth: 18, frameHeight: 14 });

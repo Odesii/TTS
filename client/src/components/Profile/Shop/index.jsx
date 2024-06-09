@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ApolloClient, InMemoryCache, HttpLink, useQuery, useMutation } from '@apollo/client';
 import { GET_ITEMS, GET_PLAYER } from '../../../utils/queries';
 import { ADD_TO_INVENTORY, UPDATE_SHROOMS } from '../../../utils/mutations';
@@ -20,9 +20,19 @@ function Shop() {
 
     const [success, setSuccess] = useState("");
 
+    useEffect(() => {
+        if (success) {
+            const messageTimer = setTimeout(() => {
+                console.log("clear message");
+                setSuccess(null);
+            }, 3000);
+
+            return () => clearTimeout(messageTimer);
+        }
+    }, [success])
+
     function handleEvent(event) {
         event.preventDefault();
-        setSuccess(null);
     }
     
     async function handlePurchase(itemId, itemName, itemCost) {

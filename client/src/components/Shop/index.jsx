@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ITEMS } from '../../utils/queries';
 import { ADD_TO_INVENTORY } from '../../utils/mutations';
@@ -21,18 +20,24 @@ function Shop() {
     
     async function handlePurchase(itemId, itemName) {
         try {
-            const { data } = await addToInventory({
-                variables: { itemId: itemId }
-            });
+            if (await handleUpdateShrooms()) {
+                const { data } = await addToInventory({
+                    variables: { itemId: itemId }
+                });
 
-            if (!data) {
-                throw new Error('something went wrong!');
+                if (!data) {
+                    throw new Error('something went wrong!');
+                }
+
+                setSuccess(`${itemName} purchased!`);
             }
         } catch (e) {
             console.error(e);
         }
+    }
 
-        setSuccess(`${itemName} purchased!`);
+    async function handleUpdateShrooms() {
+        return false;
     }
 
     function redirect() {
@@ -48,9 +53,6 @@ function Shop() {
             {Auth.loggedIn() ? (
                 <>
                     <h2>POTION SHOP</h2>
-                    <Link to='/'>
-                        Go home
-                    </Link>
                     <section className="form-box scrollable-content">
                         {/* Call the form handler when the submit button is clicked */}
                         <form onSubmit={handleEvent}>
@@ -58,6 +60,7 @@ function Shop() {
                                 <div key={item._id}>
                                     <p>{item.name}</p>
                                     <img src={item.image} />
+                                    <p>Shrooms: {item.cost}</p>
                                     <p>Effect: {item.effect}</p>
                                     <button id="submit" onClick={() => handlePurchase(item._id, item.name)}>Purchase</button>
                                 </div>

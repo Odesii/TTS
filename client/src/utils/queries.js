@@ -40,6 +40,17 @@ export const GET_PLAYER = gql`
   }
 `;
 
+export const GET_ALL_PLAYERS = gql`
+  {
+    getAllPlayers {
+      _id
+      username
+      email
+      totalShrooms
+    }
+  }
+`;
+
 export const GET_USER_SHROOMS = gql`
   query getUserShrooms($userId: ID!) {
     getUserShrooms(userId: $userId)

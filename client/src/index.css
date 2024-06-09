@@ -48,7 +48,7 @@ a, button, .custom-pointer {
 }
 
 .bubble {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   right: 0;
   width: 30%; /* Adjust size as needed */

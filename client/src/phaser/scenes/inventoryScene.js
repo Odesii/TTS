@@ -323,26 +323,31 @@ export class InventoryScene extends Phaser.Scene {
     }
 
     useAttackPotion() {
-        // Numbers can be changed if needed
-        this.player.damage = 50;
-        console.log("att pot drank!")
-
+        this.damage = 50;
+        console.log("att pot drank!");
+    
+        // Trigger the attack buff animation sequence
+        this.player.playAttackBuffAnimation();
+    
         this.attackPotionTimer = setTimeout(() => {
             // Reset to base
-            this.player.damage = 20;
-            console.log("att pot expired!")
-        }, 30000)
+            this.damage = 20;
+            console.log("att pot expired!");
+        }, 30000);
     }
-
+    
     useDefensePotion() {
-        // Numbers can be changed if needed
-        this.player.damageReduction = 10;
-        console.log("def pot drank!")
-
+        this.damageReduction = 10;
+        console.log("def pot drank!");
+    
+        // Trigger the defense buff animation sequence
+        this.player.playDefenseBuffAnimation();
+    
         this.defensePotionTimer = setTimeout(() => {
             // Reset to base
-            this.player.damageReduction = 0;
-            console.log("def pot expired!")
-        }, 30000)
+            this.damageReduction = 0;
+            console.log("def pot expired!");
+        }, 30000);
     }
+    
 }

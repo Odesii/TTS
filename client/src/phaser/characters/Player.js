@@ -31,10 +31,19 @@ export class Player {
             isSensor: true, // Make the hitbox a sensor NO physical collision just there for activation
         });
 
+        this.overlaySprite = scene.add.sprite(this.sprite.x, this.sprite.y, 'Overlay', 'Overlay.png');
+        this.overlaySprite.setVisible(false);
+        this.overlaySprite.setDepth(1); // Ensure overlay sprite is above the player sprite
         this.collectedShrooms = 0;
+
+
+
 
         // Create animations
         this.createAnimations(scene);
+        this.attackBuffOverlay(scene);
+        this.defenseBuffOverlay(scene);
+
 
         // Add WASD input
         this.keys = scene.input.keyboard.addKeys({
@@ -89,6 +98,51 @@ export class Player {
         }
     
 
+        defenseBuffOverlay(scene) {
+            scene.anims.create({
+                key: 'BlueBuffStart',
+                frames: scene.anims.generateFrameNumbers('BlueBuffStart', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: 0
+            });
+        
+            scene.anims.create({
+                key: 'BlueBuff',
+                frames: scene.anims.generateFrameNumbers('BlueBuff', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: -1 // This will loop indefinitely
+            });
+        
+            scene.anims.create({
+                key: 'BlueBuffEnd',
+                frames: scene.anims.generateFrameNumbers('BlueBuffEnd', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: 0
+            });
+        }
+        
+        attackBuffOverlay(scene) {
+            scene.anims.create({
+                key: 'GreenBuffStart',
+                frames: scene.anims.generateFrameNumbers('GreenBuffStart', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: 0
+            });
+        
+            scene.anims.create({
+                key: 'GreenBuff',
+                frames: scene.anims.generateFrameNumbers('GreenBuff', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: -1 // This will loop indefinitely
+            });
+        
+            scene.anims.create({
+                key: 'GreenBuffEnd',
+                frames: scene.anims.generateFrameNumbers('GreenBuffEnd', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: 0
+            });
+        }
 
     createAnimations(scene) {
         const anims = [
@@ -314,6 +368,57 @@ attack(targetX, targetY) {
         }, this);
     }
 
+    playAttackBuffAnimation() {
+        this.overlaySprite.setVisible(true);
+    
+        // Play the start animation
+        this.overlaySprite.anims.play('GreenBuffStart', true);
+    
+        this.overlaySprite.once('animationcomplete', (animation) => {
+            if (animation.key === 'GreenBuffStart') {
+                // After the start animation, play the middle animation and keep it for 30 seconds
+                this.overlaySprite.anims.play('GreenBuff', true);
+    
+                this.scene.time.delayedCall(30000, () => {
+                    // After 30 seconds, play the end animation
+                    this.overlaySprite.anims.play('GreenBuffEnd', true);
+    
+                    this.overlaySprite.once('animationcomplete', (animation) => {
+                        if (animation.key === 'GreenBuffEnd') {
+                            this.overlaySprite.setVisible(false);
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    playDefenseBuffAnimation() {
+        this.overlaySprite.setVisible(true);
+    
+        // Play the start animation
+        this.overlaySprite.anims.play('BlueBuffStart', true);
+    
+        this.overlaySprite.once('animationcomplete', (animation) => {
+            if (animation.key === 'BlueBuffStart') {
+                // After the start animation, play the middle animation and keep it for 30 seconds
+                this.overlaySprite.anims.play('BlueBuff', true);
+    
+                this.scene.time.delayedCall(30000, () => {
+                    // After 30 seconds, play the end animation
+                    this.overlaySprite.anims.play('BlueBuffEnd', true);
+    
+                    this.overlaySprite.once('animationcomplete', (animation) => {
+                        if (animation.key === 'BlueBuffEnd') {
+                            this.overlaySprite.setVisible(false);
+                        }
+                    });
+                });
+            }
+        });
+    }
+    
+
     update() {
         if (this.isAttacking || this.isDead || this.isTakingDamage) {
             return;
@@ -377,7 +482,7 @@ attack(targetX, targetY) {
             this.sprite.anims.stop();
             this.sprite.anims.play('idle', true);
         }
-    
+        this.overlaySprite.setPosition(this.sprite.x, this.sprite.y)
         this.sprite.setAngle(0);
         this.sprite.setAngularVelocity(0);
     

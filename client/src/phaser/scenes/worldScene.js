@@ -22,6 +22,35 @@ export class WorldScene extends Phaser.Scene {
     const RogueAtt = "assets/character/Rogue/RogueAttack.png";
     const chest = "assets/chest.png";
     const mushroom = "assets/shrooms.png";
+
+
+    //load buff
+    this.load.spritesheet("BlueBuff", "assets/buffs/BlueBuff.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("BlueBuffEnd", "assets/buffs/BlueBuffEnd.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("BlueBuffStart", "assets/buffs/BlueBuffStart.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("GreenBuff", "assets/buffs/GreenBuff.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("GreenBuffEnd", "assets/buffs/GreenBuffEnd.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("GreenBuffStart", "assets/buffs/BlueBuffStart.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+
+
     // Load the tileset images
     this.load.image(
       "Minifantasy_ForgottenPlainsTiles",
@@ -180,7 +209,6 @@ export class WorldScene extends Phaser.Scene {
     socket.on("playerAttack", (playerData) => {
       if (this.players[playerData.id]) {
         this.players[playerData.id].attack(playerData.x, playerData.y);
-        // this.players[playerData.id].sprite.anims.play("attack_right", true);
       } else {
         console.log("Player not found");
       }

@@ -1,17 +1,20 @@
 [
     {
         "name": "Health Potion",
-        "effect": "health",
+        "cost": 25,
+        "effect": "Heal 20 HP",
         "image": "assets/items/Potion-04.png"
     },
     {
         "name": "Attack Potion",
-        "effect": "attack",
+        "cost": 100,
+        "effect": "Increase damage by 30",
         "image": "assets/items/Potion-05.png"
     },
     {
         "name": "Defense Potion",
-        "effect": "defense",
+        "cost": 50,
+        "effect": "Reduce incoming damage by 10",
         "image": "assets/items/Potion-03.png"
     }
 ]

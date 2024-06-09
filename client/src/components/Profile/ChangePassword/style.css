@@ -10,11 +10,11 @@ form {
 /* Adjusting margins and positioning of text on the form */
 form h2 {
     margin-bottom: 5px;
-    font-size: 1vw;
+    font-size: 3vw;
 }
 
 form label {
-    font-size: 1vw;
+    font-size: 3vw;
     margin-bottom: 3px;
     margin-top: 10px;
     padding: 5px;
@@ -24,13 +24,13 @@ form label {
 input {
     border-radius: 5px;
     border-width: 3px;
-    font-size: 1vw;
+    font-size: 3vw;
     background-color: #02000c;
     color: white;
 }
 
 #submit {
-    font-size: 1vw;
+    font-size: 3vw;
     margin-bottom: 10px;
     background-color: #78202d;
     color: #f4e7d0;
@@ -38,7 +38,7 @@ input {
 
 /* Display a message of error/success based on whether the input is valid or not */
 form p {
-    font-size: 1vw;
+    font-size: 3vw;
     margin: 10px 0;
     color: #eaafb7;
 }

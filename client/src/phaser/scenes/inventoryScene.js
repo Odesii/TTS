@@ -75,7 +75,7 @@ export class InventoryScene extends Phaser.Scene {
             this.container.add(this.healthPotionQuantityText);
             this.container.add(this.attackPotionQuantityText);
             this.container.add(this.defensePotionQuantityText);
-        }, 1500)
+        }, 2500)
 
         this.container.add(panel);
         this.container.add(healthPotionButton);

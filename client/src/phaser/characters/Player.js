@@ -31,7 +31,7 @@ export class Player {
             isSensor: true, // Make the hitbox a sensor NO physical collision just there for activation
         });
 
-
+        this.collectedShrooms = 0;
 
         // Create animations
         this.createAnimations(scene);
@@ -186,8 +186,10 @@ attack(targetX, targetY) {
             attackAnimationKey = 'attack_up';
             offsetY = -16;
         }
-    
+        
         this.sprite.anims.play(attackAnimationKey, true);
+
+        socket.emit('playerAnimation', { id: socket.id, key: attackAnimationKey });
     
         this.scene.matter.body.setPosition(this.attackHitbox, {
             x: this.sprite.x + offsetX,
@@ -250,12 +252,14 @@ attack(targetX, targetY) {
             console.log("dmg taken: ", amount - this.damageReduction);
             this.healthBar.decrease(amount - this.damageReduction);
         }
-
         else {
             console.log("negative #: ", amount - this.damageReduction);
         }
     }
     collectMushrooms(amount) {
+
+
+        this.collectedShrooms += amount;
         // Define text style
         const textStyle = {
           font: "1px Arial",
@@ -286,29 +290,25 @@ attack(targetX, targetY) {
         });
       
         // Send the update to the server
-        this.updateMushroomsOnServer(amount);
+        // this.updateMushroomsOnServer(amount);
       }
       
 
     
-      
-     die() {
-          this.isDead = true;
-          // Stop the player from moving and interacting
-          this.sprite.setVelocity(0, 0);
-          this.sprite.setStatic(true);
-
-        // Play the die animation
+      die() {
+        this.isDead = true;
+        this.sprite.setVelocity(0, 0);
+        this.sprite.setStatic(true);
         this.sprite.anims.play('die', true);
-          console.log('Player died');
+        console.log('Player died');
 
-        // Wait for the death animation to complete before stopping the sprite
+        // Clear collected shrooms
+        this.collectedShrooms = 0;
+
         this.sprite.once('animationcomplete', (animation) => {
             if (animation.key === 'die') {
-                // Set the sprite to inactive and invisible after the animation completes
                 this.sprite.setActive(false);
                 this.sprite.setVisible(false);
-
                 window.location.replace('/profile');
             }
         }, this);
@@ -336,6 +336,7 @@ attack(targetX, targetY) {
         }
     
         this.sprite.setVelocity(velocityX, velocityY);
+
     
         if (velocityX !== 0 || velocityY !== 0) {
             let animationKey = '';
@@ -366,7 +367,12 @@ attack(targetX, targetY) {
                 this.currentDirection = 'left';
             }
     
-            this.sprite.anims.play(animationKey, true);
+        socket.emit('playerMovement', {
+            id: socket.id,
+            x: this.sprite.x,
+            y: this.sprite.y,
+            key: animationKey
+              });
         } else {
             this.sprite.anims.stop();
             this.sprite.anims.play('idle', true);

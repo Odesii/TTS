@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ApolloClient, InMemoryCache, HttpLink, useQuery, useMutation } from '@apollo/client';
-import { GET_ITEMS, GET_PLAYER } from '../../utils/queries';
-import { ADD_TO_INVENTORY, UPDATE_SHROOMS } from '../../utils/mutations';
-import Auth from '../../utils/auth';
+import { GET_ITEMS, GET_PLAYER } from '../../../utils/queries';
+import { ADD_TO_INVENTORY, UPDATE_SHROOMS } from '../../../utils/mutations';
+import Auth from '../../../utils/auth';
 import './style.css';
 
 function Shop() {
@@ -18,18 +18,20 @@ function Shop() {
 
     const [addToInventory] = useMutation(ADD_TO_INVENTORY);
 
-    const [success, setSuccess] = useState("");
+    const [message, setMessage] = useState("");
+    const [updatedMessage, setUpdatedMessage] = useState(false);
 
     useEffect(() => {
-        if (success) {
+        if (message && !updatedMessage) {
             const messageTimer = setTimeout(() => {
                 console.log("clear message");
-                setSuccess(null);
+                setMessage(null);
+                setUpdatedMessage(false);
             }, 3000);
 
             return () => clearTimeout(messageTimer);
         }
-    }, [success])
+    }, [message, updatedMessage])
 
     function handleEvent(event) {
         event.preventDefault();
@@ -37,7 +39,7 @@ function Shop() {
     
     async function handlePurchase(itemId, itemName, itemCost) {
         try {
-            if (await handleUpdateShrooms(itemCost)) {
+            if (await handleUpdateShrooms(itemId, itemCost)) {
                 const { data } = await addToInventory({
                     variables: { itemId: itemId }
                 });
@@ -46,14 +48,20 @@ function Shop() {
                     throw new Error('something went wrong!');
                 }
 
-                setSuccess(`${itemName} purchased!`);
+                setMessage(`${itemName} purchased!`);
+                setUpdatedMessage(true);
+
+                setTimeout(() => {
+                    console.log("clear update");
+                    setUpdatedMessage(false);
+                }, 1000);
             }
         } catch (e) {
             console.error(e);
         }
     }
 
-    async function handleUpdateShrooms(itemCost) {
+    async function handleUpdateShrooms(itemId, itemCost) {
         try {
             const user = await client.query({
                 query: GET_PLAYER,
@@ -61,16 +69,44 @@ function Shop() {
             });
 
             if (user.data.getPlayer.shrooms >= itemCost) {
-                await client.mutate({
-                    mutation: UPDATE_SHROOMS,
-                    variables: { shrooms: -itemCost, playerId: id }
-                });
+                let count = 0;
 
-                return true;
+                for (let i = 0; i < user.data.getPlayer.inventory.length; i++) {
+                    if (user.data.getPlayer.inventory[i]._id.toString() === itemId) {
+                        count = count + 1;
+                    }
+                }
+
+                console.log("pot count: ", count);
+                if (count >= 99) {
+                    setMessage("You can't hold any more of those potions!");
+                    setUpdatedMessage(true);
+
+                    setTimeout(() => {
+                        console.log("clear update");
+                        setUpdatedMessage(false);
+                    }, 1000);
+                    return false;
+                }
+
+                else {
+                    await client.mutate({
+                        mutation: UPDATE_SHROOMS,
+                        variables: { shrooms: -itemCost, playerId: id }
+                    });
+
+                    return true;
+                }
             }
 
             else {
-                setSuccess("You don't have enough shrooms!");
+                setMessage("You don't have enough shrooms!");
+                setUpdatedMessage(true);
+
+                setTimeout(() => {
+                    console.log("clear update");
+                    setUpdatedMessage(false);
+                }, 1000);
                 return false;
             }
             
@@ -105,8 +141,8 @@ function Shop() {
                                 </div>
                             ))}
 
-                            {!success && <p id="error">&nbsp;</p>}
-                            {success && <p id="error">{success}</p>}
+                            {!message && <p id="error">&nbsp;</p>}
+                            {message && <p id="error">{message}</p>}
 
                         </form>
                         <img src='assets/textures/bubbles.png' alt='bubble' className='bubble' />

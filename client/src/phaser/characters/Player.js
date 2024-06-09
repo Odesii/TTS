@@ -25,6 +25,7 @@ export class Player {
             },
         });
         this.sprite.setFixedRotation(); // Prevent rotation
+        this.sprite.setDepth(2); // Ensure the player sprite is above everything else
         // Create an attack hitbox
         this.attackHitbox = scene.matter.add.rectangle(32, 32, 20, 20,{
             label: 'Hitbox',
@@ -33,16 +34,21 @@ export class Player {
 
         this.overlaySprite = scene.add.sprite(this.sprite.x, this.sprite.y, 'Overlay', 'Overlay.png');
         this.overlaySprite.setVisible(false);
-        this.overlaySprite.setDepth(1); // Ensure overlay sprite is above the player sprite
+        this.overlaySprite.setDepth(3); // Ensure overlay sprite is above the player sprite
         this.collectedShrooms = 0;
 
-
-
+        this.backgroundSprite = scene.add.sprite(this.sprite.x, this.sprite.y, 'Background', 'Background.png');
+        this.backgroundSprite.setVisible(false);
+        this.backgroundSprite.setDepth(1); // Ensure background sprite is below the player sprite
 
         // Create animations
         this.createAnimations(scene);
         this.attackBuffOverlay(scene);
         this.defenseBuffOverlay(scene);
+        this.defenseBackgroundEffect(scene)
+        this.attackBackgroundEffect(scene)
+
+
 
 
         // Add WASD input
@@ -60,7 +66,6 @@ export class Player {
         this.currentDirection = 'down'; // Initial direction
 
 
-
         this.isAttacking = false;
         this.attackCooldown = 0;
         this.attackCooldownTime = 100; // Cooldown time in milliseconds
@@ -71,17 +76,11 @@ export class Player {
         this.mouseX = 0;
         this.mouseY = 0;
 
-
         this.currentDirection = 'down';
-
         this.isDead = false;
         this.isTakingDamage = false;
-
         this.id = Auth.getProfile().data._id;
-
     }
-
-
 
     async updateMushroomsOnServer(amount) {
         try {
@@ -95,6 +94,38 @@ export class Player {
         } catch (error) {
                 console.error('Unexpected error occurred:', error);
             }
+        }
+
+        defenseBackgroundEffect(scene) {
+            scene.anims.create({
+                key: 'BlueBaseStart',
+                frames: scene.anims.generateFrameNumbers('BlueBase', { start: 0, end: 2 }),
+                frameRate: 3,
+                repeat: 0
+            });
+    
+            scene.anims.create({
+                key: 'BlueBaseEnd',
+                frames: scene.anims.generateFrameNumbers('BlueBase', { start: 3, end: 5 }),
+                frameRate: 3,
+                repeat: 0
+            });
+        }   
+        
+        attackBackgroundEffect(scene) {
+            scene.anims.create({
+                key: 'GreenBaseStart',
+                frames: scene.anims.generateFrameNumbers('GreenBase', { start: 0, end: 2 }),
+                frameRate: 6,
+                repeat: 0
+            });
+    
+            scene.anims.create({
+                key: 'GreenBaseEnd',
+                frames: scene.anims.generateFrameNumbers('GreenBase', { start:3, end: 5 }),
+                frameRate: 6,
+                repeat: 0
+            });
         }
     
 
@@ -370,19 +401,30 @@ attack(targetX, targetY) {
 
     playAttackBuffAnimation() {
         this.overlaySprite.setVisible(true);
-    
-        // Play the start animation
+        this.backgroundSprite.setVisible(true);
+
+        // Play the start animation for both sprites
         this.overlaySprite.anims.play('GreenBuffStart', true);
-    
+        this.backgroundSprite.anims.play('GreenBaseStart', true);
+
         this.overlaySprite.once('animationcomplete', (animation) => {
             if (animation.key === 'GreenBuffStart') {
                 // After the start animation, play the middle animation and keep it for 30 seconds
                 this.overlaySprite.anims.play('GreenBuff', true);
-    
-                this.scene.time.delayedCall(30000, () => {
-                    // After 30 seconds, play the end animation
+
+                this.scene.time.delayedCall(15000, () => {
+                    // After 15 seconds, play the end animation for the background
+                    this.backgroundSprite.anims.play('GreenBaseEnd', true);
+
+                    this.backgroundSprite.once('animationcomplete', (animation) => {
+                        if (animation.key === 'GreenBaseEnd') {
+                            this.backgroundSprite.setVisible(false);
+                        }
+                    });
+
+                    // Play the end animation for the overlay
                     this.overlaySprite.anims.play('GreenBuffEnd', true);
-    
+
                     this.overlaySprite.once('animationcomplete', (animation) => {
                         if (animation.key === 'GreenBuffEnd') {
                             this.overlaySprite.setVisible(false);
@@ -395,19 +437,30 @@ attack(targetX, targetY) {
 
     playDefenseBuffAnimation() {
         this.overlaySprite.setVisible(true);
-    
-        // Play the start animation
+        this.backgroundSprite.setVisible(true);
+
+        // Play the start animation for both sprites
         this.overlaySprite.anims.play('BlueBuffStart', true);
-    
+        this.backgroundSprite.anims.play('BlueBaseStart', true);
+
         this.overlaySprite.once('animationcomplete', (animation) => {
             if (animation.key === 'BlueBuffStart') {
                 // After the start animation, play the middle animation and keep it for 30 seconds
                 this.overlaySprite.anims.play('BlueBuff', true);
-    
-                this.scene.time.delayedCall(30000, () => {
-                    // After 30 seconds, play the end animation
+
+                this.scene.time.delayedCall(15000, () => {
+                    // After 15 seconds, play the end animation for the background
+                    this.backgroundSprite.anims.play('BlueBaseEnd', true);
+
+                    this.backgroundSprite.once('animationcomplete', (animation) => {
+                        if (animation.key === 'BlueBaseEnd') {
+                            this.backgroundSprite.setVisible(false);
+                        }
+                    });
+
+                    // Play the end animation for the overlay
                     this.overlaySprite.anims.play('BlueBuffEnd', true);
-    
+
                     this.overlaySprite.once('animationcomplete', (animation) => {
                         if (animation.key === 'BlueBuffEnd') {
                             this.overlaySprite.setVisible(false);
@@ -483,6 +536,8 @@ attack(targetX, targetY) {
             this.sprite.anims.play('idle', true);
         }
         this.overlaySprite.setPosition(this.sprite.x, this.sprite.y)
+        this.backgroundSprite.setPosition(this.sprite.x, this.sprite.y) 
+
         this.sprite.setAngle(0);
         this.sprite.setAngularVelocity(0);
     

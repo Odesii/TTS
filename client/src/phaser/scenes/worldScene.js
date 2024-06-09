@@ -45,7 +45,15 @@ export class WorldScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    this.load.spritesheet("GreenBuffStart", "assets/buffs/BlueBuffStart.png", {
+    this.load.spritesheet("GreenBuffStart", "assets/buffs/GreenBuffStart.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("GreenBase", "assets/buffs/GreenBase.png", {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet("BlueBase", "assets/buffs/BlueBase.png", {
       frameWidth: 32,
       frameHeight: 32,
     });

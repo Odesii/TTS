@@ -1,119 +1,13 @@
-import { useEffect, useState } from 'react';
-import { ApolloClient, InMemoryCache, HttpLink, useQuery, useMutation } from '@apollo/client';
-import { GET_ITEMS, GET_PLAYER } from '../../utils/queries';
-import { ADD_TO_INVENTORY, UPDATE_SHROOMS } from '../../utils/mutations';
+import { Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_PLAYERS } from '../../utils/queries';
 import Auth from '../../utils/auth';
 import './style.css';
 
 function Rankings() {
-    const client = new ApolloClient({
-        link: new HttpLink({ uri: import.meta.env.VITE_DEPLOYED_GQL}), // Your GraphQL endpoint
-        cache: new InMemoryCache(),
-    });
-
-    const id = Auth.getProfile().data._id;
-
-    const { loading, data } = useQuery(GET_ITEMS);
-    const itemData = data?.stockShop || {};
-
-    const [addToInventory] = useMutation(ADD_TO_INVENTORY);
-
-    const [message, setMessage] = useState("");
-    const [updatedMessage, setUpdatedMessage] = useState(false);
-
-    useEffect(() => {
-        if (message && !updatedMessage) {
-            const messageTimer = setTimeout(() => {
-                console.log("clear message");
-                setMessage(null);
-                setUpdatedMessage(false);
-            }, 3000);
-
-            return () => clearTimeout(messageTimer);
-        }
-    }, [message, updatedMessage])
-
-    function handleEvent(event) {
-        event.preventDefault();
-    }
-    
-    async function handlePurchase(itemId, itemName, itemCost) {
-        try {
-            if (await handleUpdateShrooms(itemId, itemCost)) {
-                const { data } = await addToInventory({
-                    variables: { itemId: itemId }
-                });
-
-                if (!data) {
-                    throw new Error('something went wrong!');
-                }
-
-                setMessage(`${itemName} purchased!`);
-                setUpdatedMessage(true);
-
-                setTimeout(() => {
-                    console.log("clear update");
-                    setUpdatedMessage(false);
-                }, 100);
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    async function handleUpdateShrooms(itemId, itemCost) {
-        try {
-            const user = await client.query({
-                query: GET_PLAYER,
-                variables: { playerId: id }
-            });
-
-            if (user.data.getPlayer.shrooms >= itemCost) {
-                let count = 0;
-
-                for (let i = 0; i < user.data.getPlayer.inventory.length; i++) {
-                    if (user.data.getPlayer.inventory[i]._id.toString() === itemId) {
-                        count = count + 1;
-                    }
-                }
-
-                console.log("pot count: ", count);
-                if (count >= 99) {
-                    setMessage("You can't hold any more of those potions!");
-                    setUpdatedMessage(true);
-
-                    setTimeout(() => {
-                        console.log("clear update");
-                        setUpdatedMessage(false);
-                    }, 100);
-                    return false;
-                }
-
-                else {
-                    await client.mutate({
-                        mutation: UPDATE_SHROOMS,
-                        variables: { shrooms: -itemCost, playerId: id }
-                    });
-
-                    return true;
-                }
-            }
-
-            else {
-                setMessage("You don't have enough shrooms!");
-                setUpdatedMessage(true);
-
-                setTimeout(() => {
-                    console.log("clear update");
-                    setUpdatedMessage(false);
-                }, 100);
-                return false;
-            }
-            
-        } catch (e) {
-            console.error(e);
-        } 
-    }
+    const { loading, data } = useQuery(GET_ALL_PLAYERS);
+    const users = data?.getAllPlayers || {};
+    let rank = 1;
 
     function redirect() {
         window.location.replace('/login');
@@ -127,25 +21,25 @@ function Rankings() {
         <section className="layout">
             {Auth.loggedIn() ? (
                 <>
-                    <h2>SHROOM ADDICTS</h2>
+                    <Link to='/'>
+                        Go home
+                    </Link>
                     <section className="form-box scrollable-content">
-                        <h2>SHROOM ADDICTS</h2>
                         {/* Call the form handler when the submit button is clicked */}
-                        <form onSubmit={handleEvent}>
-                        <h2>SHROOM ADDICTS</h2>
-                            {itemData.map((item) => (
-                                <div key={item._id}>
-                                    <p>{item.name}</p>
-                                    <img src={item.image} />
-                                    <p>Shrooms: {item.cost}</p>
-                                    <p>Effect: {item.effect}</p>
-                                    <button id="submit" onClick={() => handlePurchase(item._id, item.name, item.cost)}>Purchase</button>
+                        <form>
+                            <h2>SHROOM ADDICTS</h2>
+                            <section className="rank-labels">
+                                <p>Rank</p>
+                                <p>Username</p>
+                                <p>Shrooms</p>
+                            </section>
+                            {users.filter((user, i) => i < 10).map((user, i) => (
+                                <div key={user._id} className="rankers">
+                                    <p>{rank + i}</p>
+                                    <p>{user.username}</p>
+                                    <p>{user.totalShrooms}</p>
                                 </div>
                             ))}
-
-                            {!message && <p id="error">&nbsp;</p>}
-                            {message && <p id="error">{message}</p>}
-
                         </form>
                         <img src='assets/textures/bubbles.png' alt='bubble' className='bubble' />
                     </section>

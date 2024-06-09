@@ -80,7 +80,7 @@ export class Player {
                 mutation: UPDATE_SHROOMS,
                 variables: { 
                     shrooms: amount, 
-                    playerID: this.id
+                    playerId: this.id
                 },
             });
         } catch (error) {

@@ -40,8 +40,8 @@ export class InventoryScene extends Phaser.Scene {
         const panel = this.add.nineslice(130, 152, 'inventory-panel', null, 100);
 
         const healthPotionButton = this.add.image(90, 152, 'health-potion');
-        const attackPotionButton = this.add.image(120, 152, 'attack-potion');
-        const defensePotionButton = this.add.image(150, 152, 'defense-potion');
+        const attackPotionButton = this.add.image(121, 152, 'attack-potion');
+        const defensePotionButton = this.add.image(152, 152, 'defense-potion');
 
         healthPotionButton.setScale(1);
         attackPotionButton.setScale(1);
@@ -49,33 +49,33 @@ export class InventoryScene extends Phaser.Scene {
 
         setTimeout(() => {
             this.healthPotionQuantityText = this.add.text(
-                98, 146,
+                97, 147,
                 `x${this.healthPotionQuantity}`, {
                     color: 'white',
-                    fontSize: 11
+                    fontSize: 10
                 }
             )
 
             this.attackPotionQuantityText = this.add.text(
-                128, 146,
+                128, 147,
                 `x${this.attackPotionQuantity}`, {
                     color: 'white',
-                    fontSize: 11
+                    fontSize: 10
                 }
             );
     
             this.defensePotionQuantityText = this.add.text(
-                158, 146,
+                159, 147,
                 `x${this.defensePotionQuantity}`, {
                     color: 'white',
-                    fontSize: 11
+                    fontSize: 10
                 }
             )
 
             this.container.add(this.healthPotionQuantityText);
             this.container.add(this.attackPotionQuantityText);
             this.container.add(this.defensePotionQuantityText);
-        }, 1000)
+        }, 1500)
 
         this.container.add(panel);
         this.container.add(healthPotionButton);
@@ -164,7 +164,7 @@ export class InventoryScene extends Phaser.Scene {
         let quantity = 0;
 
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].effect === "health") {
+            if (this.items[i].name === "Health Potion") {
                 index = i;
             }
         }
@@ -182,7 +182,7 @@ export class InventoryScene extends Phaser.Scene {
         let quantity = 0;
 
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].effect === "attack") {
+            if (this.items[i].name === "Attack Potion") {
                 index = i;
             }
         }
@@ -200,7 +200,7 @@ export class InventoryScene extends Phaser.Scene {
         let quantity = 0;
 
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].effect === "defense") {
+            if (this.items[i].name === "Defense Potion") {
                 index = i;
             }
         }
@@ -222,7 +222,7 @@ export class InventoryScene extends Phaser.Scene {
         let itemId;
         
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].effect === "health") {
+            if (this.items[i].name === "Health Potion") {
                 itemId = this.items[i]._id;
             }
         }
@@ -256,7 +256,7 @@ export class InventoryScene extends Phaser.Scene {
         let itemId;
         
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].effect === "attack") {
+            if (this.items[i].name === "Attack Potion") {
                 itemId = this.items[i]._id;
             }
         }
@@ -291,7 +291,7 @@ export class InventoryScene extends Phaser.Scene {
         let itemId;
         
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].effect === "defense") {
+            if (this.items[i].name === "Defense Potion") {
                 itemId = this.items[i]._id;
             }
         }

@@ -13,6 +13,7 @@ const typeDefs =`
   type Item {
     _id: ID!
     name: String!
+    cost: Int!
     effect: String!
     image: String!
   }
@@ -35,7 +36,7 @@ const typeDefs =`
     changeEmail(email: String!): User
     changePassword(password: String!): User
     deleteAccount(_id: ID!): User
-    updateShrooms(shrooms: Int!, playerID: ID): User
+    updateShrooms(shrooms: Int!, playerId: ID): User
     addToInventory(itemId: ID!): User
     removeFromInventory(itemId: ID!, playerId: ID): User
   }

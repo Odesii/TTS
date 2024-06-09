@@ -6,7 +6,7 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { Outlet } from 'react-router-dom';
-import Background from './assets/HeroBG.gif';
+
 // Construct our main GraphQL API endpoint
 const httpLink = createHttpLink({
   uri: '/graphql',
@@ -35,8 +35,8 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-      <div className='main-container'>
-      <img src={Background} className="hero-background"/>
+      <div className="hero-background">
+        
       <Outlet />
       </div>
     </ApolloProvider>

@@ -18,33 +18,33 @@ html, body, .container {
   display: none;  /* WebKit browsers */
 }
 
-.main-container {
+/* .main-container {
 position: relative;
 height: 100%;
 width: 100%;
 z-index: 0;
-}
+} */
 
 .hero-background {
-  /* background: url('assets/HeroBG.gif') no-repeat; Adjust the path to your image */
-  /* background-size: cover; */
-  z-index: 1;
-  object-fit: cover;
-  position: absolute;
+  background: url('./assets/HeroBG.gif') no-repeat; 
+  background-size: cover;
+  /* z-index: 1; */
+  /* object-fit: cover; */
+  /* position: absolute; */
   min-height: 100vh;
-  height: 100%;
-  width: 100vw;
+  /* height: 100%; */
+  /* width: 100vw; */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   color: rgb(0, 0, 0); /*  Set text color */
-  cursor: url('assets/icons/cursorSword_gold.png'), auto;
+  cursor: url('./assets/cursorSword_gold.png'), auto;
 
 }
 
 a, button, .custom-pointer {
-  cursor: url('assets/icons/cursorGauntlet_grey.png'), pointer; /* Custom pointer cursor */
+  cursor: url('./assets/cursorGauntlet_grey.png'), pointer; /* Custom pointer cursor */
 }
 
 .bubble {

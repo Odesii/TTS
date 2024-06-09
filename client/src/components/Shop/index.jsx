@@ -1,11 +1,18 @@
 import { useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_ITEMS } from '../../utils/queries';
+import { ApolloClient, InMemoryCache, HttpLink, useQuery, useMutation } from '@apollo/client';
+import { GET_ITEMS, GET_PLAYER } from '../../utils/queries';
 import { ADD_TO_INVENTORY } from '../../utils/mutations';
 import Auth from '../../utils/auth';
 import './style.css';
 
 function Shop() {
+    const client = new ApolloClient({
+        link: new HttpLink({ uri: import.meta.env.VITE_DEPLOYED_GQL}), // Your GraphQL endpoint
+        cache: new InMemoryCache(),
+    });
+
+    const id = Auth.getProfile().data._id;
+
     const { loading, data } = useQuery(GET_ITEMS);
     const itemData = data?.stockShop || {};
 
@@ -18,9 +25,9 @@ function Shop() {
         setSuccess(null);
     }
     
-    async function handlePurchase(itemId, itemName) {
+    async function handlePurchase(itemId, itemName, itemCost) {
         try {
-            if (await handleUpdateShrooms()) {
+            if (await handleUpdateShrooms(itemCost)) {
                 const { data } = await addToInventory({
                     variables: { itemId: itemId }
                 });
@@ -36,8 +43,25 @@ function Shop() {
         }
     }
 
-    async function handleUpdateShrooms() {
-        return false;
+    async function handleUpdateShrooms(itemCost) {
+        try {
+            const user = await client.query({
+                query: GET_PLAYER,
+                variables: { playerId: id }
+            });
+
+            if (user.data.getPlayer.shrooms >= itemCost) {
+                return true;
+            }
+
+            else {
+                setSuccess("You don't have enough shrooms!");
+                return false;
+            }
+            
+        } catch (e) {
+            console.error(e);
+        } 
     }
 
     function redirect() {
@@ -62,7 +86,7 @@ function Shop() {
                                     <img src={item.image} />
                                     <p>Shrooms: {item.cost}</p>
                                     <p>Effect: {item.effect}</p>
-                                    <button id="submit" onClick={() => handlePurchase(item._id, item.name)}>Purchase</button>
+                                    <button id="submit" onClick={() => handlePurchase(item._id, item.name, item.cost)}>Purchase</button>
                                 </div>
                             ))}
 

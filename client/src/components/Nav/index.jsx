@@ -18,13 +18,13 @@ function Nav(props) {
                 <li className={current.page === pages[1].page ? 'active' : ''} key={pages[1].page}>
                     <span onClick={() => setCurrent(pages[1])}>Shop</span>
                     </li>
-                <li className={current.page === pages[2].page ? 'active' : ''} key={pages[1].page}>
+                <li className={current.page === pages[2].page ? 'active' : ''} key={pages[2].page}>
                     <span onClick={() => setCurrent(pages[2])}>Change E-mail</span>
                 </li>
-                <li className={current.page === pages[3].page ? 'active' : ''} key={pages[2].page}>
+                <li className={current.page === pages[3].page ? 'active' : ''} key={pages[3].page}>
                     <span onClick={() => setCurrent(pages[3])}>Change Password</span>
                 </li>
-                <li className={current.page === pages[4].page ? 'active' : ''} key={pages[3].page}>
+                <li className={current.page === pages[4].page ? 'active' : ''} key={pages[4].page}>
                     <span onClick={() => setCurrent(pages[4])}>Delete Account</span>
                 </li>
             </ul>

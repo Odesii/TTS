@@ -6,6 +6,10 @@ const itemSchema = new Schema(
       type: String,
       required: true
     },
+    cost: {
+      type: Number,
+      required: true
+    },
     effect: {
       type: String,
       required: true

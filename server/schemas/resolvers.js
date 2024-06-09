@@ -79,18 +79,19 @@ const resolvers = {
 
       return user;
     },
-    updateShrooms: async (parent, { shrooms, playerID }, context) => {
-      const Player = await User.findOne(
-        { _id: playerID }
+    updateShrooms: async (parent, { shrooms, playerId }, context) => {
+      const player = await User.findOne(
+        { _id: playerId }
       );
-      const CurrentShrooms = Player.shrooms; 
-        const user = await User.findOneAndUpdate(
-          { _id: playerID },
-          { shrooms: shrooms + CurrentShrooms},
-          { new: true }
-        );
-                return user; 
-      // }
+
+      const currentShrooms = player.shrooms; 
+      
+      const user = await User.findOneAndUpdate(
+        { _id: playerId },
+        { shrooms: shrooms + currentShrooms},
+        { new: true }
+      );
+      return user; 
     },
     addToInventory: async (parent, { itemId }, context) => {
       const item = await Item.findById(itemId);

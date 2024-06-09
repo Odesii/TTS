@@ -1,8 +1,9 @@
 import ProfileMain from '../Profile/ProfileMain';
+import Shop from '../Profile/Shop';
 import ChangeEmail from '../Profile/ChangeEmail';
 import ChangePassword from '../Profile/ChangePassword';
 import DeleteAccount from '../Profile/DeleteAccount';
-import Shop from '../Shop';
+
 function Page({current}) {
     // Return the element of the current page for rendering
     function render() {

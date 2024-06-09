@@ -86,10 +86,25 @@ export class Zone {
         }
     }
 
-    extract() {
+    async extract() {
         if (this.inZone) {
             console.log('Extracting');
-            window.location.replace('/profile');
+            try {
+                // Update the server with the collected shrooms
+                await this.scene.player.updateMushroomsOnServer(this.scene.player.collectedShrooms);
+
+                // Add a delay before redirecting to ensure the fetch is complete
+                this.scene.time.addEvent({
+                    delay: 1000,
+                    callback: () => {
+                        window.location.replace('/profile');
+                    },
+                    callbackScope: this
+                });
+            } catch (error) {
+                console.error('Failed to update mushrooms on server:', error);
+                // Optionally, handle the error (e.g., notify the player, retry the request, etc.)
+            }
         }
     }
 }

@@ -220,7 +220,7 @@ export class WorldScene extends Phaser.Scene {
       repeat: 0,
     });
     //spawn chesticles
-    this.spawnChests(10);
+    this.spawnChests(200);
     // Spawn enemies
     this.spawnEnemies(this.shroomCount);
     // Spawn mushrooms

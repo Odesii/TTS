@@ -31,7 +31,7 @@ export class Player {
             isSensor: true, // Make the hitbox a sensor NO physical collision just there for activation
         });
 
-
+        this.collectedShrooms = 0;
 
         // Create animations
         this.createAnimations(scene);
@@ -257,6 +257,9 @@ attack(targetX, targetY) {
         }
     }
     collectMushrooms(amount) {
+
+
+        this.collectedShrooms += amount;
         // Define text style
         const textStyle = {
           font: "1px Arial",
@@ -287,29 +290,25 @@ attack(targetX, targetY) {
         });
       
         // Send the update to the server
-        this.updateMushroomsOnServer(amount);
+        // this.updateMushroomsOnServer(amount);
       }
       
 
     
-      
-     die() {
-          this.isDead = true;
-          // Stop the player from moving and interacting
-          this.sprite.setVelocity(0, 0);
-          this.sprite.setStatic(true);
-
-        // Play the die animation
+      die() {
+        this.isDead = true;
+        this.sprite.setVelocity(0, 0);
+        this.sprite.setStatic(true);
         this.sprite.anims.play('die', true);
-          console.log('Player died');
+        console.log('Player died');
 
-        // Wait for the death animation to complete before stopping the sprite
+        // Clear collected shrooms
+        this.collectedShrooms = 0;
+
         this.sprite.once('animationcomplete', (animation) => {
             if (animation.key === 'die') {
-                // Set the sprite to inactive and invisible after the animation completes
                 this.sprite.setActive(false);
                 this.sprite.setVisible(false);
-
                 window.location.replace('/profile');
             }
         }, this);

@@ -8,6 +8,7 @@ const db = require('./config/connection');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 
+
 const PORT = process.env.PORT || 3001;
 const app = express();
 const httpServer = createServer(app);
@@ -42,29 +43,32 @@ const startApolloServer = async () => {
   db.once('open', () => {
     httpServer.listen(PORT, () => {
 
-      io.on('connection', (socket) => {
-        console.log('a user connected: ' + socket.id);
-      
+      io.on('connection', (socket) => {            
         // Send the current players to the new player
         socket.emit('currentPlayers', players);
-      
+        
         // Add the new player to the players object
         socket.on('newPlayer', (playerData) => {
           players[socket.id] = playerData;
-          console.log('New player connected', playerData);
           // Broadcast new player to other clients
           io.emit('newPlayer', playerData);
-      
-          // Send the updated list of players to the new player
           socket.emit('currentPlayers', players);
         });
 
-      socket.on('playerHit', (playerData) => {
-        console.log('playerHit', playerData);
-        io.emit('playerAttack', playerData);
-      })
-      
-        // Broadcast player movement to other clients
+        // Handle player attack
+        socket.on('playerHit', (playerData) => {
+          io.emit('playerAttack', playerData);
+        });
+
+        // Handle player animation
+        socket.on('playerAnimation', (data) => {
+          if (players[data.id]) {
+            players[data.id].key = data.key;
+            io.emit('playerAnimation', data);
+          }
+        });
+
+        // Handle player movement
         socket.on('playerMovement', (playerData) => {
           if (players[socket.id]) {
             players[socket.id].x = playerData.x;
@@ -73,6 +77,7 @@ const startApolloServer = async () => {
           }
         });
       
+        // Handle player disconnect
         socket.on('disconnect', () => {
           console.log('user disconnected: ' + socket.id);
           socket.broadcast.emit('playerDisconnected', { id: socket.id });

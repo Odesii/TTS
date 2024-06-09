@@ -186,8 +186,10 @@ attack(targetX, targetY) {
             attackAnimationKey = 'attack_up';
             offsetY = -16;
         }
-    
+        
         this.sprite.anims.play(attackAnimationKey, true);
+
+        socket.emit('playerAnimation', { id: socket.id, key: attackAnimationKey });
     
         this.scene.matter.body.setPosition(this.attackHitbox, {
             x: this.sprite.x + offsetX,
@@ -250,7 +252,6 @@ attack(targetX, targetY) {
             console.log("dmg taken: ", amount - this.damageReduction);
             this.healthBar.decrease(amount - this.damageReduction);
         }
-
         else {
             console.log("negative #: ", amount - this.damageReduction);
         }
@@ -336,6 +337,7 @@ attack(targetX, targetY) {
         }
     
         this.sprite.setVelocity(velocityX, velocityY);
+
     
         if (velocityX !== 0 || velocityY !== 0) {
             let animationKey = '';
@@ -366,7 +368,12 @@ attack(targetX, targetY) {
                 this.currentDirection = 'left';
             }
     
-            this.sprite.anims.play(animationKey, true);
+        socket.emit('playerMovement', {
+            id: socket.id,
+            x: this.sprite.x,
+            y: this.sprite.y,
+            key: animationKey
+              });
         } else {
             this.sprite.anims.stop();
             this.sprite.anims.play('idle', true);

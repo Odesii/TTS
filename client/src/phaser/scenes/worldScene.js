@@ -180,21 +180,23 @@ export class WorldScene extends Phaser.Scene {
     socket.on("playerAttack", (playerData) => {
       if (this.players[playerData.id]) {
         this.players[playerData.id].attack(playerData.x, playerData.y);
-        this.players[playerData.id].sprite.anims.play("attack_right", true);
-
+        // this.players[playerData.id].sprite.anims.play("attack_right", true);
       } else {
         console.log("Player not found");
       }
     });
     // Listen for player movement events
-    socket.on("playerMoved", (playerData) => {
-      if (this.players[playerData.id]) {
-        this.players[playerData.id].sprite.setPosition(
-          playerData.x,
-          playerData.y
-        );
+    socket.on('playerMoved', (data) => {
+      if (this.players[data.id]) {
+        this.players[data.id].sprite.setPosition(data.x, data.y);
+        this.players[data.id].sprite.anims.play(data.key, true);
       }
     });
+    socket.on('playerAnimation', (data) => {
+      if (this.players[data.id]) {
+          this.players[data.id].sprite.anims.play(data.key, true);
+      }
+  });
 
     socket.on("playerDisconnected", (socketID) => {
       if (this.players[socketID.id]) {

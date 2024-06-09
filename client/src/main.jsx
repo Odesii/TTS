@@ -9,6 +9,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Profile from './components/Profile';
 import { PhaserGame } from './phaser/PhaserGame'
+import Rankings from './components/Rankings/index.jsx';
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,9 @@ const router = createBrowserRouter([
       }, {
         path: '/profile',
         element: <Profile />
+      }, {
+        path: '/rankings',
+        element: <Rankings />
       }, {
         path: '/play',
         element: <PhaserGame />

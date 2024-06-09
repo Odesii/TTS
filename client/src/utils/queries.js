@@ -19,6 +19,7 @@ export const GET_ITEMS = gql`
     stockShop {
       _id
       name
+      cost
       effect
       image
     }

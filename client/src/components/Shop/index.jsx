@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ApolloClient, InMemoryCache, HttpLink, useQuery, useMutation } from '@apollo/client';
 import { GET_ITEMS, GET_PLAYER } from '../../utils/queries';
-import { ADD_TO_INVENTORY } from '../../utils/mutations';
+import { ADD_TO_INVENTORY, UPDATE_SHROOMS } from '../../utils/mutations';
 import Auth from '../../utils/auth';
 import './style.css';
 
@@ -51,6 +51,11 @@ function Shop() {
             });
 
             if (user.data.getPlayer.shrooms >= itemCost) {
+                await client.mutate({
+                    mutation: UPDATE_SHROOMS,
+                    variables: { shrooms: -itemCost, playerId: id }
+                });
+
                 return true;
             }
 

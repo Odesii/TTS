@@ -208,7 +208,7 @@ export class WorldScene extends Phaser.Scene {
     // Add the player to the scene
     this.matter.world.add(this.player.sprite.body);
 
-    this.shroomCount = 0;
+    this.shroomCount = 100;
     // Group of NPCs (enemies)
     this.enemies = [];
 
@@ -220,11 +220,11 @@ export class WorldScene extends Phaser.Scene {
       repeat: 0,
     });
     //spawn chesticles
-    this.spawnChests(200);
+    this.spawnChests(10);
     // Spawn enemies
     this.spawnEnemies(this.shroomCount);
     // Spawn mushrooms
-    this.spawnMushrooms(20); // Number of mushrooms to spawn
+    this.spawnMushrooms(90); // Number of mushrooms to spawn
 
     // Set the world bounds to match the map size
     this.matter.world.setBounds(

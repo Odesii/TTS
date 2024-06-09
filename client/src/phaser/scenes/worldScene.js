@@ -167,14 +167,14 @@ export class WorldScene extends Phaser.Scene {
     // Add the zone object
     this.zone = new Zone(this);
 
-    // Create the player
-    // this.player = new Player(this, 100);
+
     // Add the player to the scene
     this.players = {};
     this.player = new Player(this);
     this.players[socket.id] = this.player;
 
-    //pionter events
+
+    // Pointer events
     this.input.on(
       "pointerdown",
       this.players[socket.id].handlePointerDown,
@@ -185,7 +185,6 @@ export class WorldScene extends Phaser.Scene {
       this.players[socket.id].handlePointerMove,
       this.player
     );
-
     socket.emit("newPlayer", {
       id: socket.id,
       x: this.player.sprite.x,
@@ -197,10 +196,9 @@ export class WorldScene extends Phaser.Scene {
       y: this.player.sprite.y,
     });
 
-    // Listen for new player events
     socket.on("newPlayer", (playerData) => {
       if (!this.players[playerData.id]) {
-        const newPlayer = new Player(this, playerData.x, playerData.y);
+        const newPlayer = new Player(this);
         this.players[playerData.id] = newPlayer;
       }
     });
@@ -208,7 +206,8 @@ export class WorldScene extends Phaser.Scene {
     socket.on("currentPlayers", (players) => {
       Object.keys(players).forEach((id) => {
         if (id !== socket.id) {
-          const player = new Player(this, players[id].x, players[id].y);
+          const player = new Player(this);
+          player.sprite.setPosition(players[id].x, players[id].y);
           this.players[id] = player;
         }
       });
@@ -221,16 +220,23 @@ export class WorldScene extends Phaser.Scene {
         console.log("Player not found");
       }
     });
-    // Listen for player movement events
+
     socket.on('playerMoved', (data) => {
-      if (this.players[data.id]) {
+      if (this.players[data.id] && this.players[data.id].sprite.anims) {
         this.players[data.id].sprite.setPosition(data.x, data.y);
         this.players[data.id].sprite.anims.play(data.key, true);
       }
     });
+
     socket.on('playerAnimation', (data) => {
-      if (this.players[data.id]) {
-          this.players[data.id].sprite.anims.play(data.key, true);
+      if (this.players[data.id] && this.players[data.id].sprite.anims) {
+          if (data.key) {
+              this.players[data.id].sprite.anims.play(data.key, true).on('animationcomplete', () => {
+                  this.players[data.id].sprite.anims.play('idle', true);
+              });
+          } else {
+              console.error('Undefined animation key received from server:', data.key);
+          }
       }
   });
 

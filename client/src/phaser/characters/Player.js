@@ -175,64 +175,65 @@ export class Player {
             });
         }
 
-    createAnimations(scene) {
-        const anims = [
-            { key: 'right', start: 0, end: 3 },
-            { key: 'down', start: 0, end: 3 },
-            { key: 'downRight', start: 0, end: 3 },
-            { key: 'left', start: 4, end: 7 },
-            { key: 'downLeft', start: 4, end: 7 },
-            { key: 'upRight', start: 8, end: 11 },
-            { key: 'up', start: 8, end: 11 },
-            { key: 'upLeft', start: 12, end: 15 },
-            { key: 'idle', start: 0, end: 3 }
-        ];
-        anims.forEach(anim => {
-            scene.anims.create({
-                key: anim.key,
-                frames: scene.anims.generateFrameNumbers('RogueWalk', { start: anim.start, end: anim.end }),
-                frameRate: 6,
-                repeat: -1
+        createAnimations(scene) {
+            const anims = [
+                { key: 'right', start: 0, end: 3 },
+                { key: 'down', start: 0, end: 3 },
+                { key: 'downRight', start: 0, end: 3 },
+                { key: 'left', start: 4, end: 7 },
+                { key: 'downLeft', start: 4, end: 7 },
+                { key: 'upRight', start: 8, end: 11 },
+                { key: 'up', start: 8, end: 11 },
+                { key: 'upLeft', start: 12, end: 15 },
+                { key: 'idle', start: 0, end: 3 }
+            ];
+            anims.forEach(anim => {
+                scene.anims.create({
+                    key: anim.key,
+                    frames: scene.anims.generateFrameNumbers('RogueWalk', { start: anim.start, end: anim.end }),
+                    frameRate: 6,
+                    repeat: -1
+                });
             });
-        });
-        scene.anims.create({
-            key: 'attack_right',
-            frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'attack_left',
-            frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 4, end: 7 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'attack_down',
-            frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'attack_up',
-            frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'die',
-            frames: scene.anims.generateFrameNumbers('RogueDie', { start: 0, end: 25 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'dmg',
-            frames: scene.anims.generateFrameNumbers('RogueDmg', { start: 0, end: 3 }),
-            frameRate: 12,
-            repeat: 0
-        });
-    }
-
+        
+            scene.anims.create({
+                key: 'attack_right',
+                frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'attack_left',
+                frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 4, end: 7 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'attack_down',
+                frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'attack_up',
+                frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'die',
+                frames: scene.anims.generateFrameNumbers('RogueDie', { start: 0, end: 25 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'dmg',
+                frames: scene.anims.generateFrameNumbers('RogueDmg', { start: 0, end: 3 }),
+                frameRate: 12,
+                repeat: 0
+            });
+        }
+        
     handlePointerMove = (pointer) => {
         this.mouseX = pointer.worldX;
         this.mouseY = pointer.worldY;
@@ -245,13 +246,12 @@ export class Player {
         }
     }
 
-attack(targetX, targetY) {
+    attack(targetX, targetY) {
         if (this.isAttacking || this.attackCooldown > 0 || this.isDead || this.isTakingDamage) {
             return;
         }
     
         this.isAttacking = true;
-        // this.sprite.anims.stop();
     
         const angle = Phaser.Math.Angle.Between(this.sprite.x, this.sprite.y, targetX, targetY);
         let attackAnimationKey;
@@ -271,50 +271,50 @@ attack(targetX, targetY) {
             attackAnimationKey = 'attack_up';
             offsetY = -16;
         }
-        
-        this.sprite.anims.play(attackAnimationKey, true);
-
-        socket.emit('playerAnimation', { id: socket.id, key: attackAnimationKey });
     
-        this.scene.matter.body.setPosition(this.attackHitbox, {
-            x: this.sprite.x + offsetX,
-            y: this.sprite.y + offsetY
-        });
-        this.attackHitbox.render.visible = true;//DEBUG to display box on attack
-
-
-        this.scene.enemies.forEach(enemy => { 
-            
-            const distanceToEnemy = Phaser.Math.Distance.Between(
-                this.attackHitbox.position.x, this.attackHitbox.position.y,
-                enemy.x, enemy.y
-            );
-            const npc = enemy.getData('npcInstance');
-            // Check if the player is within attack range and hasn't been hit yet
-            if (distanceToEnemy <= this.attackRange) {
-                npc.takeDamage(this.damage);
-            }
-            
-        });
-
-
+        if (attackAnimationKey) {
+            this.sprite.anims.play(attackAnimationKey, true);
+            socket.emit('playerAnimation', { id: socket.id, key: attackAnimationKey });
     
-        this.scene.time.addEvent({
-
-            delay: 100,
-            callback: () => {
-                this.attackHitbox.render.visible = false;//hides attack hitbox
-            },
-            callbackScope: this
-        });
+            this.scene.matter.body.setPosition(this.attackHitbox, {
+                x: this.sprite.x + offsetX,
+                y: this.sprite.y + offsetY
+            });
+            this.attackHitbox.render.visible = true; // DEBUG to display box on attack
     
-        this.sprite.on('animationcomplete', (animation) => {
-            if (animation.key === attackAnimationKey) {
-                this.isAttacking = false;
-                this.attackCooldown = this.attackCooldownTime;
-            }
-        }, this);
+            this.scene.enemies.forEach(enemy => {
+                const distanceToEnemy = Phaser.Math.Distance.Between(
+                    this.attackHitbox.position.x, this.attackHitbox.position.y,
+                    enemy.x, enemy.y
+                );
+                const npc = enemy.getData('npcInstance');
+                // Check if the player is within attack range and hasn't been hit yet
+                if (distanceToEnemy <= this.attackRange) {
+                    npc.takeDamage(this.damage);
+                }
+            });
+    
+            this.scene.time.addEvent({
+                delay: 100,
+                callback: () => {
+                    this.attackHitbox.render.visible = false; // hides attack hitbox
+                },
+                callbackScope: this
+            });
+    
+            this.sprite.on('animationcomplete', (animation) => {
+                if (animation.key === attackAnimationKey) {
+                    this.isAttacking = false;
+                    this.attackCooldown = this.attackCooldownTime;
+                    this.sprite.anims.play('idle', true); // Play idle animation after attack completes
+                }
+            }, this);
+        } else {
+            console.error('Undefined attack animation key:', attackAnimationKey);
+        }
     }
+    
+    
 
     takeDamage(amount) {
         if (this.isTakingDamage || this.isDead || this.isAttacking) {
@@ -494,11 +494,10 @@ attack(targetX, targetY) {
         }
     
         this.sprite.setVelocity(velocityX, velocityY);
-
+    
+        let animationKey = '';
     
         if (velocityX !== 0 || velocityY !== 0) {
-            let animationKey = '';
-    
             if (velocityX > 0 && velocityY === 0) {
                 animationKey = 'right';
                 this.currentDirection = 'right';
@@ -525,27 +524,42 @@ attack(targetX, targetY) {
                 this.currentDirection = 'left';
             }
     
-        socket.emit('playerMovement', {
-            id: socket.id,
-            x: this.sprite.x,
-            y: this.sprite.y,
-            key: animationKey
-              });
+            if (animationKey && this.prevAnimation !== animationKey) {
+                this.sprite.anims.play(animationKey, true);
+                this.prevAnimation = animationKey;
+    
+                socket.emit('playerMovement', {
+                    id: socket.id,
+                    x: this.sprite.x,
+                    y: this.sprite.y,
+                    key: animationKey
+                });
+            }
         } else {
-            this.sprite.anims.stop();
-            this.sprite.anims.play('idle', true);
+            if (this.prevAnimation !== 'idle') {
+                this.sprite.anims.stop();
+                this.sprite.anims.play('idle', true);
+                this.prevAnimation = 'idle';
+    
+                socket.emit('playerMovement', {
+                    id: socket.id,
+                    x: this.sprite.x,
+                    y: this.sprite.y,
+                    key: 'idle'
+                });
+            }
         }
-        this.overlaySprite.setPosition(this.sprite.x, this.sprite.y)
-        this.backgroundSprite.setPosition(this.sprite.x, this.sprite.y) 
-
+    
+        this.overlaySprite.setPosition(this.sprite.x, this.sprite.y);
+        this.backgroundSprite.setPosition(this.sprite.x, this.sprite.y);
+    
         this.sprite.setAngle(0);
         this.sprite.setAngularVelocity(0);
     
         // If the attack cooldown is active (greater than 0), decrement it by the time elapsed since the last game frame
         if (this.attackCooldown > 0) {
-        this.attackCooldown -= this.scene.sys.game.loop.delta;
-}
-
+            this.attackCooldown -= this.scene.sys.game.loop.delta;
+        }
     
         const camera = this.scene.cameras.main;
         this.healthBar.graphics.setPosition(camera.scrollX + 10, camera.scrollY + 10);

@@ -6,6 +6,9 @@
     width: 100vw;
     font-family: 'MyCustomFont', sans-serif;
     text-align: center; /* Center text for better appearance */
+    position: relative;
+    z-index: 2;
+    height: 100%;
     }
 
     .logo {

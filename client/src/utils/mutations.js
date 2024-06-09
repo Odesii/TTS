@@ -60,6 +60,15 @@ export const UPDATE_SHROOMS = gql`
   }
 `;
 
+export const CALCULATE_TOTAL_SHROOMS = gql`
+  mutation calculateTotalShrooms($shrooms: Int!, $playerId: ID) {
+    calculateTotalShrooms(shrooms: $shrooms, playerId: $playerId) {
+      _id
+      totalShrooms
+    }
+  }
+`;
+
 export const ADD_TO_INVENTORY = gql`
   mutation addToInventory($itemId: ID!) {
     addToInventory(itemId: $itemId) {

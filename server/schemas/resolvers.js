@@ -30,7 +30,6 @@ const resolvers = {
       const user = await User.findById(userId);
       return user ? user.shrooms : 0;
     },
-
   },
   Mutation:{
     createUser: async (parent, { username, email, password }) => {

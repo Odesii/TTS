@@ -93,6 +93,20 @@ const resolvers = {
       );
       return user; 
     },
+    calculateTotalShrooms: async (parent, { shrooms, playerId }, context) => {
+      const player = await User.findOne(
+        { _id: playerId }
+      );
+
+      const currentShrooms = player.totalShrooms; 
+      
+      const user = await User.findOneAndUpdate(
+        { _id: playerId },
+        { totalShrooms: shrooms + currentShrooms},
+        { new: true }
+      );
+      return user; 
+    },
     addToInventory: async (parent, { itemId }, context) => {
       const item = await Item.findById(itemId);
       

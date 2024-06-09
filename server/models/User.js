@@ -24,6 +24,10 @@ const userSchema = new Schema(
       type: Number,
       default: 0
     },
+    totalShrooms: {
+      type: Number,
+      default: 0
+    },
     inventory: [
       {
         type: Schema.Types.ObjectId,

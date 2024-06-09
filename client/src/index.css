@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'MyCustomFont';
-  src:url('assets/DarkMagic.woff') format('woff');
+  src:url('./assets/DarkMagic.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }

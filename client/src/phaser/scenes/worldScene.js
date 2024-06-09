@@ -70,7 +70,7 @@ export class WorldScene extends Phaser.Scene {
       frameWidth: 8,
       frameHeight: 5,
     });
-    this.load.spritesheet("chest", chest, { frameWidth: 18, frameHeight: 14 });
+    this.load.spritesheet("chest", chest, { frameWidth: 19, frameHeight: 14 });
     // this.load.image('chest', 'assets/chest.png');
 
     // Load the tilemap JSON file
@@ -257,8 +257,8 @@ export class WorldScene extends Phaser.Scene {
     // Define chest animations
     this.anims.create({
       key: "chest_open",
-      frames: this.anims.generateFrameNumbers("chest", { start: 0, end: 4 }), // Adjust frame range as necessary
-      frameRate: 5,
+      frames: this.anims.generateFrameNumbers("chest", { start: 0, end: 2 }), // Adjust frame range as necessary
+      frameRate: 2,
       repeat: 0,
     });
     //spawn chesticles

@@ -25,16 +25,31 @@ export class Player {
             },
         });
         this.sprite.setFixedRotation(); // Prevent rotation
+        this.sprite.setDepth(2); // Ensure the player sprite is above everything else
         // Create an attack hitbox
         this.attackHitbox = scene.matter.add.rectangle(32, 32, 20, 20,{
             label: 'Hitbox',
             isSensor: true, // Make the hitbox a sensor NO physical collision just there for activation
         });
 
+        this.overlaySprite = scene.add.sprite(this.sprite.x, this.sprite.y, 'Overlay', 'Overlay.png');
+        this.overlaySprite.setVisible(false);
+        this.overlaySprite.setDepth(3); // Ensure overlay sprite is above the player sprite
         this.collectedShrooms = 0;
+
+        this.backgroundSprite = scene.add.sprite(this.sprite.x, this.sprite.y, 'Background', 'Background.png');
+        this.backgroundSprite.setVisible(false);
+        this.backgroundSprite.setDepth(1); // Ensure background sprite is below the player sprite
 
         // Create animations
         this.createAnimations(scene);
+        this.attackBuffOverlay(scene);
+        this.defenseBuffOverlay(scene);
+        this.defenseBackgroundEffect(scene)
+        this.attackBackgroundEffect(scene)
+
+
+
 
         // Add WASD input
         this.keys = scene.input.keyboard.addKeys({
@@ -51,7 +66,6 @@ export class Player {
         this.currentDirection = 'down'; // Initial direction
 
 
-
         this.isAttacking = false;
         this.attackCooldown = 0;
         this.attackCooldownTime = 100; // Cooldown time in milliseconds
@@ -62,17 +76,11 @@ export class Player {
         this.mouseX = 0;
         this.mouseY = 0;
 
-
         this.currentDirection = 'down';
-
         this.isDead = false;
         this.isTakingDamage = false;
-
         this.id = Auth.getProfile().data._id;
-
     }
-
-
 
     async updateMushroomsOnServer(amount) {
         try {
@@ -87,67 +95,145 @@ export class Player {
                 console.error('Unexpected error occurred:', error);
             }
         }
+
+        defenseBackgroundEffect(scene) {
+            scene.anims.create({
+                key: 'BlueBaseStart',
+                frames: scene.anims.generateFrameNumbers('BlueBase', { start: 0, end: 2 }),
+                frameRate: 3,
+                repeat: 0
+            });
+    
+            scene.anims.create({
+                key: 'BlueBaseEnd',
+                frames: scene.anims.generateFrameNumbers('BlueBase', { start: 3, end: 5 }),
+                frameRate: 3,
+                repeat: 0
+            });
+        }   
+        
+        attackBackgroundEffect(scene) {
+            scene.anims.create({
+                key: 'GreenBaseStart',
+                frames: scene.anims.generateFrameNumbers('GreenBase', { start: 0, end: 2 }),
+                frameRate: 6,
+                repeat: 0
+            });
+    
+            scene.anims.create({
+                key: 'GreenBaseEnd',
+                frames: scene.anims.generateFrameNumbers('GreenBase', { start:3, end: 5 }),
+                frameRate: 6,
+                repeat: 0
+            });
+        }
     
 
-
-    createAnimations(scene) {
-        const anims = [
-            { key: 'right', start: 0, end: 3 },
-            { key: 'down', start: 0, end: 3 },
-            { key: 'downRight', start: 0, end: 3 },
-            { key: 'left', start: 4, end: 7 },
-            { key: 'downLeft', start: 4, end: 7 },
-            { key: 'upRight', start: 8, end: 11 },
-            { key: 'up', start: 8, end: 11 },
-            { key: 'upLeft', start: 12, end: 15 },
-            { key: 'idle', start: 0, end: 3 }
-        ];
-        anims.forEach(anim => {
+        defenseBuffOverlay(scene) {
             scene.anims.create({
-                key: anim.key,
-                frames: scene.anims.generateFrameNumbers('RogueWalk', { start: anim.start, end: anim.end }),
+                key: 'BlueBuffStart',
+                frames: scene.anims.generateFrameNumbers('BlueBuffStart', { start: 0, end: 6 }),
                 frameRate: 6,
-                repeat: -1
+                repeat: 0
             });
-        });
-        scene.anims.create({
-            key: 'attack_right',
-            frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'attack_left',
-            frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 4, end: 7 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'attack_down',
-            frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'attack_up',
-            frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'die',
-            frames: scene.anims.generateFrameNumbers('RogueDie', { start: 0, end: 25 }),
-            frameRate: 12,
-            repeat: 0
-        });
-        scene.anims.create({
-            key: 'dmg',
-            frames: scene.anims.generateFrameNumbers('RogueDmg', { start: 0, end: 3 }),
-            frameRate: 12,
-            repeat: 0
-        });
-    }
+        
+            scene.anims.create({
+                key: 'BlueBuff',
+                frames: scene.anims.generateFrameNumbers('BlueBuff', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: -1 // This will loop indefinitely
+            });
+        
+            scene.anims.create({
+                key: 'BlueBuffEnd',
+                frames: scene.anims.generateFrameNumbers('BlueBuffEnd', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: 0
+            });
+        }
+        
+        attackBuffOverlay(scene) {
+            scene.anims.create({
+                key: 'GreenBuffStart',
+                frames: scene.anims.generateFrameNumbers('GreenBuffStart', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: 0
+            });
+        
+            scene.anims.create({
+                key: 'GreenBuff',
+                frames: scene.anims.generateFrameNumbers('GreenBuff', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: -1 // This will loop indefinitely
+            });
+        
+            scene.anims.create({
+                key: 'GreenBuffEnd',
+                frames: scene.anims.generateFrameNumbers('GreenBuffEnd', { start: 0, end: 6 }),
+                frameRate: 6,
+                repeat: 0
+            });
+        }
 
+        createAnimations(scene) {
+            const anims = [
+                { key: 'right', start: 0, end: 3 },
+                { key: 'down', start: 0, end: 3 },
+                { key: 'downRight', start: 0, end: 3 },
+                { key: 'left', start: 4, end: 7 },
+                { key: 'downLeft', start: 4, end: 7 },
+                { key: 'upRight', start: 8, end: 11 },
+                { key: 'up', start: 8, end: 11 },
+                { key: 'upLeft', start: 12, end: 15 },
+                { key: 'idle', start: 0, end: 3 }
+            ];
+            anims.forEach(anim => {
+                scene.anims.create({
+                    key: anim.key,
+                    frames: scene.anims.generateFrameNumbers('RogueWalk', { start: anim.start, end: anim.end }),
+                    frameRate: 6,
+                    repeat: -1
+                });
+            });
+        
+            scene.anims.create({
+                key: 'attack_right',
+                frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'attack_left',
+                frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 4, end: 7 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'attack_down',
+                frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'attack_up',
+                frames: scene.anims.generateFrameNumbers('RogueAttack', { start: 0, end: 3 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'die',
+                frames: scene.anims.generateFrameNumbers('RogueDie', { start: 0, end: 25 }),
+                frameRate: 12,
+                repeat: 0
+            });
+            scene.anims.create({
+                key: 'dmg',
+                frames: scene.anims.generateFrameNumbers('RogueDmg', { start: 0, end: 3 }),
+                frameRate: 12,
+                repeat: 0
+            });
+        }
+        
     handlePointerMove = (pointer) => {
         this.mouseX = pointer.worldX;
         this.mouseY = pointer.worldY;
@@ -160,13 +246,12 @@ export class Player {
         }
     }
 
-attack(targetX, targetY) {
+    attack(targetX, targetY) {
         if (this.isAttacking || this.attackCooldown > 0 || this.isDead || this.isTakingDamage) {
             return;
         }
     
         this.isAttacking = true;
-        // this.sprite.anims.stop();
     
         const angle = Phaser.Math.Angle.Between(this.sprite.x, this.sprite.y, targetX, targetY);
         let attackAnimationKey;
@@ -186,50 +271,50 @@ attack(targetX, targetY) {
             attackAnimationKey = 'attack_up';
             offsetY = -16;
         }
-        
-        this.sprite.anims.play(attackAnimationKey, true);
-
-        socket.emit('playerAnimation', { id: socket.id, key: attackAnimationKey });
     
-        this.scene.matter.body.setPosition(this.attackHitbox, {
-            x: this.sprite.x + offsetX,
-            y: this.sprite.y + offsetY
-        });
-        this.attackHitbox.render.visible = true;//DEBUG to display box on attack
-
-
-        this.scene.enemies.forEach(enemy => { 
-            
-            const distanceToEnemy = Phaser.Math.Distance.Between(
-                this.attackHitbox.position.x, this.attackHitbox.position.y,
-                enemy.x, enemy.y
-            );
-            const npc = enemy.getData('npcInstance');
-            // Check if the player is within attack range and hasn't been hit yet
-            if (distanceToEnemy <= this.attackRange) {
-                npc.takeDamage(this.damage);
-            }
-            
-        });
-
-
+        if (attackAnimationKey) {
+            this.sprite.anims.play(attackAnimationKey, true);
+            socket.emit('playerAnimation', { id: socket.id, key: attackAnimationKey });
     
-        this.scene.time.addEvent({
-
-            delay: 100,
-            callback: () => {
-                this.attackHitbox.render.visible = false;//hides attack hitbox
-            },
-            callbackScope: this
-        });
+            this.scene.matter.body.setPosition(this.attackHitbox, {
+                x: this.sprite.x + offsetX,
+                y: this.sprite.y + offsetY
+            });
+            this.attackHitbox.render.visible = true; // DEBUG to display box on attack
     
-        this.sprite.on('animationcomplete', (animation) => {
-            if (animation.key === attackAnimationKey) {
-                this.isAttacking = false;
-                this.attackCooldown = this.attackCooldownTime;
-            }
-        }, this);
+            this.scene.enemies.forEach(enemy => {
+                const distanceToEnemy = Phaser.Math.Distance.Between(
+                    this.attackHitbox.position.x, this.attackHitbox.position.y,
+                    enemy.x, enemy.y
+                );
+                const npc = enemy.getData('npcInstance');
+                // Check if the player is within attack range and hasn't been hit yet
+                if (distanceToEnemy <= this.attackRange) {
+                    npc.takeDamage(this.damage);
+                }
+            });
+    
+            this.scene.time.addEvent({
+                delay: 100,
+                callback: () => {
+                    this.attackHitbox.render.visible = false; // hides attack hitbox
+                },
+                callbackScope: this
+            });
+    
+            this.sprite.on('animationcomplete', (animation) => {
+                if (animation.key === attackAnimationKey) {
+                    this.isAttacking = false;
+                    this.attackCooldown = this.attackCooldownTime;
+                    this.sprite.anims.play('idle', true); // Play idle animation after attack completes
+                }
+            }, this);
+        } else {
+            console.error('Undefined attack animation key:', attackAnimationKey);
+        }
     }
+    
+    
 
     takeDamage(amount) {
         if (this.isTakingDamage || this.isDead || this.isAttacking) {
@@ -314,6 +399,79 @@ attack(targetX, targetY) {
         }, this);
     }
 
+    playAttackBuffAnimation() {
+        this.overlaySprite.setVisible(true);
+        this.backgroundSprite.setVisible(true);
+
+        // Play the start animation for both sprites
+        this.overlaySprite.anims.play('GreenBuffStart', true);
+        this.backgroundSprite.anims.play('GreenBaseStart', true);
+
+        this.overlaySprite.once('animationcomplete', (animation) => {
+            if (animation.key === 'GreenBuffStart') {
+                // After the start animation, play the middle animation and keep it for 30 seconds
+                this.overlaySprite.anims.play('GreenBuff', true);
+
+                this.scene.time.delayedCall(15000, () => {
+                    // After 15 seconds, play the end animation for the background
+                    this.backgroundSprite.anims.play('GreenBaseEnd', true);
+
+                    this.backgroundSprite.once('animationcomplete', (animation) => {
+                        if (animation.key === 'GreenBaseEnd') {
+                            this.backgroundSprite.setVisible(false);
+                        }
+                    });
+
+                    // Play the end animation for the overlay
+                    this.overlaySprite.anims.play('GreenBuffEnd', true);
+
+                    this.overlaySprite.once('animationcomplete', (animation) => {
+                        if (animation.key === 'GreenBuffEnd') {
+                            this.overlaySprite.setVisible(false);
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    playDefenseBuffAnimation() {
+        this.overlaySprite.setVisible(true);
+        this.backgroundSprite.setVisible(true);
+
+        // Play the start animation for both sprites
+        this.overlaySprite.anims.play('BlueBuffStart', true);
+        this.backgroundSprite.anims.play('BlueBaseStart', true);
+
+        this.overlaySprite.once('animationcomplete', (animation) => {
+            if (animation.key === 'BlueBuffStart') {
+                // After the start animation, play the middle animation and keep it for 30 seconds
+                this.overlaySprite.anims.play('BlueBuff', true);
+
+                this.scene.time.delayedCall(15000, () => {
+                    // After 15 seconds, play the end animation for the background
+                    this.backgroundSprite.anims.play('BlueBaseEnd', true);
+
+                    this.backgroundSprite.once('animationcomplete', (animation) => {
+                        if (animation.key === 'BlueBaseEnd') {
+                            this.backgroundSprite.setVisible(false);
+                        }
+                    });
+
+                    // Play the end animation for the overlay
+                    this.overlaySprite.anims.play('BlueBuffEnd', true);
+
+                    this.overlaySprite.once('animationcomplete', (animation) => {
+                        if (animation.key === 'BlueBuffEnd') {
+                            this.overlaySprite.setVisible(false);
+                        }
+                    });
+                });
+            }
+        });
+    }
+    
+
     update() {
         if (this.isAttacking || this.isDead || this.isTakingDamage) {
             return;
@@ -336,11 +494,10 @@ attack(targetX, targetY) {
         }
     
         this.sprite.setVelocity(velocityX, velocityY);
-
+    
+        let animationKey = '';
     
         if (velocityX !== 0 || velocityY !== 0) {
-            let animationKey = '';
-    
             if (velocityX > 0 && velocityY === 0) {
                 animationKey = 'right';
                 this.currentDirection = 'right';
@@ -367,25 +524,42 @@ attack(targetX, targetY) {
                 this.currentDirection = 'left';
             }
     
-        socket.emit('playerMovement', {
-            id: socket.id,
-            x: this.sprite.x,
-            y: this.sprite.y,
-            key: animationKey
-              });
+            if (animationKey && this.prevAnimation !== animationKey) {
+                this.sprite.anims.play(animationKey, true);
+                this.prevAnimation = animationKey;
+    
+                socket.emit('playerMovement', {
+                    id: socket.id,
+                    x: this.sprite.x,
+                    y: this.sprite.y,
+                    key: animationKey
+                });
+            }
         } else {
-            this.sprite.anims.stop();
-            this.sprite.anims.play('idle', true);
+            if (this.prevAnimation !== 'idle') {
+                this.sprite.anims.stop();
+                this.sprite.anims.play('idle', true);
+                this.prevAnimation = 'idle';
+    
+                socket.emit('playerMovement', {
+                    id: socket.id,
+                    x: this.sprite.x,
+                    y: this.sprite.y,
+                    key: 'idle'
+                });
+            }
         }
+    
+        this.overlaySprite.setPosition(this.sprite.x, this.sprite.y);
+        this.backgroundSprite.setPosition(this.sprite.x, this.sprite.y);
     
         this.sprite.setAngle(0);
         this.sprite.setAngularVelocity(0);
     
         // If the attack cooldown is active (greater than 0), decrement it by the time elapsed since the last game frame
         if (this.attackCooldown > 0) {
-        this.attackCooldown -= this.scene.sys.game.loop.delta;
-}
-
+            this.attackCooldown -= this.scene.sys.game.loop.delta;
+        }
     
         const camera = this.scene.cameras.main;
         this.healthBar.graphics.setPosition(camera.scrollX + 10, camera.scrollY + 10);

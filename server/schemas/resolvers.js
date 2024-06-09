@@ -23,7 +23,7 @@ const resolvers = {
       return user;
     },
     getAllPlayers: async (parent, _, context) => {
-      const users = await User.find();
+      const users = await User.find().sort({ totalShrooms: -1, username: 1 });
       return users;
     },
     getUserShrooms: async (parent, { userId }) => {

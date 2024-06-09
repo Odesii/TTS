@@ -54,7 +54,7 @@ function Shop() {
                 setTimeout(() => {
                     console.log("clear update");
                     setUpdatedMessage(false);
-                }, 1000);
+                }, 100);
             }
         } catch (e) {
             console.error(e);
@@ -85,7 +85,7 @@ function Shop() {
                     setTimeout(() => {
                         console.log("clear update");
                         setUpdatedMessage(false);
-                    }, 1000);
+                    }, 100);
                     return false;
                 }
 
@@ -106,7 +106,7 @@ function Shop() {
                 setTimeout(() => {
                     console.log("clear update");
                     setUpdatedMessage(false);
-                }, 1000);
+                }, 100);
                 return false;
             }
             

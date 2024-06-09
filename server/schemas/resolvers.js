@@ -16,14 +16,16 @@ const resolvers = {
     },
     stockShop: async (parent, _, context) => {
       const items = await Item.find();
-
       return items;
     },
     getPlayer: async (parent, { playerId }, context) => {
       const user = await User.findById({ _id: playerId }).populate('inventory');
       return user;
     },
-
+    getAllPlayers: async (parent, _, context) => {
+      const users = await User.find();
+      return users;
+    },
     getUserShrooms: async (parent, { userId }) => {
       const user = await User.findById(userId);
       return user ? user.shrooms : 0;

@@ -22,3 +22,20 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.greet{
+    font-size: 50px;
+    color: #39002a;
+    text-shadow: #543756 3px 3px 3px;
+}
+.count{
+    font-size: 60px;
+    color: #39002a;
+    text-shadow: #543756 3px 3px 3px;
+}
+
+.bounce {
+    display: inline-block;
+    color: #2d17bb;
+    animation: bounce 1.5s infinite;
+}

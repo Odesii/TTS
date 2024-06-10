@@ -5,9 +5,12 @@ import Auth from '../../utils/auth';
 import './style.css';
 
 function Rankings() {
+    const id = Auth.getProfile().data._id;
+
     const { loading, data } = useQuery(GET_ALL_PLAYERS);
     const users = data?.getAllPlayers || {};
     let rank = 1;
+    let myRank = 1;
 
     function redirect() {
         window.location.replace('/login');
@@ -15,6 +18,23 @@ function Rankings() {
 
     if (loading) {
         return <h2>LOADING...</h2>
+    }
+
+    function loadRank() {
+        for (let i = 0; i < users.length; i++) {
+            if (users[i]._id === id) {
+                break;
+            }
+            myRank = myRank + 1;
+        }
+
+        return (
+            <h2 className="count spacing">
+                My Rank: <span className='bounce'>{myRank}</span>
+                &nbsp;&nbsp;
+                Shrooms: <span className='bounce'>{users[myRank - 1].shrooms}</span>
+            </h2>
+        )
     }
 
     return (
@@ -43,6 +63,7 @@ function Rankings() {
                         </form>
                         <img src='assets/textures/bubbles.png' alt='bubble' className='bubble' />
                     </section>
+                    {loadRank()}
                 </>
             ) : (
                 <>

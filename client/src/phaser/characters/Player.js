@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { HealthBar } from '../../UI/healthbars';
 import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
-import { UPDATE_SHROOMS } from '../../utils/mutations'
+import { CALCULATE_TOTAL_SHROOMS, UPDATE_SHROOMS } from '../../utils/mutations'
 import  Auth  from '../../utils/auth';
 import socket from '../../utils/socket.js';
 
@@ -91,6 +91,14 @@ export class Player {
                     playerId: this.id
                 },
             });
+
+            await client.mutate({
+                mutation: CALCULATE_TOTAL_SHROOMS,
+                variables: { 
+                    shrooms: amount, 
+                    playerId: this.id
+                },
+            })
         } catch (error) {
                 console.error('Unexpected error occurred:', error);
             }

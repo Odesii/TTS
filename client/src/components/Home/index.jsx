@@ -25,6 +25,9 @@ function Home() {
                     <Link to='/profile'>
                         Profile
                     </Link>
+                    <Link to='/rankings'>
+                        Rankings
+                    </Link>
                     <Link onClick={Auth.logout}>Logout</Link>
                 </>
             ) : (

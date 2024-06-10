@@ -5,10 +5,9 @@ const typeDefs =`
     email: String!
     password: String!
     shrooms: Int
+    totalShrooms: Int
     inventory: [Item]
   }
-    
-
   
   type Item {
     _id: ID!
@@ -27,6 +26,7 @@ const typeDefs =`
     myProfile: User
     stockShop: [Item]
     getPlayer(playerId: ID!): User
+    getAllPlayers: [User]
     getUserShrooms(userId: ID!): Int
   }
 
@@ -37,6 +37,7 @@ const typeDefs =`
     changePassword(password: String!): User
     deleteAccount(_id: ID!): User
     updateShrooms(shrooms: Int!, playerId: ID): User
+    calculateTotalShrooms(shrooms: Int!, playerId: ID): User
     addToInventory(itemId: ID!): User
     removeFromInventory(itemId: ID!, playerId: ID): User
   }

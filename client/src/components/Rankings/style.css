@@ -1,0 +1,41 @@
+.layout {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+}
+
+.rank-labels {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rankers {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.greet{
+    font-size: 50px;
+    color: #39002a;
+    text-shadow: #543756 3px 3px 3px;
+}
+.count{
+    font-size: 60px;
+    color: #39002a;
+    text-shadow: #543756 3px 3px 3px;
+}
+
+.bounce {
+    display: inline-block;
+    color: #2d17bb;
+    animation: bounce 1.5s infinite;
+}

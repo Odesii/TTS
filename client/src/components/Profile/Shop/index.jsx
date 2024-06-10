@@ -5,7 +5,7 @@ import { ADD_TO_INVENTORY, UPDATE_SHROOMS } from '../../../utils/mutations';
 import Auth from '../../../utils/auth';
 import './style.css';
 
-function Shop() {
+function Shop(props) {
     const client = new ApolloClient({
         link: new HttpLink({ uri: import.meta.env.VITE_DEPLOYED_GQL}), // Your GraphQL endpoint
         cache: new InMemoryCache(),
@@ -95,6 +95,13 @@ function Shop() {
                         variables: { shrooms: -itemCost, playerId: id }
                     });
 
+                    const data = await client.query({
+                        query: GET_PLAYER,
+                        variables: { playerId: id }
+                    });
+
+                    const result = data?.data.getPlayer || {};
+                    props.setUserState(result)
                     return true;
                 }
             }

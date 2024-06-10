@@ -292,6 +292,14 @@ export class WorldScene extends Phaser.Scene {
     this.healthbar = new HealthBar(this, 20, 18, 100);
   }
 
+  isValidSpawnLocation(x, y) {
+    const waterTile = this.waterLayer.getTileAtWorldXY(x, y);
+    const buildingTile = this.buildingLayer.getTileAtWorldXY(x, y);
+    const underTile = this.underLayer.getTileAtWorldXY(x, y);
+  
+    // Return false if any of the tiles are present at the location
+    return !waterTile && !buildingTile && !underTile;
+  }
   spawnEnemies(count) {
     for (let i = 0; i < count; i++) {
       const x = Phaser.Math.Between(0, this.map.widthInPixels);

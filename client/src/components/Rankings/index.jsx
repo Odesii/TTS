@@ -32,7 +32,7 @@ function Rankings() {
             <h2 className="count spacing">
                 My Rank: <span className='bounce'>{myRank}</span>
                 &nbsp;&nbsp;
-                Shrooms: <span className='bounce'>{users[myRank - 1].shrooms}</span>
+                Shrooms: <span className='bounce'>{users[myRank - 1].totalShrooms}</span>
             </h2>
         )
     }

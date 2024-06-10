@@ -46,7 +46,6 @@ export const GET_ALL_PLAYERS = gql`
       _id
       username
       email
-      shrooms
       totalShrooms
     }
   }

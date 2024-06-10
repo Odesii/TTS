@@ -292,33 +292,51 @@ export class WorldScene extends Phaser.Scene {
     this.healthbar = new HealthBar(this, 20, 18, 100);
   }
 
+  isValidSpawnLocation(x, y) {
+    const tile = this.baseLayer.getTileAtWorldXY(x, y);
+    return tile !== null
+  }
   spawnEnemies(count) {
     for (let i = 0; i < count; i++) {
-      const x = Phaser.Math.Between(0, this.map.widthInPixels);
-      const y = Phaser.Math.Between(0, this.map.heightInPixels);
+      let x, y;
+      do {
+        x = Phaser.Math.Between(0, this.map.widthInPixels);
+        y = Phaser.Math.Between(0, this.map.heightInPixels);
+      } while (!this.isValidSpawnLocation(x, y));
+  
       const enemy = new NPC(this); // Create NPC instance as enemy
       enemy.sprite.x = x;
       enemy.sprite.y = y;
-
+  
       enemy.sprite.setData("npcInstance", enemy); // Store enemy instance
-
+  
       // Add the Matter.js body to the world
       this.matter.world.add(enemy.sprite.body);
       // Add the enemy to the enemies array
       this.enemies.push(enemy.sprite);
     }
   }
+  
   spawnMushrooms(count) {
     for (let i = 0; i < count; i++) {
-      const x = Phaser.Math.Between(0, this.map.widthInPixels);
-      const y = Phaser.Math.Between(0, this.map.heightInPixels);
+      let x, y;
+      do {
+        x = Phaser.Math.Between(0, this.map.widthInPixels);
+        y = Phaser.Math.Between(0, this.map.heightInPixels);
+      } while (!this.isValidSpawnLocation(x, y));
+  
       const mushroom = new Mushroom(this, x, y);
     }
   }
+  
   spawnChests(count) {
     for (let i = 0; i < count; i++) {
-      const x = Phaser.Math.Between(0, this.map.widthInPixels);
-      const y = Phaser.Math.Between(0, this.map.heightInPixels);
+      let x, y;
+      do {
+        x = Phaser.Math.Between(0, this.map.widthInPixels);
+        y = Phaser.Math.Between(0, this.map.heightInPixels);
+      } while (!this.isValidSpawnLocation(x, y));
+  
       const chestSpawn = new Chest(this, x, y);
     }
   }

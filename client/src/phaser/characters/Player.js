@@ -17,7 +17,7 @@ export class Player {
 
         this.healthBar = new HealthBar(scene, 96, 0, 40, 5);
         // Create the sprite and assign it to a class property
-        this.sprite = scene.matter.add.sprite(32, 32, 'RogueWalk', 'Rougewalk.png', {
+        this.sprite = scene.matter.add.sprite(302, 102, 'RogueWalk', 'Rougewalk.png', {
             label: 'player',
             shape: {
                 type: 'circle',
@@ -485,7 +485,7 @@ export class Player {
             return;
         }
     
-        const speed = 0.3;
+        const speed = 1;
         let velocityX = 0;
         let velocityY = 0;
     

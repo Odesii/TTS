@@ -4,7 +4,7 @@ import PhaserMatterCollisionPlugin from 'phaser-matter-collision-plugin';
 export class Zone {
     constructor(scene) {
         this.scene = scene;
-        this.zone = scene.matter.add.rectangle(400, 400, 100, 100, {
+        this.zone = scene.matter.add.rectangle(230, 355, 80, 65, {
             isSensor: true,
             isStatic: true,
         });

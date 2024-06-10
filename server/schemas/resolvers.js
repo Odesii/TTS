@@ -16,19 +16,20 @@ const resolvers = {
     },
     stockShop: async (parent, _, context) => {
       const items = await Item.find();
-
       return items;
     },
     getPlayer: async (parent, { playerId }, context) => {
       const user = await User.findById({ _id: playerId }).populate('inventory');
       return user;
     },
-
+    getAllPlayers: async (parent, _, context) => {
+      const users = await User.find().sort({ totalShrooms: -1, username: 1 });
+      return users;
+    },
     getUserShrooms: async (parent, { userId }) => {
       const user = await User.findById(userId);
       return user ? user.shrooms : 0;
     },
-
   },
   Mutation:{
     createUser: async (parent, { username, email, password }) => {
@@ -89,6 +90,20 @@ const resolvers = {
       const user = await User.findOneAndUpdate(
         { _id: playerId },
         { shrooms: shrooms + currentShrooms},
+        { new: true }
+      );
+      return user; 
+    },
+    calculateTotalShrooms: async (parent, { shrooms, playerId }, context) => {
+      const player = await User.findOne(
+        { _id: playerId }
+      );
+
+      const currentShrooms = player.totalShrooms; 
+      
+      const user = await User.findOneAndUpdate(
+        { _id: playerId },
+        { totalShrooms: shrooms + currentShrooms},
         { new: true }
       );
       return user; 

@@ -293,40 +293,50 @@ export class WorldScene extends Phaser.Scene {
   }
 
   isValidSpawnLocation(x, y) {
-    const waterTile = this.waterLayer.getTileAtWorldXY(x, y);
-    const buildingTile = this.buildingLayer.getTileAtWorldXY(x, y);
-    const underTile = this.underLayer.getTileAtWorldXY(x, y);
-  
-    // Return false if any of the tiles are present at the location
-    return !waterTile && !buildingTile && !underTile;
+    const tile = this.baseLayer.getTileAtWorldXY(x, y);
+    return tile !== null
   }
   spawnEnemies(count) {
     for (let i = 0; i < count; i++) {
-      const x = Phaser.Math.Between(0, this.map.widthInPixels);
-      const y = Phaser.Math.Between(0, this.map.heightInPixels);
+      let x, y;
+      do {
+        x = Phaser.Math.Between(0, this.map.widthInPixels);
+        y = Phaser.Math.Between(0, this.map.heightInPixels);
+      } while (!this.isValidSpawnLocation(x, y));
+  
       const enemy = new NPC(this); // Create NPC instance as enemy
       enemy.sprite.x = x;
       enemy.sprite.y = y;
-
+  
       enemy.sprite.setData("npcInstance", enemy); // Store enemy instance
-
+  
       // Add the Matter.js body to the world
       this.matter.world.add(enemy.sprite.body);
       // Add the enemy to the enemies array
       this.enemies.push(enemy.sprite);
     }
   }
+  
   spawnMushrooms(count) {
     for (let i = 0; i < count; i++) {
-      const x = Phaser.Math.Between(0, this.map.widthInPixels);
-      const y = Phaser.Math.Between(0, this.map.heightInPixels);
+      let x, y;
+      do {
+        x = Phaser.Math.Between(0, this.map.widthInPixels);
+        y = Phaser.Math.Between(0, this.map.heightInPixels);
+      } while (!this.isValidSpawnLocation(x, y));
+  
       const mushroom = new Mushroom(this, x, y);
     }
   }
+  
   spawnChests(count) {
     for (let i = 0; i < count; i++) {
-      const x = Phaser.Math.Between(0, this.map.widthInPixels);
-      const y = Phaser.Math.Between(0, this.map.heightInPixels);
+      let x, y;
+      do {
+        x = Phaser.Math.Between(0, this.map.widthInPixels);
+        y = Phaser.Math.Between(0, this.map.heightInPixels);
+      } while (!this.isValidSpawnLocation(x, y));
+  
       const chestSpawn = new Chest(this, x, y);
     }
   }

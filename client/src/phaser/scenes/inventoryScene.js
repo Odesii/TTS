@@ -5,7 +5,7 @@ import { REMOVE_FROM_INVENTORY } from "../../utils/mutations";
 import  Auth  from '../../utils/auth';
 
 const client = new ApolloClient({
-    link: new HttpLink({ uri: 'http://localhost:3000/graphql' }), // Your GraphQL endpoint
+    link: new HttpLink({ uri: 'VITE_DEPLOYED_GQL' }), // Your GraphQL endpoint
     cache: new InMemoryCache(),
 });
 
@@ -239,8 +239,6 @@ export class InventoryScene extends Phaser.Scene {
             this.useHealthPotion();
             this.healthPotionQuantity = this.healthPotionQuantity - 1;
             this.healthPotionQuantityText.setText(`x${this.healthPotionQuantity}`);
-            // console.log('user: ', result);
-            // console.log('user inventory: ', result.data.removeFromInventory.inventory);
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }

@@ -139,8 +139,6 @@ function Register() {
 
                     <button id="submit">Submit</button>
                 </form>
-
-                {console.log("error in react: ", error)}
             </section>
             <Link to='/login'>
                 Login instead?

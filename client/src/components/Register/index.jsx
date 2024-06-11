@@ -1,5 +1,5 @@
 // import React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { CREATE_USER } from '../../utils/mutations';
@@ -18,7 +18,20 @@ function Register() {
     // Track the state of the error and success messages
     const [errorMessage, setErrorMessage] = useState("");
     const [success, setSuccess] = useState("");
+    const [updatedMessage, setUpdatedMessage] = useState(false);
     
+    useEffect(() => {
+        if (errorMessage && !updatedMessage) {
+            const messageTimer = setTimeout(() => {
+                setErrorMessage(null);
+                setSuccess(null);
+                setUpdatedMessage(false);
+            }, 3000);
+
+            return () => clearTimeout(messageTimer);
+        }
+    }, [errorMessage, updatedMessage])
+
     // Function to handle a submit event
     async function handleSubmit(event) {
         // Prevent the page from reloading
@@ -26,22 +39,28 @@ function Register() {
 
         // Check for form validation on submission
         if (validateForm()) {
-            // Send a success message
-            setSuccess("Successfully registered!");
-
             try {
                 const { data } = await createUser({
                     variables: { ...formState },
                 });
           
                 Auth.login(data.createUser.token);
+
+                // Send a success message
+                setSuccess("Successfully registered!");
+
+                // Reset the input boxes and reset each of the field values
+                event.target.reset();
+                setFormState({ username: "", email: "", password: "" });
             } catch (e) {
+                setErrorMessage("Username or email already in use!");
+                setUpdatedMessage(true);
+
+                setTimeout(() => {
+                    setUpdatedMessage(false);
+                }, 100);
                 console.error(e);
             }
-
-            // Reset the input boxes and reset each of the field values
-            event.target.reset();
-            setFormState({ username: "", email: "", password: "" });
         }
     }
 
@@ -50,18 +69,27 @@ function Register() {
         // If there are still empty fields
         if (!formState.username || !formState.email || !formState.password) {
             setErrorMessage("All fields are required!");
+            setUpdatedMessage(true);
+
+            setTimeout(() => {
+                setUpdatedMessage(false);
+            }, 100);
             return false;
         }
 
         // If the email is invalid
         else if (!validate(formState.email)) {
             setErrorMessage("Please enter a valid email!");
+            setUpdatedMessage(true);
+
+            setTimeout(() => {
+                setUpdatedMessage(false);
+            }, 100);
             return false;
         }
 
         // Otherwise, the submission seems good to go
         else {
-            setErrorMessage(null);
             return true;
         }
     }
@@ -106,12 +134,6 @@ function Register() {
 
                     <button id="submit">Submit</button>
                 </form>
-
-                {error && (
-                    <div className="my-3 p-3 bg-danger text-white">
-                        {error.message}
-                    </div>
-                )}
             </section>
             <Link to='/login'>
                 Login instead?

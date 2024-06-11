@@ -5,7 +5,7 @@ import { ADD_TO_INVENTORY, UPDATE_SHROOMS } from '../../../utils/mutations';
 import Auth from '../../../utils/auth';
 import './style.css';
 
-function Shop() {
+function Shop(props) {
     const client = new ApolloClient({
         link: new HttpLink({ uri: import.meta.env.VITE_DEPLOYED_GQL}), // Your GraphQL endpoint
         cache: new InMemoryCache(),
@@ -24,7 +24,6 @@ function Shop() {
     useEffect(() => {
         if (message && !updatedMessage) {
             const messageTimer = setTimeout(() => {
-                console.log("clear message");
                 setMessage(null);
                 setUpdatedMessage(false);
             }, 3000);
@@ -52,7 +51,6 @@ function Shop() {
                 setUpdatedMessage(true);
 
                 setTimeout(() => {
-                    console.log("clear update");
                     setUpdatedMessage(false);
                 }, 100);
             }
@@ -77,13 +75,11 @@ function Shop() {
                     }
                 }
 
-                console.log("pot count: ", count);
                 if (count >= 99) {
                     setMessage("You can't hold any more of those potions!");
                     setUpdatedMessage(true);
 
                     setTimeout(() => {
-                        console.log("clear update");
                         setUpdatedMessage(false);
                     }, 100);
                     return false;
@@ -95,6 +91,13 @@ function Shop() {
                         variables: { shrooms: -itemCost, playerId: id }
                     });
 
+                    const data = await client.query({
+                        query: GET_PLAYER,
+                        variables: { playerId: id }
+                    });
+
+                    const result = data?.data.getPlayer || {};
+                    props.setUserState(result)
                     return true;
                 }
             }
@@ -104,7 +107,6 @@ function Shop() {
                 setUpdatedMessage(true);
 
                 setTimeout(() => {
-                    console.log("clear update");
                     setUpdatedMessage(false);
                 }, 100);
                 return false;
@@ -130,7 +132,7 @@ function Shop() {
                     <section className="form-box scrollable-content">
                         {/* Call the form handler when the submit button is clicked */}
                         <form onSubmit={handleEvent}>
-                            <h2>POTION SHOP</h2>
+                            <h2>Potion Shop</h2>
                             {itemData.map((item) => (
                                 <div key={item._id}>
                                     <p>{item.name}</p>

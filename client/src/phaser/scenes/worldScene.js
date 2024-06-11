@@ -307,6 +307,11 @@ export class WorldScene extends Phaser.Scene {
     return !tile.properties.collides && !tile.properties.isWater;
   }
 
+
+  isValidSpawnLocation(x, y) {
+    const tile = this.baseLayer.getTileAtWorldXY(x, y);
+    return tile !== null
+  }
   spawnEnemies(count) {
     for (let i = 0; i < count; i++) {
       let x, y;
@@ -322,12 +327,14 @@ export class WorldScene extends Phaser.Scene {
   
       enemy.sprite.setData("npcInstance", enemy); // Store enemy instance
   
+  
       // Add the Matter.js body to the world
       this.matter.world.add(enemy.sprite.body);
       // Add the enemy to the enemies array
       this.enemies.push(enemy.sprite);
     }
   }
+  
   
   spawnMushrooms(count) {
     for (let i = 0; i < count; i++) {
@@ -340,6 +347,7 @@ export class WorldScene extends Phaser.Scene {
       const mushroom = new Mushroom(this, x, y);
     }
   }
+  
   
   spawnChests(count) {
     for (let i = 0; i < count; i++) {

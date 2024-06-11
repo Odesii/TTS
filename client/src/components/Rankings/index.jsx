@@ -47,7 +47,7 @@ function Rankings() {
                     <section className="form-box scrollable-content">
                         {/* Call the form handler when the submit button is clicked */}
                         <form>
-                            <h2>SHROOM ADDICTS</h2>
+                            <h2>Shroom Addicts</h2>
                             <section className="rank-labels">
                                 <p>Rank</p>
                                 <p>Username</p>

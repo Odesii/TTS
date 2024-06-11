@@ -5,7 +5,7 @@ import { REMOVE_FROM_INVENTORY } from "../../utils/mutations";
 import  Auth  from '../../utils/auth';
 
 const client = new ApolloClient({
-    link: new HttpLink({ uri: 'http://localhost:3000/graphql' }), // Your GraphQL endpoint
+    link: new HttpLink({ uri: import.meta.env.VITE_DEPLOYED_GQL }), // Your GraphQL endpoint
     cache: new InMemoryCache(),
 });
 

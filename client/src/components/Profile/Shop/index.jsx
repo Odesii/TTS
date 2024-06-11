@@ -137,7 +137,7 @@ function Shop(props) {
                     <section className="form-box scrollable-content">
                         {/* Call the form handler when the submit button is clicked */}
                         <form onSubmit={handleEvent}>
-                            <h2>POTION SHOP</h2>
+                            <h2>Potion Shop</h2>
                             {itemData.map((item) => (
                                 <div key={item._id}>
                                     <p>{item.name}</p>

@@ -120,8 +120,6 @@ const resolvers = {
       return user;
     },
     removeFromInventory: async (parent, { itemId, playerId }, context) => {
-      // const item = await Item.findById(itemId);
-      // console.log(item);
       let index = 0;
 
       const user = await User.findOne({ _id: playerId });

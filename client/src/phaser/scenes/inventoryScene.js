@@ -5,7 +5,7 @@ import { REMOVE_FROM_INVENTORY } from "../../utils/mutations";
 import  Auth  from '../../utils/auth';
 
 const client = new ApolloClient({
-    link: new HttpLink({ uri: 'http://localhost:3000/graphql' }), // Your GraphQL endpoint
+    link: new HttpLink({ uri: import.meta.env.VITE_DEPLOYED_GQL }), // Your GraphQL endpoint
     cache: new InMemoryCache(),
 });
 
@@ -21,7 +21,6 @@ export class InventoryScene extends Phaser.Scene {
     }
 
     init (data) {
-        console.log('init', data);
         this.player = data.player;
     }
 
@@ -215,7 +214,6 @@ export class InventoryScene extends Phaser.Scene {
 
     async updateHealthPotions() {
         if (this.healthPotionQuantity === 0) {
-            console.log("no health pot to drink!")
             return;
         }
 
@@ -239,17 +237,13 @@ export class InventoryScene extends Phaser.Scene {
             this.useHealthPotion();
             this.healthPotionQuantity = this.healthPotionQuantity - 1;
             this.healthPotionQuantityText.setText(`x${this.healthPotionQuantity}`);
-            // console.log('user: ', result);
-            // console.log('user inventory: ', result.data.removeFromInventory.inventory);
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
-        console.log("health pot #: ", this.healthPotionQuantity);
     }
 
     async updateAttackPotions() {
         if (this.attackPotionQuantity === 0) {
-            console.log("no att pot to drink!")
             return;
         }
 
@@ -274,17 +268,13 @@ export class InventoryScene extends Phaser.Scene {
             this.useAttackPotion();
             this.attackPotionQuantity = this.attackPotionQuantity - 1;
             this.attackPotionQuantityText.setText(`x${this.attackPotionQuantity}`);
-            // console.log('user: ', result);
-            // console.log('user inventory: ', result.data.removeFromInventory.inventory);
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
-        console.log("att pot #: ", this.attackPotionQuantity);
     }
 
     async updateDefensePotions() {
         if (this.defensePotionQuantity === 0) {
-            console.log("no def pot to drink!")
             return;
         }
 
@@ -309,12 +299,9 @@ export class InventoryScene extends Phaser.Scene {
             this.useDefensePotion();
             this.defensePotionQuantity = this.defensePotionQuantity - 1;
             this.defensePotionQuantityText.setText(`x${this.defensePotionQuantity}`);
-            // console.log('user:', result);
-            // console.log('user inventory: ', result.data.removeFromInventory.inventory);
         } catch (error) {
             console.error('Unexpected error occurred:', error);
         }
-        console.log("def pot #: ", this.defensePotionQuantity);
     }
 
     useHealthPotion() {
@@ -324,7 +311,6 @@ export class InventoryScene extends Phaser.Scene {
 
     useAttackPotion() {
         this.damage = 50;
-        console.log("att pot drank!");
     
         // Trigger the attack buff animation sequence
         this.player.playAttackBuffAnimation();
@@ -332,13 +318,11 @@ export class InventoryScene extends Phaser.Scene {
         this.attackPotionTimer = setTimeout(() => {
             // Reset to base
             this.damage = 20;
-            console.log("att pot expired!");
         }, 30000);
     }
     
     useDefensePotion() {
         this.damageReduction = 10;
-        console.log("def pot drank!");
     
         // Trigger the defense buff animation sequence
         this.player.playDefenseBuffAnimation();
@@ -346,7 +330,6 @@ export class InventoryScene extends Phaser.Scene {
         this.defensePotionTimer = setTimeout(() => {
             // Reset to base
             this.damageReduction = 0;
-            console.log("def pot expired!");
         }, 30000);
     }
     

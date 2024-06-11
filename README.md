@@ -81,7 +81,7 @@ MongoDB Installation Guide: https://coding-boot-camp.github.io/full-stack/mongod
 
 ## Gameplay
 
-![Game](https://i.imgur.com/P5vfPi2.gif)
+[Click Here](https://i.imgur.com/P5vfPi2.gif)
 
 ## Credits  
 

@@ -4,7 +4,6 @@ import './style.css';
 function ProfileMain(props) {
     return (
         <>  
-            {console.log(props)}
             <h2 className='greet'>Been Collecting Shrooms?, {props.userState.username}</h2>
             <h3 className='count'>Shrooms: <span className='bounce'>{props.userState.shrooms}</span> </h3>
             <Link to='/play'>

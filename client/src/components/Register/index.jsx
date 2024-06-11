@@ -23,7 +23,6 @@ function Register() {
     useEffect(() => {
         if (errorMessage && !updatedMessage) {
             const messageTimer = setTimeout(() => {
-                console.log("clear message");
                 setErrorMessage(null);
                 setSuccess(null);
                 setUpdatedMessage(false);
@@ -58,7 +57,6 @@ function Register() {
                 setUpdatedMessage(true);
 
                 setTimeout(() => {
-                    console.log("clear update");
                     setUpdatedMessage(false);
                 }, 100);
                 console.error(e);
@@ -68,14 +66,12 @@ function Register() {
 
     // Helper function that validates each field upon submission
     function validateForm() {
-        console.log("error in validate: ", error);
         // If there are still empty fields
         if (!formState.username || !formState.email || !formState.password) {
             setErrorMessage("All fields are required!");
             setUpdatedMessage(true);
 
             setTimeout(() => {
-                console.log("clear update");
                 setUpdatedMessage(false);
             }, 100);
             return false;
@@ -87,7 +83,6 @@ function Register() {
             setUpdatedMessage(true);
 
             setTimeout(() => {
-                console.log("clear update");
                 setUpdatedMessage(false);
             }, 100);
             return false;

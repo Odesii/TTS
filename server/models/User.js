@@ -56,18 +56,6 @@ userSchema.methods.isCorrectPassword = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-userSchema.virtual('healthPotions').get(function () {
-  return this.inventory.filter((item) => item.effect === 'health').length;
-});
-
-userSchema.virtual('attackPotions').get(function () {
-  return this.inventory.filter((item) => item.effect === 'attack').length;
-});
-
-userSchema.virtual('defensePotions').get(function () {
-  return this.inventory.filter((item) => item.effect === 'defense').length;
-});
-
 const User = model('User', userSchema);
 
 module.exports = User;

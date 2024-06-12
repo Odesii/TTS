@@ -1,14 +1,14 @@
 import Phaser from 'phaser';
 
 export class Zone {
-  constructor(scene) {
+  constructor(scene, positions) {
     this.scene = scene;
     this.inZone = false;
     this.extractionTimer = null;
     this.remainingTime = 10; // Initial countdown time
 
-    // Define the position of the extraction zone
-    this.zonePosition = { x: 230, y: 355 };
+    // Define the positions of the extraction zones
+    this.zonePositions = positions;
 
     // Create the extraction sprite, initially hidden
     this.extractionSprite = this.scene.add.sprite(0, 0, 'extractionAnimation')
@@ -32,24 +32,30 @@ export class Zone {
   }
 
   update() {
-    const distanceToPlayer = Phaser.Math.Distance.Between(
-      this.zonePosition.x, this.zonePosition.y,
-      this.scene.player.sprite.x, this.scene.player.sprite.y
-    );
+    let inAnyZone = false;
+    this.zonePositions.forEach(zonePosition => {
+      const distanceToPlayer = Phaser.Math.Distance.Between(
+        zonePosition.x, zonePosition.y,
+        this.scene.player.sprite.x, this.scene.player.sprite.y
+      );
 
-    // Update extraction sprite position to be above the player's head
-    this.extractionSprite.setPosition(this.scene.player.sprite.x, this.scene.player.sprite.y - 50);
+      if (distanceToPlayer <= 50) { // Assuming 50 is the extraction range
+        inAnyZone = true;
+      }
+    });
 
-    // Check if the player is within the extraction range
-    if (distanceToPlayer <= 50 && !this.inZone) { // Assuming 50 is the extraction range
+    if (inAnyZone && !this.inZone) {
       console.log('Player in extraction range');
       this.inZone = true;
       this.startExtracting();
-    } else if (distanceToPlayer > 50 && this.inZone) {
+    } else if (!inAnyZone && this.inZone) {
       console.log('Player out of extraction range');
       this.inZone = false;
       this.stopExtracting();
     }
+
+    // Update extraction sprite position to be above the player's head
+    this.extractionSprite.setPosition(this.scene.player.sprite.x, this.scene.player.sprite.y - 50);
   }
 
   startExtracting() {

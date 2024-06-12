@@ -171,7 +171,8 @@ export class WorldScene extends Phaser.Scene {
     this.treesLayer.setDepth(3);
 
     // Add the zone object
-    this.zone = new Zone(this);
+    const extractionPositions = this.getExtractionPositions();
+    this.zone = new Zone(this, extractionPositions);
 
     // Add the player to the scene
     this.players = {};
@@ -376,19 +377,15 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-
-  checkForExtraction() {
-    const tile = this.extractionLayer.getTileAtWorldXY(
-      this.player.sprite.x,
-      this.player.sprite.y
-    );
-    if (tile && tile.index !== -1) {
-      this.zone.startExtracting();
-    } else {
-      this.zone.stopExtracting();
-    }
+  getExtractionPositions() {
+    const positions = [];
+    this.extractionLayer.forEachTile(tile => {
+      if (tile.index !== -1) {
+        positions.push({ x: tile.getCenterX(), y: tile.getCenterY() });
+      }
+    });
+    return positions;
   }
-
 
   update(time, delta) {
     // Call the player's update method to handle movement
@@ -410,11 +407,6 @@ export class WorldScene extends Phaser.Scene {
       this.enemies.forEach((enemy) => {
         enemy.getData("npcInstance").resetHitFlag();
       });
-    }
-
-    // Check for extraction
-    if (this.zone) {
-      this.checkForExtraction();
     }
 
     this.respawnEnemies();

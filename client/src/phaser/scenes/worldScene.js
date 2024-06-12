@@ -376,6 +376,20 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
+
+  checkForExtraction() {
+    const tile = this.extractionLayer.getTileAtWorldXY(
+      this.player.sprite.x,
+      this.player.sprite.y
+    );
+    if (tile && tile.index !== -1) {
+      this.zone.startExtracting();
+    } else {
+      this.zone.stopExtracting();
+    }
+  }
+
+
   update(time, delta) {
     // Call the player's update method to handle movement
     this.player.update();
@@ -404,17 +418,5 @@ export class WorldScene extends Phaser.Scene {
     }
 
     this.respawnEnemies();
-  }
-
-  checkForExtraction() {
-    const tile = this.extractionLayer.getTileAtWorldXY(
-      this.player.sprite.x,
-      this.player.sprite.y
-    );
-    if (tile && tile.index !== -1) {
-      this.zone.startExtracting();
-    } else {
-      this.zone.stopExtracting();
-    }
   }
 }

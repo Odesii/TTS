@@ -23,8 +23,7 @@ export class WorldScene extends Phaser.Scene {
     const chest = "assets/chest.png";
     const mushroom = "assets/shrooms.png";
 
-
-    //load buff
+    // Load buff
     this.load.spritesheet("BlueBuff", "assets/buffs/BlueBuff.png", {
       frameWidth: 32,
       frameHeight: 32,
@@ -58,23 +57,22 @@ export class WorldScene extends Phaser.Scene {
       frameHeight: 32,
     });
 
-
     // Load the tileset images
     this.load.image(
       "Minifantasy_ForgottenPlainsTiles",
       "assets/map/Minifantasy_ForgottenPlainsTiles.png"
     );
     this.load.image("castle", "assets/map/OutdoorTileset.png");
+    this.load.image("PlainsProps", "assets/map/PlainsProps.png");
 
     this.load.spritesheet("mushroom", mushroom, {
       frameWidth: 8,
       frameHeight: 5,
     });
     this.load.spritesheet("chest", chest, { frameWidth: 19, frameHeight: 14 });
-    // this.load.image('chest', 'assets/chest.png');
 
     // Load the tilemap JSON file
-    this.load.tilemapTiledJSON("map", "assets/map/Map.json");
+    this.load.tilemapTiledJSON("map", "assets/map/Map_v3.json");
 
     // Load character assets
     this.load.spritesheet("RogueWalk", RoguePath, {
@@ -116,7 +114,7 @@ export class WorldScene extends Phaser.Scene {
       frameHeight: 32,
     });
 
-    //UI
+    // UI
     this.load.image("settings-button", "assets/icons/setting.png");
     this.load.image("ui-panel", "assets/textures/tile_0048.png");
     this.load.image("inventory-panel", "assets/textures/tile_0049.png");
@@ -142,6 +140,7 @@ export class WorldScene extends Phaser.Scene {
       "Minifantasy_ForgottenPlainsTiles"
     );
     const tiles1 = this.map.addTilesetImage("castle", "castle");
+    const tiles2 = this.map.addTilesetImage("PlainsProps", "PlainsProps");
 
     // Create layers from the tilemap (ensure the layer names match those in Tiled)
     this.baseLayer = this.map.createLayer("base", tiles);
@@ -150,6 +149,10 @@ export class WorldScene extends Phaser.Scene {
     this.underLayer = this.map.createLayer("under_build", tiles);
     this.buildingLayer = this.map.createLayer("buildings", tiles);
     this.castleLayer = this.map.createLayer("Castle_wall", tiles1);
+    this.chestLayer = this.map.createLayer("chests", tiles);
+    this.extractionLayer = this.map.createLayer("extraction", tiles);
+    this.propsLayer = this.map.createLayer("props", tiles2);
+    this.treesLayer = this.map.createLayer("trees", tiles2);
     this.doorLayer = this.map.createLayer("Castle_Door", tiles1);
     // Set up collision for the specified tiles within the layers
     this.buildingLayer.setCollisionFromCollisionGroup();
@@ -157,6 +160,7 @@ export class WorldScene extends Phaser.Scene {
     this.waterLayer.setCollisionFromCollisionGroup();
     this.castleLayer.setCollisionFromCollisionGroup();
     this.doorLayer.setCollisionFromCollisionGroup();
+
     // Convert the tilemap layers into Matter.js bodies
     this.matter.world.convertTilemapLayer(this.buildingLayer);
     this.matter.world.convertTilemapLayer(this.waterLayer);
@@ -164,15 +168,15 @@ export class WorldScene extends Phaser.Scene {
     this.matter.world.convertTilemapLayer(this.castleLayer);
     this.matter.world.convertTilemapLayer(this.doorLayer);
 
+    this.treesLayer.setDepth(3);
+
     // Add the zone object
     this.zone = new Zone(this);
-
 
     // Add the player to the scene
     this.players = {};
     this.player = new Player(this);
     this.players[socket.id] = this.player;
-
 
     // Pointer events
     this.input.on(
@@ -250,7 +254,7 @@ export class WorldScene extends Phaser.Scene {
     // Add the player to the scene
     this.matter.world.add(this.player.sprite.body);
 
-    this.shroomCount = 100;
+    this.shroomCount = 0;
     // Group of NPCs (enemies)
     this.enemies = [];
 
@@ -261,7 +265,7 @@ export class WorldScene extends Phaser.Scene {
       frameRate: 2,
       repeat: 0,
     });
-    //spawn chesticles
+    // Spawn chests
     this.spawnChests(10);
     // Spawn enemies
     this.spawnEnemies(this.shroomCount);
@@ -294,8 +298,9 @@ export class WorldScene extends Phaser.Scene {
 
   isValidSpawnLocation(x, y) {
     const tile = this.baseLayer.getTileAtWorldXY(x, y);
-    return tile !== null
+    return tile !== null;
   }
+
   spawnEnemies(count) {
     for (let i = 0; i < count; i++) {
       let x, y;
@@ -303,20 +308,20 @@ export class WorldScene extends Phaser.Scene {
         x = Phaser.Math.Between(0, this.map.widthInPixels);
         y = Phaser.Math.Between(0, this.map.heightInPixels);
       } while (!this.isValidSpawnLocation(x, y));
-  
+
       const enemy = new NPC(this); // Create NPC instance as enemy
       enemy.sprite.x = x;
       enemy.sprite.y = y;
-  
+
       enemy.sprite.setData("npcInstance", enemy); // Store enemy instance
-  
+
       // Add the Matter.js body to the world
       this.matter.world.add(enemy.sprite.body);
       // Add the enemy to the enemies array
       this.enemies.push(enemy.sprite);
     }
   }
-  
+
   spawnMushrooms(count) {
     for (let i = 0; i < count; i++) {
       let x, y;
@@ -324,22 +329,28 @@ export class WorldScene extends Phaser.Scene {
         x = Phaser.Math.Between(0, this.map.widthInPixels);
         y = Phaser.Math.Between(0, this.map.heightInPixels);
       } while (!this.isValidSpawnLocation(x, y));
-  
+
       const mushroom = new Mushroom(this, x, y);
     }
   }
-  
+
+  validChestSpawn(x, y) {
+    const tile = this.chestLayer.getTileAtWorldXY(x, y);
+    return tile !== null;
+  }
+
   spawnChests(count) {
     for (let i = 0; i < count; i++) {
       let x, y;
       do {
         x = Phaser.Math.Between(0, this.map.widthInPixels);
         y = Phaser.Math.Between(0, this.map.heightInPixels);
-      } while (!this.isValidSpawnLocation(x, y));
-  
+      } while (!this.validChestSpawn(x, y));
+
       const chestSpawn = new Chest(this, x, y);
     }
   }
+
   respawnEnemies() {
     const spawnThreshold = this.shroomCount;
     let currentCount = this.enemies.length;
@@ -387,6 +398,23 @@ export class WorldScene extends Phaser.Scene {
       });
     }
 
+    // Check for extraction
+    if (this.zone) {
+      this.checkForExtraction();
+    }
+
     this.respawnEnemies();
+  }
+
+  checkForExtraction() {
+    const tile = this.extractionLayer.getTileAtWorldXY(
+      this.player.sprite.x,
+      this.player.sprite.y
+    );
+    if (tile && tile.index !== -1) {
+      this.zone.startExtracting();
+    } else {
+      this.zone.stopExtracting();
+    }
   }
 }
